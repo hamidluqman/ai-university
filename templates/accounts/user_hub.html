@@ -1,0 +1,436 @@
+{% extends 'base.html' %}
+
+{% block title %}User Management Hub - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --navy-medium: #244762;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-dark: #10283F;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --blue-light: #DDECF5;
+    --green: #16866F;
+    --green-light: #DCEFEA;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+
+body {
+    background: linear-gradient(180deg, #F8FAFC 0%, #F4F6F8 100%) !important;
+    color: var(--text) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 16px !important;
+    position: relative;
+    min-height: 100vh;
+}
+
+body::before {
+    content: "AI UNIVERSITY";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-family: 'Manrope', sans-serif;
+    font-size: 13vw;
+    font-weight: 800;
+    color: rgba(105, 117, 134, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: 4px;
+}
+
+.hub-container {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 25px auto 45px auto;
+    padding: 0 15px;
+}
+
+/* Organized Sticky Header Banner Matching Theme */
+.top-bar-card {
+    position: sticky;
+    top: 15px;
+    z-index: 1020;
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 30px;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.top-bar-title {
+    font-family: 'Manrope', sans-serif;
+    color: var(--navy-dark);
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0 0 6px 0;
+    display: flex;
+    align-items: center;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.btn-custom-outline {
+    background: #FFFFFF;
+    color: var(--navy);
+    border: 1px solid var(--border);
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(23, 50, 77, 0.04);
+}
+
+.btn-custom-outline:hover {
+    background: var(--page-bg);
+    color: var(--navy-dark);
+    border-color: #CBD5DF;
+}
+
+.btn-custom-primary {
+    background: var(--navy);
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(23, 50, 77, 0.15);
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-custom-primary:hover {
+    background: var(--navy-dark);
+    color: #FFFFFF;
+}
+
+.btn-custom-success {
+    background: var(--green);
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(22, 134, 111, 0.2);
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-custom-success:hover {
+    background: #116D5B;
+    color: #FFFFFF;
+}
+
+.card-box {
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.card-box-header {
+    font-family: 'Manrope', sans-serif;
+    color: var(--navy-dark);
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.hub-table {
+    margin: 0;
+    background: #FFFFFF !important;
+}
+
+.hub-table thead th {
+    background: #F8FAFB !important;
+    color: var(--text-muted) !important;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 14px 18px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    font-weight: 700;
+}
+
+.hub-table tbody td {
+    padding: 16px 18px;
+    background: #FFFFFF !important;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text) !important;
+    font-size: 14.5px;
+    vertical-align: middle;
+}
+
+.hub-table tbody tr:hover {
+    background: #F9FBFC !important;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hub-container">
+    <div class="top-bar-card">
+        <div>
+            <h3 class="top-bar-title">
+                <i class="bi bi-people-fill me-2" style="color: var(--navy);"></i>
+                User & Institution Management Hub
+            </h3>
+            <div>
+                {% if is_institution_admin %}
+                    <span class="badge bg-warning-subtle text-dark px-2 py-1" style="font-weight: 700; border-radius: 6px; font-size: 13px;">Institutional Administrator View</span>
+                {% else %}
+                    <span class="badge bg-primary-subtle text-primary px-2 py-1" style="font-weight: 700; border-radius: 6px; font-size: 13px;">Global Superadmin View</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="action-buttons">
+            {% if not is_institution_admin %}
+                <a href="{% url 'accounts:create_institution' %}" class="btn-custom-outline">+ Institution</a>
+                <a href="{% url 'accounts:create_content_team' %}" class="btn-custom-outline">+ Content Team</a>
+            {% endif %}
+            <a href="{% url 'accounts:create_teacher' %}" class="btn-custom-success">+ Add Teacher</a>
+            <a href="{% url 'accounts:create_student' %}" class="btn-custom-primary">+ Add Student</a>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% regroup messages by tags as message_list %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm border-0 mb-4" role="alert" style="border-radius: 10px; font-size: 14px; font-weight: 600;">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if not is_institution_admin %}
+    <div class="card-box">
+        <div class="card-box-header">
+            <span>Content Team Members</span>
+            <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 13px;">Total: {{ content_team_members.count|default:0 }}</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table hub-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Created At</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in content_team_members %}
+                    <tr>
+                        <td><strong style="color: var(--navy-dark);">{{ member.username }}</strong></td>
+                        <td class="text-muted">{{ member.email|default:"N/A" }}</td>
+                        <td class="text-muted">{{ member.date_joined|date:"Y-m-d H:i" }}</td>
+                        <td class="text-end">
+                            <form action="{% url 'accounts:delete_content_team' member.id %}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete content team member {{ member.username }}?');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold px-3 py-1" style="border-radius: 8px;">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center text-muted py-4">No content team members registered yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="card-box">
+        <div class="card-box-header">
+            <span>Institutions</span>
+            <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 13px;">Total: {{ institutions.count }}</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table hub-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Code</th>
+                        <th>Created At</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inst in institutions %}
+                    <tr>
+                        <td><strong style="color: var(--navy-dark);">{{ inst.name }}</strong></td>
+                        <td><code style="color: var(--navy);">{{ inst.code }}</code></td>
+                        <td class="text-muted">{{ inst.created_at|date:"Y-m-d H:i" }}</td>
+                        <td class="text-end">
+                            <form action="{% url 'accounts:delete_institution' inst.id %}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete {{ inst.name }}?');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold px-3 py-1" style="border-radius: 8px;">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center text-muted py-4">No institutions registered yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card-box">
+        <div class="card-box-header">
+            <span>Teachers</span>
+            <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 13px;">Total: {{ teachers.count }}</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table hub-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Employee ID</th>
+                        <th>Institution</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in teachers %}
+                    <tr>
+                        <td><strong style="color: var(--navy-dark);">{{ t.user.username }}</strong></td>
+                        <td class="text-muted">{{ t.user.email }}</td>
+                        <td><code style="color: var(--navy);">{{ t.employee_id }}</code></td>
+                        <td>{{ t.institution.name }}</td>
+                        <td class="text-end">
+                            <form action="{% url 'accounts:delete_teacher' t.id %}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete teacher {{ t.user.username }}?');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold px-3 py-1" style="border-radius: 8px;">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center text-muted py-4">No teachers assigned yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card-box">
+        <div class="card-box-header">
+            <span>Institutional Students</span>
+            <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 13px;">Total: {{ institutional_students_count|default:students.count }}</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table hub-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Institution</th>
+                        <th>Roll Number</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in students %}
+                        {% if s.student_type == 'institutional' %}
+                        <tr>
+                            <td><strong style="color: var(--navy-dark);">{{ s.user.username }}</strong></td>
+                            <td class="text-muted">{{ s.user.email }}</td>
+                            <td>{{ s.institution.name|default:"N/A" }}</td>
+                            <td><code style="color: var(--navy);">{{ s.roll_number|default:"N/A" }}</code></td>
+                            <td class="text-end">
+                                <form action="{% url 'accounts:delete_student' s.id %}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete student {{ s.user.username }}?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold px-3 py-1" style="border-radius: 8px;">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center text-muted py-4">No institutional students registered yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card-box">
+        <div class="card-box-header">
+            <span>Independent Students</span>
+            <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 13px;">Total: {{ independent_students_count|default:students.count }}</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table hub-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Roll Number</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in students %}
+                        {% if s.student_type != 'institutional' %}
+                        <tr>
+                            <td><strong style="color: var(--navy-dark);">{{ s.user.username }}</strong></td>
+                            <td class="text-muted">{{ s.user.email }}</td>
+                            <td><code style="color: var(--navy);">{{ s.roll_number|default:"N/A" }}</code></td>
+                            <td class="text-end">
+                                <form action="{% url 'accounts:delete_student' s.id %}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete student {{ s.user.username }}?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold px-3 py-1" style="border-radius: 8px;">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center text-muted py-4">No independent students registered yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+
+{% block title %}Add & Activate Subscription - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<!-- Google Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --navy-medium: #244762;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-dark: #10283F;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --blue-light: #DDECF5;
+    --green: #16866F;
+    --green-light: #DCEFEA;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+
+body {
+    background: linear-gradient(180deg, #F8FAFC 0%, #F4F6F8 100%) !important;
+    color: var(--text) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 15px !important;
+    position: relative;
+    min-height: 100vh;
+}
+
+body::before {
+    content: "AI UNIVERSITY";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-family: 'Manrope', sans-serif;
+    font-size: 13vw;
+    font-weight: 800;
+    color: rgba(105, 117, 134, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: 4px;
+}
+
+.builder-container {
+    position: relative;
+    z-index: 1;
+    max-width: 850px;
+    margin: 25px auto 45px auto;
+    padding: 0 15px;
+}
+
+.builder-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 35px;
+    box-shadow: var(--shadow-sm);
+}
+
+.builder-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.builder-title {
+    font-family: 'Manrope', sans-serif;
+    color: var(--navy-dark);
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.switch-btn {
+    background: #F1F5F8;
+    color: var(--navy);
+    border: 1px solid #DCE4EA;
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.switch-btn:hover {
+    background: var(--navy);
+    color: #FFFFFF;
+}
+
+.step-card {
+    background: #FBFCFD;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 22px;
+    transition: border-color 0.2s ease;
+}
+
+.step-card:hover {
+    border-color: #CBD5DF;
+}
+
+.step-section-title {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    color: var(--navy-dark);
+    font-size: 16px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.form-label {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    color: var(--navy-dark);
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.form-select, .form-control {
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    padding: 12px 16px !important;
+    font-size: 15px !important;
+    color: var(--text) !important;
+    background-color: #FFFFFF !important;
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: var(--blue) !important;
+    box-shadow: 0 0 0 3px rgba(22, 119, 184, 0.1) !important;
+}
+
+.save-btn {
+    background: var(--navy) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 14px !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    width: 100%;
+    transition: background 0.2s ease;
+    box-shadow: 0 4px 12px rgba(23, 50, 77, 0.15);
+}
+
+.save-btn:hover {
+    background: var(--navy-dark) !important;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="builder-container">
+    <div class="builder-card">
+        
+        <!-- Header -->
+        <div class="builder-header">
+            <div>
+                <h3 class="builder-title">
+                    <i class="bi bi-plus-circle-fill me-2" style="color: var(--navy);"></i>
+                    Add & Activate Subscription
+                </h3>
+                <div class="text-muted" style="font-size: 13px; margin-top: 4px;">
+                    Manually create and authorize an active subscription for any system user.
+                </div>
+            </div>
+            <a href="{% url 'subscriptions:admin_subscription_panel' %}" class="switch-btn">
+                <i class="bi bi-arrow-left me-1"></i> Back to Panel
+            </a>
+        </div>
+
+        {% if messages %}
+            {% for m in messages %}
+                <div class="alert alert-{% if m.tags == 'error' %}danger{% else %}{{ m.tags }}{% endif %} alert-dismissible fade show fw-bold mb-4 shadow-sm" role="alert" style="border-radius: 10px; font-size: 14px;">
+                    {{ m }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="step-card">
+                <div class="step-section-title">Subscription Authorization Parameters</div>
+
+                <div class="mb-3">
+                    <label class="form-label">Select User</label>
+                    <select name="user_id" class="form-select" required>
+                        <option value="">-- Choose Target User --</option>
+                        {% for u in users %}
+                            <option value="{{ u.id }}">{{ u.username }} ({{ u.email }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Select Subscription Plan</label>
+                    <select name="plan_id" class="form-select" required>
+                        <option value="">-- Choose Subscription Plan --</option>
+                        {% for p in plans %}
+                            <option value="{{ p.id }}">{{ p.name }} — PKR {{ p.price }} ({{ p.duration_days }} Days)</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Payment Reference / Transaction ID <span class="text-muted small fw-normal">(Optional)</span></label>
+                    <input type="text" name="payment_reference" placeholder="e.g. MANUAL-REF-9928" class="form-control">
+                </div>
+            </div>
+
+            <button type="submit" class="save-btn mt-2">
+                <i class="bi bi-check2-circle me-1"></i> Activate & Save Subscription
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

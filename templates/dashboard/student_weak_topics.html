@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Weak Topics & Subjects - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --green: #16866F;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+body { background: var(--page-bg) !important; color: var(--text) !important; font-family: 'Inter', sans-serif !important; }
+.student-container { max-width: 1200px; margin: 25px auto; padding: 0 15px; position: relative; }
+.student-container::before {
+    content: "AI UNIVERSITY";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-size: 8vw;
+    font-weight: 900;
+    font-family: 'Manrope', sans-serif;
+    color: rgba(23, 50, 77, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+}
+.header-box, .card-box { position: relative; z-index: 1; }
+.header-box { 
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); 
+    border-radius: 16px; 
+    padding: 30px 40px; 
+    color: #FFFFFF; 
+    box-shadow: var(--shadow-md); 
+    margin-bottom: 25px; 
+}
+.card-box { 
+    background: #FFFFFF; 
+    border: 1px solid var(--border); 
+    border-radius: 16px; 
+    box-shadow: var(--shadow-sm); 
+    padding: 24px; 
+    margin-bottom: 25px; 
+}
+.card-box-header { 
+    font-family: 'Manrope', sans-serif; 
+    color: var(--navy-dark); 
+    font-size: 18px; 
+    font-weight: 800; 
+    margin-bottom: 18px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 12px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="student-container">
+    
+    <!-- Header Block -->
+    <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h1 class="font-weight-bold mb-2" style="font-size: 24px;">Weak Subjects & Topics Review</h1>
+            <p class="mb-0 text-white-50">Analyze areas needing improvement with hierarchical subject and chapter breakdowns.</p>
+        </div>
+        <div>
+            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Weak Subjects Alert Box -->
+    <div class="card-box bg-white border mb-4">
+        <div class="card-box-header mb-3">
+            <span class="text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i> Weak Subjects Alert</span>
+        </div>
+        {% if weak_subjects %}
+            <div class="d-flex flex-wrap gap-2">
+                {% for subj in weak_subjects %}
+                    <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-2 rounded-pill fw-bold">{{ subj }} (Averaging below 50%)</span>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted small mb-0">No weak subjects detected. Excellent consistency across your courses!</p>
+        {% endif %}
+    </div>
+
+    <!-- Topics Requiring Review Box -->
+    <div class="card-box bg-white border mb-0">
+        <div class="card-box-header mb-3">
+            <span class="text-warning"><i class="bi bi-shield-exclamation me-2"></i> Topics Requiring Review (Subject & Chapter Hierarchy)</span>
+        </div>
+        
+        {% if weak_topics_hierarchy %}
+            <div class="accordion" id="weakTopicsAccordion">
+                {% for subj_name, chapters in weak_topics_hierarchy.items %}
+                <div class="card mb-2 border rounded-3 overflow-hidden shadow-sm">
+                    <div class="card-header bg-white p-3 d-flex justify-content-between align-items-center" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#weakSubjCollapse{{ forloop.counter }}">
+                        <span class="fw-bold text-dark"><i class="bi bi-book me-2 text-primary"></i> Subject: {{ subj_name }}</span>
+                        <i class="bi bi-chevron-down text-muted"></i>
+                    </div>
+                    <div id="weakSubjCollapse{{ forloop.counter }}" class="collapse" data-bs-parent="#weakTopicsAccordion">
+                        <div class="card-body bg-light p-3 border-top">
+                            {% for chap_title, topics in chapters.items %}
+                                <div class="mb-3 p-3 bg-white rounded border shadow-sm">
+                                    <div class="fw-bold text-secondary mb-2 small text-uppercase"><i class="bi bi-journal-text me-1"></i> {{ chap_title }}</div>
+                                    <ul class="mb-0 ps-3">
+                                        {% for topic in topics %}
+                                            <li class="text-dark fw-medium small mb-1">{{ topic }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted small mb-0">No specific weak topics flagged from your recent exam evaluations.</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

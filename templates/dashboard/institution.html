@@ -1,0 +1,502 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Institution Portal - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --green: #16866F;
+    --gold: #C58A19;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+
+body {
+    background: linear-gradient(180deg, #F8FAFC 0%, #F4F6F8 100%) !important;
+    color: var(--text) !important;
+    font-family: 'Inter', sans-serif !important;
+    min-height: 100vh;
+}
+
+.institution-dashboard-container {
+    max-width: 1400px;
+    margin: 25px auto;
+    padding: 0 15px;
+}
+
+.institution-header-bar {
+    background: #FFFFFF !important;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 30px;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.dashboard-banner {
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+    border-radius: 16px;
+    padding: 35px 40px;
+    color: #FFFFFF;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.dashboard-banner h1 {
+    font-family: 'Manrope', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.dashboard-banner p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 15px;
+    margin: 0;
+}
+
+.brand-title {
+    font-family: 'Manrope', sans-serif;
+    color: var(--navy-dark);
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0 0 4px 0;
+}
+
+.brand-subtitle {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    color: var(--navy);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+    background: var(--page-bg);
+    color: var(--navy-dark);
+    border-color: #CBD5DF;
+}
+
+.stat-card {
+    background: #FFFFFF !important;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.card-box {
+    background: #FFFFFF !important;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    padding: 24px;
+    margin-bottom: 25px;
+}
+
+.card-box-header {
+    font-family: 'Manrope', sans-serif;
+    color: var(--navy-dark);
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table-custom th {
+    background: #F8FAFB !important;
+    color: var(--text-muted) !important;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 14px 18px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    font-weight: 700;
+}
+
+.table-custom td {
+    background: #FFFFFF !important;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text) !important;
+    font-size: 14px;
+    vertical-align: middle;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="institution-dashboard-container">
+    
+    <!-- Header Ribbon -->
+    <div class="institution-header-bar">
+        <div class="d-flex align-items-center gap-3">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" style="max-height: 44px; width: auto;" onerror="this.style.display='none';">
+            <div>
+                <h1 class="brand-title">Institution Admin Portal</h1>
+                <div class="brand-subtitle">
+                    Institution: <span class="fw-bold text-primary">{{ institution.name|default:"Assigned Institution" }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+            <a href="{% url 'accounts:user_management_hub' %}" class="btn btn-sm btn-primary fw-semibold px-3 py-2 text-white" style="border-radius: 10px; background-color: var(--blue); border-color: var(--blue);">
+                <i class="bi bi-people-fill"></i> Manage Users Hub
+            </a>
+            <div class="dropdown">
+                <a href="#" class="nav-btn dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="bi bi-person-circle"></i> {{ request.user.username }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2 bg-white" style="border-radius: 12px; min-width: 180px;">
+                    <li>
+                        <form method="post" action="{% url 'accounts:logout' %}" class="m-0">
+                            {% csrf_token %}
+                            <button type="submit" class="dropdown-item text-danger fw-bold rounded p-2">
+                                <i class="bi bi-box-arrow-right"></i> Log Out
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Banner -->
+    <div class="dashboard-banner">
+        <div>
+            <h1>Welcome back, {{ request.user.get_full_name|default:request.user.username }}!</h1>
+            <p>Monitor real-time academic analytics, manage institutional classes, review test results, and oversee faculty metrics.</p>
+        </div>
+        <div>
+            <span class="badge bg-success text-white px-3 py-2 fw-bold" style="border-radius: 8px; font-size: 14px;">Active License</span>
+        </div>
+    </div>
+
+    <!-- Quick Stat Metrics Row -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(22, 119, 184, 0.1); color: var(--blue);">
+                    <i class="bi bi-person-badge-fill"></i>
+                </div>
+                <div>
+                    <div class="text-muted small fw-bold text-uppercase">Total Teachers</div>
+                    <h3 class="fw-extrabold mb-0" style="color: var(--navy-dark);">{{ teachers_count|default:0 }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(22, 134, 111, 0.1); color: var(--green);">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div>
+                    <div class="text-muted small fw-bold text-uppercase">Total Students</div>
+                    <h3 class="fw-extrabold mb-0" style="color: var(--navy-dark);">{{ students_count|default:0 }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(197, 138, 25, 0.1); color: var(--gold);">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                </div>
+                <div>
+                    <div class="text-muted small fw-bold text-uppercase">Institution Assessments</div>
+                    <h3 class="fw-extrabold mb-0" style="color: var(--navy-dark);">{{ exams_count|default:0 }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Classes & Exams Overview Row -->
+    <div class="row g-4 mb-4">
+        <!-- List of All Classes -->
+        <div class="col-lg-5">
+            <div class="card-box h-100 mb-0">
+                <div class="card-box-header">
+                    <span>All Institution Classes</span>
+                    <span class="badge bg-light text-dark border px-2 py-1">Total: {{ classes|length|default:0 }}</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Class Name</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cls in classes %}
+                            <tr>
+                                <td><strong>{{ cls.name }}</strong></td>
+                                <td class="text-end">
+                                    <a href="{% url 'accounts:class_roster' cls.id %}" class="btn btn-sm btn-outline-primary px-3 fw-semibold" style="border-radius: 8px;">View Roster</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center text-muted py-4">No classes registered.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- List of All Exams with Results -->
+        <div class="col-lg-7">
+            <div class="card-box h-100 mb-0">
+                <div class="card-box-header">
+                    <span>All Institution Exams & Assessments</span>
+                    <span class="badge bg-light text-dark border px-2 py-1">Total: {{ exams|length|default:0 }}</span>
+                </div>
+                <div class="table-responsive" style="max-height: 350px; overflow-y: auto;">
+                    <table class="table table-custom align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Test Title</th>
+                                <th>Created By</th>
+                                <th>Created Date</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for exam in exams %}
+                            <tr>
+                                <td><strong>{{ exam.title }}</strong></td>
+                                <td>
+                                    <span class="text-muted small">
+                                        {{ exam.creator.get_full_name|default:exam.creator.username|default:"System Admin" }}
+                                    </span>
+                                </td>
+                                <td>{{ exam.created_at|date:"M d, Y"|default:"N/A" }}</td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a href="{% url 'accounts:exam_results' exam.id %}" class="btn btn-sm btn-outline-primary px-3 fw-semibold" style="border-radius: 8px;">Results</a>
+                                        <form method="post" action="{% url 'accounts:delete_exam' exam.id %}" class="m-0" onsubmit="return confirm('Are you sure you want to delete this exam?');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-outline-danger px-3 fw-semibold" style="border-radius: 8px;">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">No exams created yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teachers Roster & Management Section -->
+    <div class="card-box">
+        <div class="card-box-header">
+            <span>Institution Teachers & Assignments</span>
+            <div class="d-flex align-items-center gap-3">
+                <span class="badge bg-light text-dark border px-2 py-1">Total: {{ teachers|length|default:0 }}</span>
+                <a href="{% url 'accounts:create_teacher' %}" class="btn btn-sm btn-primary fw-semibold text-white px-3" style="border-radius: 8px; background-color: var(--blue); border-color: var(--blue);">
+                    <i class="bi bi-plus-lg"></i> Add New Teacher
+                </a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-custom align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Teacher Name</th>
+                        <th>Username</th>
+                        <th>Assigned Classes</th>
+                        <th>Assigned Subjects</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for teacher in teachers %}
+                    <tr>
+                        <td><strong>{{ teacher.user.get_full_name|default:teacher.user.username }}</strong></td>
+                        <td><code>{{ teacher.user.username }}</code></td>
+                        <td>
+                            {% if teacher.assigned_classes.all %}
+                                {% for c in teacher.assigned_classes.all %}<span class="badge bg-light text-dark border me-1">{{ c.name }}</span>{% endfor %}
+                            {% elif teacher.classes.all %}
+                                {% for c in teacher.classes.all %}<span class="badge bg-light text-dark border me-1">{{ c.name }}</span>{% endfor %}
+                            {% else %}
+                                <span class="text-muted small">No classes assigned</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if teacher.assigned_subjects.all %}
+                                {% for s in teacher.assigned_subjects.all %}<span class="badge bg-info-subtle text-info border me-1">{{ s.name }}</span>{% endfor %}
+                            {% elif teacher.subjects.all %}
+                                {% for s in teacher.subjects.all %}<span class="badge bg-info-subtle text-info border me-1">{{ s.name }}</span>{% endfor %}
+                            {% else %}
+                                <span class="text-muted small">No subjects assigned</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <form method="post" action="{% url 'accounts:delete_teacher' teacher.id %}" class="m-0" onsubmit="return confirm('Are you sure you want to delete this teacher?');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger px-3 fw-semibold" style="border-radius: 8px;">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">No teachers registered yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Academic Progress Graphs Test-Wise Per Class -->
+    <div class="card-box">
+        <div class="card-box-header">
+            <span>Academic Progress Graphs (Test-Wise per Class)</span>
+        </div>
+        <div class="row g-4" id="charts-container">
+            {% if class_progress_data and class_progress_data|length > 0 %}
+                {% for item in class_progress_data %}
+                    {% if item.class_name %}
+                    <div class="col-lg-6">
+                        <div class="p-3 border rounded bg-white shadow-sm">
+                            <h6 class="fw-bold mb-3" style="color: var(--navy-dark);">Class: {{ item.class_name }}</h6>
+                            <div style="position: relative; height: 240px; width: 100%;">
+                                <canvas id="progressChart_{{ forloop.counter }}"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+            <div class="col-12 text-center text-muted py-4">
+                <span>No test performance data available to generate progress graphs yet.</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+{{ class_progress_data|json_script:"class-progress-data" }}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const progressElement = document.getElementById('class-progress-data');
+        if (!progressElement) return;
+
+        let classProgressData = [];
+        try {
+            classProgressData = JSON.parse(progressElement.textContent);
+        } catch (e) {
+            console.error("Failed to parse progress data:", e);
+            return;
+        }
+
+        classProgressData.forEach((item, index) => {
+            const canvasId = 'progressChart_' + (index + 1);
+            const canvasElement = document.getElementById(canvasId);
+            if (!canvasElement) return;
+
+            const ctx = canvasElement.getContext('2d');
+            
+            const examLabels = item.exam_scores.map(score => score.exam_title);
+            const examData = item.exam_scores.map(score => score.average_percentage);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: examLabels,
+                    datasets: [{
+                        label: 'Average % Score',
+                        data: examData,
+                        borderColor: '#1677B8',
+                        backgroundColor: 'rgba(22, 119, 184, 0.1)',
+                        borderWidth: 2.5,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { font: { family: 'Inter', size: 11 } }
+                        },
+                        x: {
+                            ticks: { font: { family: 'Inter', size: 11 } }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

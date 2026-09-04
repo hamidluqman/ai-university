@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Test Results - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --green: #16866F;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+body { background: var(--page-bg) !important; color: var(--text) !important; font-family: 'Inter', sans-serif !important; }
+.student-container { max-width: 1200px; margin: 25px auto; padding: 0 15px; position: relative; }
+.student-container::before {
+    content: "AI UNIVERSITY";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-size: 8vw;
+    font-weight: 900;
+    font-family: 'Manrope', sans-serif;
+    color: rgba(23, 50, 77, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+}
+.header-box, .card-box { position: relative; z-index: 1; }
+.header-box { 
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); 
+    border-radius: 16px; 
+    padding: 30px 40px; 
+    color: #FFFFFF; 
+    box-shadow: var(--shadow-md); 
+    margin-bottom: 25px; 
+}
+.card-box { 
+    background: #FFFFFF; 
+    border: 1px solid var(--border); 
+    border-radius: 16px; 
+    box-shadow: var(--shadow-sm); 
+    padding: 24px; 
+    margin-bottom: 25px; 
+}
+.card-box-header { 
+    font-family: 'Manrope', sans-serif; 
+    color: var(--navy-dark); 
+    font-size: 18px; 
+    font-weight: 800; 
+    margin-bottom: 18px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 12px;
+}
+.table-custom th {
+    background: #F8FAFB !important;
+    color: var(--text-muted) !important;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 14px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    font-weight: 700;
+}
+.table-custom td {
+    background: #FFFFFF !important;
+    padding: 14px;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text) !important;
+    font-size: 13px;
+    vertical-align: middle;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="student-container">
+    
+    <!-- Header Block -->
+    <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h1 class="font-weight-bold mb-2" style="font-size: 24px;">My Test Performance & Results</h1>
+            <p class="mb-0 text-white-50">Review all your completed test attempts, overall subject scores, and score breakdowns.</p>
+        </div>
+        <div>
+            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Results Box -->
+    <div class="card-box">
+        <div class="card-box-header">
+            <span><i class="bi bi-bar-chart-fill text-warning me-2"></i> Subject-wise Overall Progress & Test Attempts</span>
+            <span class="badge bg-light text-dark border px-2 py-1">Total Attempts: {{ attempts|length|default:0 }}</span>
+        </div>
+
+        {% if attempts %}
+            <div class="accordion" id="subjectProgressAccordion">
+                {% for stat in subject_stats %}
+                <div class="card mb-2 border rounded-3 overflow-hidden shadow-sm">
+                    <div class="card-header bg-white p-3 d-flex justify-content-between align-items-center" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#subjectCollapse{{ forloop.counter }}">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="fw-bold text-dark fs-6">{{ stat.subject_name }}</span>
+                            <span class="badge bg-light text-dark border px-2 py-1">Tests Attempted: {{ stat.total_attempts }}</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <span>Avg Score: <strong>{{ stat.avg_percentage|floatformat:1 }}%</strong></span>
+                            {% if stat.avg_percentage >= 70 %}
+                                <span class="badge bg-success-subtle text-success border border-success px-3 py-1 rounded-pill fw-semibold">Strong</span>
+                            {% elif stat.avg_percentage >= 50 %}
+                                <span class="badge bg-warning-subtle text-warning border border-warning px-3 py-1 rounded-pill fw-semibold">Moderate</span>
+                            {% else %}
+                                <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-1 rounded-pill fw-semibold">Needs Improvement</span>
+                            {% endif %}
+                            <i class="bi bi-chevron-down text-muted"></i>
+                        </div>
+                    </div>
+                    <div id="subjectCollapse{{ forloop.counter }}" class="collapse" data-bs-parent="#subjectProgressAccordion">
+                        <div class="card-body bg-light p-3 border-top">
+                            <h6 class="small fw-bold text-uppercase text-muted mb-2">Attempt History for {{ stat.subject_name }}</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-custom align-middle mb-0 bg-white rounded border">
+                                    <thead>
+                                        <tr>
+                                            <th>Exam Title</th>
+                                            <th>Date Submitted</th>
+                                            <th>Score</th>
+                                            <th>Percentage</th>
+                                            <th class="text-end">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for att in attempts %}
+                                            {% with s_name=att.exam.board_subject.name|default:"General" %}
+                                                {% if s_name == stat.subject_name %}
+                                                <tr>
+                                                    <td><strong>{{ att.exam.title }}</strong></td>
+                                                    <td>{{ att.submitted_at|date:"M d, Y H:i" }}</td>
+                                                    <td>{{ att.score }} / {{ att.total_marks }}</td>
+                                                    <td><strong>{{ att.percentage|floatformat:1 }}%</strong></td>
+                                                    <td class="text-end">
+                                                        <a href="{% url 'examinations:exam_result' att.id %}" class="btn btn-sm btn-outline-primary px-3 py-1 rounded-pill fw-semibold" style="border-color: var(--navy); color: var(--navy);">View Report</a>
+                                                    </td>
+                                                </tr>
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center text-muted py-3">No subject breakdown available yet.</div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-bar-chart display-6 d-block mb-2 text-secondary opacity-50"></i>
+                <p class="mb-0">Your test scores and performance analytics will appear here after completing assessments.</p>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

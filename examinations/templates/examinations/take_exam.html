@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Assessment: {{ exam.title }} - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --green: #16866F;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+body { background: var(--page-bg) !important; color: var(--text) !important; font-family: 'Inter', sans-serif !important; }
+
+.watermark-container {
+    position: relative;
+    min-height: 90vh;
+}
+.watermark-container::before {
+    content: "AI UNIVERSITY";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-size: 7.5vw;
+    font-weight: 900;
+    font-family: 'Manrope', sans-serif;
+    color: rgba(23, 50, 77, 0.07);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+}
+.quiz-content-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+.card-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    padding: 24px;
+    margin-bottom: 20px;
+}
+.header-box {
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+    border-radius: 16px;
+    padding: 25px 30px;
+    color: #FFFFFF;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 25px;
+}
+.timer-badge {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #FFF;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="watermark-container py-3">
+    <div class="container my-4 quiz-content-wrapper" style="max-width: 900px;">
+        
+        <!-- Header Card -->
+        <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold" style="font-size: 11px;">Official Institution Assessment</span>
+                <h2 class="fw-extrabold text-white mt-1 mb-1" style="font-family: 'Manrope', sans-serif; font-size: 22px;">{{ exam.title }}</h2>
+                <p class="text-white-50 small mb-0">Complete all questions before time runs out. Submits automatically after duration.</p>
+            </div>
+            
+            {% if questions %}
+            <div id="timer-box" class="timer-badge">
+                <i class="bi bi-clock-fill text-warning"></i> Time Left: <span id="time-left">{{ total_duration_seconds }}</span>s
+            </div>
+            {% endif %}
+
+            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+                <i class="bi bi-arrow-left"></i> Dashboard
+            </a>
+        </div>
+
+        <!-- Exam Form -->
+        <form method="post" id="quiz-form">
+            {% csrf_token %}
+            
+            {% if questions %}
+                {% for q in questions %}
+                <div class="card-box bg-white">
+                    <div class="d-flex align-items-start gap-3 mb-3">
+                        <span class="badge bg-light text-dark border rounded-circle p-2 d-flex align-items-center justify-content-center fw-bold" style="width: 32px; height: 32px; font-size: 13px;">{{ forloop.counter }}</span>
+                        <div class="w-100">
+                            <h5 class="fw-bold text-dark mb-3" style="font-family: 'Manrope', sans-serif; font-size: 16px;">{{ q.question_text|safe }}</h5>
+                            
+                            {% if q.question_image %}
+                            <div class="mb-3">
+                                <img src="{{ q.question_image.url }}" alt="Question Image" class="img-fluid rounded border" style="max-height: 200px;">
+                            </div>
+                            {% endif %}
+
+                            <div class="d-flex flex-column gap-2">
+                                {% for option_key, option_value in q.get_options.items %}
+                                <label class="p-3 border rounded-3 d-flex align-items-center gap-3 transition" style="cursor: pointer; background: #F9FBFC;">
+                                    <input type="radio" name="question_{{ q.id }}" value="{{ option_key }}" class="form-check-input mt-0">
+                                    <span class="fw-medium text-dark"><strong>{{ option_key }}.</strong> {{ option_value }}</span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="text-end mb-5">
+                    <button type="submit" class="btn btn-success btn-lg px-5 rounded-pill fw-bold shadow-sm" style="background-color: var(--green); border-color: var(--green);">Submit Assessment</button>
+                </div>
+
+            {% else %}
+                <div class="card-box text-center py-5 bg-white">
+                    <p class="text-muted mb-3">No questions are currently attached to this test pool.</p>
+                    <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-primary rounded-pill px-4 fw-semibold" style="background-color: var(--blue); border-color: var(--blue);">Back to Dashboard</a>
+                </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+{% if questions %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let timeLeft = parseInt("{{ total_duration_seconds }}") || 60;
+        const timerElement = document.getElementById("time-left");
+        const quizForm = document.getElementById("quiz-form");
+
+        const countdown = setInterval(function() {
+            timeLeft--;
+            if (timerElement) {
+                timerElement.textContent = timeLeft;
+            }
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                if (quizForm) {
+                    quizForm.submit();
+                }
+            }
+        }, 1000);
+    });
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,299 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Independent Student Portal - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --green: #16866F;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+body { background: var(--page-bg) !important; color: var(--text) !important; font-family: 'Inter', sans-serif !important; scroll-behavior: smooth; }
+.student-container { max-width: 1400px; margin: 25px auto; padding: 0 15px; position: relative; }
+.student-container::before {
+    content: "AI UNIVERSITY";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-size: 8vw;
+    font-weight: 900;
+    font-family: 'Manrope', sans-serif;
+    color: rgba(23, 50, 77, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+}
+.top-banner-nav, .header-box, .row { position: relative; z-index: 1; }
+.top-banner-nav {
+    position: sticky;
+    top: 15px;
+    z-index: 1000;
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 30px;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+    width: 100%;
+}
+.brand-logo-area { display: flex; align-items: center; gap: 12px; }
+.brand-logo-area img { max-height: 38px; width: auto; }
+.brand-logo-area h4 { font-family: 'Manrope', sans-serif; font-size: 20px; font-weight: 800; color: var(--navy-dark); margin: 0; }
+.nav-btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 10px;
+    background: #FFFFFF; border: 1px solid var(--border); color: var(--navy); font-size: 14px; font-weight: 700; text-decoration: none; transition: all 0.2s ease; cursor: pointer;
+}
+.nav-btn:hover { background: var(--page-bg); color: var(--navy-dark); border-color: #CBD5DF; }
+.header-box { 
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); 
+    border-radius: 16px; padding: 30px 40px; color: #FFFFFF; box-shadow: var(--shadow-md); margin-bottom: 25px; width: 100%;
+}
+.card-box { 
+    background: #FFFFFF; border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow-sm); padding: 24px; margin-bottom: 25px; width: 100%;
+}
+.card-box-header { 
+    font-family: 'Manrope', sans-serif; color: var(--navy-dark); font-size: 18px; font-weight: 800; margin-bottom: 18px; 
+    display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light); padding-bottom: 12px;
+}
+
+/* Custom Table Theme Overrides */
+.table-theme th {
+    background-color: var(--navy-dark) !important;
+    color: #FFFFFF !important;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    border: none !important;
+    padding: 12px !important;
+}
+.table-theme td {
+    color: var(--text) !important;
+    background-color: #FFFFFF !important;
+    border-bottom: 1px solid var(--border-light) !important;
+    padding: 12px !important;
+    vertical-align: middle;
+}
+.table-theme tbody tr:hover td {
+    background-color: var(--page-bg) !important;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="student-container">
+    
+    <!-- Top Nav -->
+    <div class="top-banner-nav">
+        <div class="brand-logo-area">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" onerror="this.style.display='none';">
+            <h4>AI University</h4>
+        </div>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <a href="{% url 'accounts:independent_student_courses' %}" class="nav-btn py-2 px-3"><i class="bi bi-journal-richtext text-primary"></i> Courses</a>
+            <a href="{% url 'examinations:results_dashboard' %}" class="nav-btn py-2 px-3"><i class="bi bi-bar-chart-fill text-warning"></i> Results</a>
+            <a href="{% url 'accounts:student_weak_topics' %}" class="nav-btn py-2 px-3"><i class="bi bi-shield-exclamation text-danger"></i> Weak Topics</a>
+        </div>
+        <div class="dropdown">
+            <a href="#" class="nav-btn dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="bi bi-person-circle"></i> {{ request.user.username }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2 bg-white" style="border-radius: 12px; min-width: 180px; z-index: 2000;">
+                <li>
+                    <a href="{% url 'accounts:independent_student_profile' %}" class="dropdown-item fw-semibold rounded p-2 mb-1 text-dark bg-transparent text-start text-decoration-none">
+                        <i class="bi bi-person-badge text-primary"></i> Profile Settings
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form method="post" action="{% url 'accounts:logout' %}" class="m-0">
+                        {% csrf_token %}
+                        <button type="submit" class="dropdown-item text-danger fw-bold rounded p-2 w-100 text-start bg-transparent border-0">
+                            <i class="bi bi-box-arrow-right"></i> Log Out
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Header Block -->
+    <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h1 class="font-weight-bold mb-2" style="font-size: 24px;">Independent Learner Hub - {{ request.user.get_full_name|default:request.user.username }}</h1>
+            <p class="mb-0 text-white-50">Manage your self-paced subscription plan, study tests, and track your practice scores.</p>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <a href="{% url 'examinations:results_dashboard' %}" class="btn btn-warning text-dark px-4 py-2 fw-bold shadow-sm rounded-pill" style="font-size: 14px;">
+                <i class="bi bi-bar-chart-fill me-1"></i> View All Results
+            </a>
+            <span class="badge bg-warning text-dark px-3 py-2 fw-bold" style="border-radius: 8px;">Independent Student</span>
+        </div>
+    </div>
+
+    <!-- Three Equal Cards in a Single Row -->
+    <div class="row g-4">
+        <!-- 1. Subscription Status Card -->
+        <div class="col-lg-4" id="subscription-section">
+            <div class="card-box h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="card-box-header">
+                        <span><i class="bi bi-shield-check text-primary me-2"></i> Subscription Status</span>
+                    </div>
+                    {% if active_subscription %}
+                        <div class="p-3 bg-light rounded-3 border mb-3">
+                            <p class="mb-1 text-muted small text-uppercase fw-bold">Active Plan</p>
+                            <h5 class="fw-bold text-success mb-2">{{ active_subscription.plan.name }}</h5>
+                            <p class="mb-1"><strong>Price:</strong> Rs. {{ active_subscription.plan.price }}</p>
+                            <p class="mb-1"><strong>Duration:</strong> {{ active_subscription.plan.duration_days }} Days</p>
+                        </div>
+                    {% elif pending_subscription %}
+                        <div class="p-3 bg-warning-subtle rounded-3 border border-warning mb-3">
+                            <p class="mb-1 text-muted small text-uppercase fw-bold">Pending Approval</p>
+                            <h5 class="fw-bold text-dark mb-2">{{ pending_subscription.plan.name }}</h5>
+                            <p class="mb-0 text-muted small">Your payment/subscription status is pending verification by administration.</p>
+                        </div>
+                    {% else %}
+                        <div class="p-3 bg-light rounded-3 border mb-3">
+                            <p class="text-muted small mb-0">No active premium plan detected on your profile. Choose a tier to request access.</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div>
+                    {% if active_subscription %}
+                        <span class="badge bg-success w-100 py-2 fs-6">Plan Active & Verified</span>
+                    {% elif pending_subscription %}
+                        <span class="badge bg-warning text-dark w-100 py-2 fs-6">Approval Pending</span>
+                    {% else %}
+                        <span class="badge bg-danger text-white w-100 py-2 fs-6">No Active Plan</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Available Subscription Tiers Card -->
+        <div class="col-lg-4" id="availablePlans">
+            <div class="card-box h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="card-box-header">
+                        <span><i class="bi bi-tags-fill text-success me-2"></i> Available Tiers</span>
+                    </div>
+                    <div class="vstack gap-3">
+                        {% if available_plans %}
+                            {% for plan in available_plans %}
+                            <div class="p-3 border rounded-3 bg-light">
+                                <h6 class="fw-bold text-dark mb-1">{{ plan.name }}</h6>
+                                <h4 class="text-primary fw-bold my-1" style="font-size: 18px;">Rs. {{ plan.price }} <span class="fs-6 text-muted fw-normal">/ {{ plan.duration_days }}d</span></h4>
+                                <p class="text-muted small mb-2" style="font-size: 12px;">{{ plan.description|default:"Full access to board curriculums and analytical modules." }}</p>
+                                <form method="post" class="m-0">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="request_plan_id" value="{{ plan.id }}">
+                                    <button type="submit" class="btn btn-outline-primary btn-sm w-100 rounded-pill fw-bold">Request Plan</button>
+                                </form>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted small mb-0 text-center py-2">No custom packages currently available.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Subscription Expiry & Timeline Card -->
+        <div class="col-lg-4">
+            <div class="card-box h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="card-box-header">
+                        <span><i class="bi bi-calendar-event text-primary me-2"></i> Expiry Timeline</span>
+                    </div>
+                    <div class="p-3 bg-light rounded-3 border mb-3">
+                        <p class="text-muted small mb-1 text-uppercase fw-bold">Expiration Date</p>
+                        <h5 class="fw-bold text-dark mb-0">
+                            {% if active_subscription and active_subscription.end_date %}
+                                {{ active_subscription.end_date|date:"F d, Y" }}
+                            {% elif pending_subscription %}
+                                Pending Validation
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </h5>
+                    </div>
+                </div>
+                <div>
+                    {% if active_subscription %}
+                        <span class="badge bg-success-subtle text-success border border-success-subtle w-100 py-2 fw-bold" style="font-size: 13px;">
+                            <i class="bi bi-check-circle-fill me-1"></i> Active Status
+                        </span>
+                    {% elif pending_subscription %}
+                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle w-100 py-2 fw-bold" style="font-size: 13px;">
+                            <i class="bi bi-clock-fill me-1"></i> Review In Progress
+                        </span>
+                    {% else %}
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle w-100 py-2 fw-bold" style="font-size: 13px;">
+                            <i class="bi bi-x-circle-fill me-1"></i> Inactive / Expired
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Row: Recent Exam Performance -->
+    <div class="row g-4 mt-2">
+        <div class="col-12">
+            <div class="card-box mb-0">
+                <div class="card-box-header">
+                    <span><i class="bi bi-bar-chart-fill text-warning me-2"></i> Recent Exam Performance</span>
+                    <a href="{% url 'examinations:results_dashboard' %}" class="btn btn-sm btn-outline-secondary px-3 rounded-pill" style="font-size: 12px;">View All ({{ attempts|length }})</a>
+                </div>
+                {% if subject_stats %}
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0 table-theme">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Attempts</th>
+                                    <th>Average Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for stat in subject_stats %}
+                                <tr>
+                                    <td><strong>{{ stat.subject_name }}</strong></td>
+                                    <td>{{ stat.total_attempts }}</td>
+                                    <td><strong>{{ stat.avg_percentage|floatformat:1 }}%</strong></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted small py-4 text-center mb-0">No self-assessment attempts recorded yet. Start a test to view analytics!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

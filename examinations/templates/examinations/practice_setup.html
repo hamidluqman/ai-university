@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Student Practice Setup</h2>
+    <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 mb-3">{{ form.assessment_flow.label_tag }}{{ form.assessment_flow }}</div>
+            <div class="col-md-6 mb-3">{{ form.scope_level.label_tag }}{{ form.scope_level }}</div>
+        </div>
+        <div id="board-section" class="border p-3 mb-3 bg-light rounded">
+            <h5>Board System Hierarchy</h5>
+            <div class="mb-3">{{ form.board_subject.label_tag }}{{ form.board_subject }}</div>
+            <div class="mb-3">{{ form.board_topic.label_tag }}{{ form.board_topic }}</div>
+            <div class="mb-3">{{ form.board_subtopic.label_tag }}{{ form.board_subtopic }}</div>
+        </div>
+        <div id="competitive-section" class="border p-3 mb-3 bg-light rounded" style="display: none;">
+            <h5>Competitive System Hierarchy</h5>
+            <div class="mb-3">{{ form.competitive_module.label_tag }}{{ form.competitive_module }}</div>
+            <div class="mb-3">{{ form.competitive_submodule.label_tag }}{{ form.competitive_submodule }}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">{{ form.total_questions.label_tag }}{{ form.total_questions }}</div>
+            <div class="col-md-6 mb-3">{{ form.duration_minutes.label_tag }}{{ form.duration_minutes }}</div>
+        </div>
+        <button type="submit" class="btn btn-success">Start Practice Assessment</button>
+    </form>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const flowSelect = document.getElementById("id_assessment_flow");
+        const boardSec = document.getElementById("board-section");
+        const compSec = document.getElementById("competitive-section");
+        
+        const subjectSelect = document.getElementById("id_board_subject");
+        const topicSelect = document.getElementById("id_board_topic");
+        const subtopicSelect = document.getElementById("id_board_subtopic");
+
+        function updateFlow() {
+            if (flowSelect && flowSelect.value === 'competitive') {
+                boardSec.style.display = "none";
+                compSec.style.display = "block";
+            } else if (boardSec && compSec) {
+                boardSec.style.display = "block";
+                compSec.style.display = "none";
+            }
+        }
+
+        if (flowSelect) {
+            flowSelect.addEventListener("change", updateFlow);
+            updateFlow();
+        }
+
+        if (subjectSelect) {
+            subjectSelect.addEventListener("change", function() {
+                const subjectId = this.value;
+                topicSelect.innerHTML = '<option value="">---------</option>';
+                subtopicSelect.innerHTML = '<option value="">---------</option>';
+                if (!subjectId) return;
+
+                fetch(`{% url 'examinations:ajax_load_topics' %}?subject_id=${subjectId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(topic => {
+                            let option = document.createElement('option');
+                            option.value = topic.id;
+                            option.textContent = topic.title;
+                            topicSelect.appendChild(option);
+                        });
+                    });
+            });
+        }
+
+        if (topicSelect) {
+            topicSelect.addEventListener("change", function() {
+                const topicId = this.value;
+                subtopicSelect.innerHTML = '<option value="">---------</option>';
+                if (!topicId) return;
+
+                fetch(`{% url 'examinations:ajax_load_subtopics' %}?topic_id=${topicId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(sub => {
+                            let option = document.createElement('option');
+                            option.value = sub.id;
+                            option.textContent = sub.title;
+                            subtopicSelect.appendChild(option);
+                        });
+                    });
+            });
+        }
+    });
+</script>
+{% endblock %}

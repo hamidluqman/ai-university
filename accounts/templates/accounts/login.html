@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign In - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<!-- Google Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --border: #E3E8EE;
+    --text: #182433;
+    --blue: #1677B8;
+}
+
+body {
+    background: linear-gradient(135deg, #10283F 0%, #17324D 50%, #1A3E60 100%) !important;
+    color: var(--text) !important;
+    font-family: 'Inter', sans-serif !important;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Decorative background illustration pattern elements */
+body::before {
+    content: "";
+    position: absolute;
+    top: -15%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(22, 119, 184, 0.25) 0%, rgba(23, 50, 77, 0) 70%);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+body::after {
+    content: "";
+    position: absolute;
+    bottom: -15%;
+    left: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(118, 81, 168, 0.2) 0%, rgba(23, 50, 77, 0) 70%);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.login-page-container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+}
+
+.login-split-wrapper {
+    background: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(10, 25, 40, 0.35);
+    overflow: hidden;
+}
+
+/* Left Illustration / Branding Panel */
+.login-illustration-side {
+    background: linear-gradient(145deg, #10283F 0%, #17324D 100%);
+    color: #FFFFFF;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-illustration-side::before {
+    content: "AI UNIV";
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 10vw;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.03);
+    pointer-events: none;
+    letter-spacing: 2px;
+}
+
+.brand-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #E9EEF3;
+    width: fit-content;
+}
+
+.illustration-heading {
+    font-family: 'Manrope', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.25;
+    margin-top: 25px;
+    color: #FFFFFF;
+}
+
+.illustration-text {
+    color: #9DAABB;
+    font-size: 14.5px;
+    line-height: 1.6;
+    margin-top: 15px;
+}
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 30px 0 0 0;
+}
+
+.feature-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #D1DBE5;
+    font-size: 13.5px;
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+.feature-list li i {
+    color: #4EB39C;
+    font-size: 16px;
+}
+
+/* Right Form Panel */
+.login-form-side {
+    padding: 40px 50px;
+    background: #FFFFFF;
+}
+
+.auth-logo {
+    max-height: 85px;
+    width: auto;
+    margin-bottom: 22px;
+}
+
+.login-title {
+    font-family: 'Manrope', sans-serif;
+    color: var(--navy-dark);
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+}
+
+.login-subtitle {
+    color: #697586;
+    font-size: 13.5px;
+    margin-bottom: 25px;
+}
+
+.form-label {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    color: var(--navy-dark);
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.form-control {
+    background-color: #F8FAFC !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    padding: 11px 15px !important;
+    font-size: 14px !important;
+}
+
+.form-control:focus {
+    background-color: #FFFFFF !important;
+    color: var(--text) !important;
+    border-color: var(--blue) !important;
+    box-shadow: 0 0 0 3px rgba(22, 119, 184, 0.1) !important;
+}
+
+.login-btn {
+    background: var(--navy) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 12px !important;
+    font-size: 14.5px !important;
+    font-weight: 700 !important;
+    width: 100%;
+    margin-top: 8px;
+    transition: background 0.2s ease;
+}
+
+.login-btn:hover {
+    background: var(--navy-dark) !important;
+}
+
+@media (max-width: 991.98px) {
+    .login-illustration-side {
+        display: none;
+    }
+    .login-form-side {
+        padding: 35px 25px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-page-container">
+    <div class="row g-0 login-split-wrapper">
+        
+        <!-- Left Side: Illustration / Branding Panel (Superadmin reference removed) -->
+        <div class="col-lg-6 login-illustration-side">
+            <div>
+                <div class="brand-badge">
+                    <i class="bi bi-cpu-fill text-primary"></i> AI University LMS
+                </div>
+                <h1 class="illustration-heading">Next-Generation Multi-Tenant University Management</h1>
+                <p class="illustration-text">Secure access for institutions, faculty, and learners in a unified collaborative workspace.</p>
+                
+                <ul class="feature-list">
+                    <li><i class="bi bi-check-circle-fill"></i> Advanced Board & Competitive Question Builders</li>
+                    <li><i class="bi bi-shield-check"></i> Enterprise Subscription & Tenant Scoping</li>
+                    <li><i class="bi bi-activity"></i> Real-Time Telemetry & Audit Workflows</li>
+                </ul>
+            </div>
+
+            <div class="text-white-50 small mt-5 pt-4 border-top border-secondary opacity-75">
+                &copy; 2026 AI University LMS. All rights reserved.
+            </div>
+        </div>
+
+        <!-- Right Side: Login Form with Enlarged Logo -->
+        <div class="col-lg-6 login-form-side">
+            <div>
+                <img src="{% static 'images/logo.png' %}" alt="AI University Logo" class="auth-logo">
+            </div>
+
+            <div class="mb-3">
+                <h2 class="login-title">Sign In</h2>
+                <p class="login-subtitle">Enter your credentials to access your dashboard.</p>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mb-4" role="alert" style="border-radius: 10px; font-size: 13.5px; font-weight: 600;">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">Username or Email</label>
+                    <input type="text" name="username" class="form-control" placeholder="Enter your username" required autofocus>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="login-btn">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Sign In to Dashboard
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

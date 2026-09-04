@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Assigned Courses - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --green: #16866F;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+body { background: var(--page-bg) !important; color: var(--text) !important; font-family: 'Inter', sans-serif !important; }
+.student-container { max-width: 1200px; margin: 25px auto; padding: 0 15px; position: relative; }
+.student-container::before {
+    content: "AI UNIVERSITY";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-size: 8vw;
+    font-weight: 900;
+    font-family: 'Manrope', sans-serif;
+    color: rgba(23, 50, 77, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+}
+.header-box, .card-box { position: relative; z-index: 1; }
+.header-box { 
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); 
+    border-radius: 16px; 
+    padding: 30px 40px; 
+    color: #FFFFFF; 
+    box-shadow: var(--shadow-md); 
+    margin-bottom: 25px; 
+}
+.card-box { 
+    background: #FFFFFF; 
+    border: 1px solid var(--border); 
+    border-radius: 16px; 
+    box-shadow: var(--shadow-sm); 
+    padding: 24px; 
+    margin-bottom: 25px; 
+}
+.card-box-header { 
+    font-family: 'Manrope', sans-serif; 
+    color: var(--navy-dark); 
+    font-size: 18px; 
+    font-weight: 800; 
+    margin-bottom: 18px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 12px;
+}
+.course-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    background: #FFFFFF;
+    overflow: hidden;
+}
+.course-card-header {
+    padding: 16px 20px;
+    background: #F8FAFB;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--navy-dark);
+}
+.course-card-body {
+    padding: 18px;
+    border-top: 1px solid var(--border);
+    background: #FFFFFF;
+}
+.chapter-box {
+    margin-bottom: 12px;
+    padding: 12px;
+    background: #F9FBFC;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+.subtopic-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    margin-top: 8px;
+    gap: 10px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="student-container">
+    
+    <!-- Header Block -->
+    <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h1 class="font-weight-bold mb-2" style="font-size: 24px;">Assigned Courses & Syllabus</h1>
+            <p class="mb-0 text-white-50">Explore your assigned chapters, video lectures, and practice modules.</p>
+        </div>
+        <div>
+            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Courses List Box -->
+    <div class="card-box">
+        <div class="card-box-header">
+            <span><i class="bi bi-journal-richtext text-primary me-2"></i> All Assigned Courses</span>
+            <span class="badge bg-light text-dark border px-2 py-1">Total: {{ courses|length }}</span>
+        </div>
+
+        <div class="accordion w-100" id="coursesAccordion">
+            {% for course in courses %}
+            <div class="course-card">
+                <div class="course-card-header" data-bs-toggle="collapse" data-bs-target="#courseCollapse{{ forloop.counter }}">
+                    <span>{{ course.name }}</span>
+                    <i class="bi bi-chevron-down"></i>
+                </div>
+                <div id="courseCollapse{{ forloop.counter }}" class="collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#coursesAccordion">
+                    <div class="course-card-body">
+                        <h6 class="text-muted fw-bold text-uppercase small mb-3">Course Chapters & Subtopics Scheme</h6>
+                        
+                        {% with chapters=course.chapters.all %}
+                            {% if chapters %}
+                                {% for chapter in chapters %}
+                                <div class="chapter-box">
+                                    <div class="fw-bold text-dark mb-2">Ch {{ chapter.chapter_number }}: {{ chapter.title }}</div>
+                                    
+                                    {% for topic in chapter.topics.all %}
+                                        <div class="ms-3 mb-2">
+                                            <div class="fw-semibold small text-secondary">Topic: {{ topic.title }}</div>
+                                            
+                                            {% for subtopic in topic.subtopics.all %}
+                                            <div class="subtopic-row">
+                                                <span class="small fw-medium text-dark"><i class="bi bi-dot text-primary"></i> {{ subtopic.title }}</span>
+                                                <div class="d-flex gap-1">
+                                                    <a href="{% url 'courses:course_player' 'board' subtopic.id %}" class="btn btn-sm btn-outline-danger py-0 px-2 fw-semibold" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-play-fill"></i> Video</a>
+                                                    <a href="{% url 'examinations:start_practice' subtopic.id %}" class="btn btn-sm btn-outline-success py-0 px-2 fw-semibold" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-check2-square"></i> Practice</a>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% empty %}
+                                        <div class="text-muted small ms-3">No topics listed for this chapter yet.</div>
+                                    {% endfor %}
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="text-center text-muted py-3">No detailed chapter scheme available for this course yet.</div>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center text-muted py-5">
+                <span>No courses or subjects currently assigned to your profile.</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

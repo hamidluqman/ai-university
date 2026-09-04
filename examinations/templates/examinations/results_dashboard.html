@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Examinations Control Panel - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --text: #182433;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --green: #16866F;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+body { background: var(--page-bg) !important; color: var(--text) !important; font-family: 'Inter', sans-serif !important; }
+
+.watermark-container {
+    position: relative;
+    min-height: 90vh;
+}
+.watermark-container::before {
+    content: "AI UNIVERSITY";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-size: 8vw;
+    font-weight: 900;
+    font-family: 'Manrope', sans-serif;
+    color: rgba(23, 50, 77, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+}
+.panel-content-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+.card-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    padding: 30px;
+    margin-bottom: 25px;
+}
+.header-box {
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+    border-radius: 16px;
+    padding: 30px;
+    color: #FFFFFF;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 25px;
+}
+.table-custom th {
+    background: #F8FAFB !important;
+    color: var(--text-muted) !important;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 14px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    font-weight: 700;
+}
+.table-custom td {
+    background: #FFFFFF !important;
+    padding: 14px;
+    border-bottom: 1px solid #EDF0F3;
+    color: var(--text) !important;
+    font-size: 13px;
+    vertical-align: middle;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="watermark-container py-3">
+    <div class="container my-4 panel-content-wrapper" style="max-width: 1200px;">
+        
+        <!-- Header Card -->
+        <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold" style="font-size: 11px;">Examinations Portal</span>
+                <h2 class="fw-extrabold text-white mt-1 mb-1" style="font-family: 'Manrope', sans-serif; font-size: 24px;">Examinations Control Panel</h2>
+                <p class="text-white-50 small mb-0">Manage institutional assessments, practice tests, and review past records.</p>
+            </div>
+            
+            <div class="d-flex gap-2 flex-wrap">
+                {% if user.profile.is_institution_student or not user.profile.is_independent %}
+                    <a href="{% url 'examinations:create_exam' %}" class="btn btn-success btn-sm rounded-pill px-3 fw-bold text-white shadow-sm" style="background-color: var(--green); border-color: var(--green);">Create Test</a>
+                {% endif %}
+                {% if user.profile.is_institution_student %}
+                    <a href="{% url 'examinations:practice_setup' %}" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold text-white shadow-sm" style="background-color: var(--blue); border-color: var(--blue);">Practice Quiz</a>
+                {% endif %}
+                <a href="{% url 'examinations:download_pdf' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+                    <i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i> PDF Report
+                </a>
+            </div>
+        </div>
+
+        <!-- Available Institution Assessments Card -->
+        <div class="card-box bg-white">
+            <h4 class="fw-bold mb-4" style="font-family: 'Manrope', sans-serif; color: var(--navy-dark); font-size: 18px;">
+                <i class="bi bi-journal-text text-success me-2"></i> Available Institution Assessments
+            </h4>
+            
+            <div class="table-responsive">
+                <table class="table table-custom align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Duration</th>
+                            <th>Passing %</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for exam in created_exams %}
+                        <tr>
+                            <td><strong>{{ exam.title }}</strong></td>
+                            <td><span class="badge bg-light text-dark border px-2 py-1">{{ exam.get_exam_type_display }}</span></td>
+                            <td>{{ exam.duration_minutes }} mins</td>
+                            <td>{{ exam.passing_percentage }}%</td>
+                            <td class="text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a href="{% url 'examinations:take_exam' exam.id %}" class="btn btn-sm text-white px-3 fw-semibold shadow-sm" style="border-radius: 8px; background-color: var(--green); border-color: var(--green);">Take Test</a>
+                                    {% if user == exam.creator %}
+                                        <a href="{% url 'examinations:grant_retest' exam.id %}" class="btn btn-sm btn-warning px-3 fw-semibold text-dark shadow-sm" style="border-radius: 8px; background-color: #F59E0B; border-color: #F59E0B;">Grant Retest</a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">No active assessments available for your profile.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Past Attempts & Records Card -->
+        <div class="card-box bg-white">
+            <h4 class="fw-bold mb-4" style="font-family: 'Manrope', sans-serif; color: var(--navy-dark); font-size: 18px;">
+                <i class="bi bi-clock-history text-primary me-2"></i> Your Past Attempts & Records
+            </h4>
+            
+            <div class="table-responsive">
+                <table class="table table-custom align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Exam</th>
+                            <th>Score</th>
+                            <th>Percentage</th>
+                            <th>Status</th>
+                            <th>Submitted</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for att in attempts %}
+                        <tr>
+                            <td><strong>{{ att.exam.title }}</strong></td>
+                            <td>{{ att.score }}/{{ att.total_marks }}</td>
+                            <td><strong>{{ att.percentage|floatformat:1 }}%</strong></td>
+                            <td>
+                                <span class="badge {% if att.is_passed %}bg-success-subtle text-success border border-success{% else %}bg-danger-subtle text-danger border border-danger{% endif %} px-3 py-1 rounded-pill fw-semibold" style="font-size: 11px;">
+                                    {% if att.is_passed %}Passed{% else %}Failed{% endif %}
+                                </span>
+                            </td>
+                            <td class="text-muted small">{{ att.submitted_at|date:"M d, Y H:i" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">No previous exam attempts found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

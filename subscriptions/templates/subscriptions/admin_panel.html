@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+
+{% block title %}Subscription Administration Panel - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-muted: #697586;
+    --green: #16866F;
+    --green-light: #DCEFEA;
+    --gold: #C58A19;
+    --gold-light: #F4E8C9;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+}
+body {
+    background: linear-gradient(180deg, #F8FAFC 0%, #F4F6F8 100%) !important;
+    color: var(--text) !important;
+    font-family: 'Inter', sans-serif !important;
+}
+body::before {
+    content: "AI UNIVERSITY";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-family: 'Manrope', sans-serif;
+    font-size: 13vw;
+    font-weight: 800;
+    color: rgba(105, 117, 134, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+}
+.panel-container {
+    position: relative;
+    z-index: 1;
+    max-width: 1600px;
+    margin: 20px auto;
+    padding: 0 15px 40px 15px;
+}
+.panel-header-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 24px;
+}
+.panel-title {
+    font-family: 'Manrope', sans-serif;
+    color: var(--navy-dark);
+    font-size: 20px;
+    font-weight: 800;
+}
+.panel-subtitle {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 4px;
+}
+.card-box {
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+.btn-custom-primary {
+    background: var(--navy);
+    color: #FFFFFF;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(23, 50, 77, 0.15);
+    display: inline-flex;
+    align-items: center;
+}
+.btn-custom-primary:hover {
+    background: var(--navy-dark);
+    color: #FFFFFF;
+}
+.sub-table {
+    margin: 0;
+    background: #FFFFFF !important;
+}
+.sub-table thead th {
+    background: #F8FAFB !important;
+    color: var(--text-muted) !important;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 13px 22px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+.sub-table tbody td {
+    padding: 18px 22px;
+    background: #FFFFFF !important;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text) !important;
+    font-size: 13px;
+    vertical-align: middle;
+}
+.sub-table tbody tr {
+    background: #FFFFFF !important;
+    transition: background .2s ease;
+}
+.sub-table tbody tr:hover {
+    background: #F9FBFC !important;
+}
+.empty-state {
+    text-align: center;
+    padding: 45px 20px;
+    background: #FFFFFF !important;
+}
+.empty-state-text {
+    color: var(--text-muted) !important;
+    font-size: 12px;
+    margin-top: 4px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="panel-container">
+    <div class="panel-header-card d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div>
+            <div class="panel-title">
+                <i class="bi bi-shield-check me-2" style="color: var(--navy);"></i>
+                Subscription & Billing Administration
+            </div>
+            <div class="panel-subtitle">
+                Manage system-wide user tiers, authorizations, and package renewals.
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a href="{% url 'subscriptions:add_subscription' %}" class="btn-custom-primary">
+                <i class="bi bi-plus-circle-fill me-1"></i> Add Subscription
+            </a>
+            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-outline-secondary btn-sm fw-bold px-3 py-2" style="border-radius: 9px;">
+                <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Pending Requests Section -->
+    <div class="card-box">
+        <h6 class="fw-bold mb-3 d-flex align-items-center justify-content-between" style="color: var(--navy-dark);">
+            <span><i class="bi bi-clock-history text-warning me-2"></i> Pending Student Requests</span>
+            <span class="badge bg-warning text-dark" style="font-size: 11px;">{{ pending_subscriptions|length|default:0 }} Pending</span>
+        </h6>
+        <div class="table-responsive">
+            <table class="table sub-table align-middle">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Plan</th>
+                        <th>Status</th>
+                        <th>Requested Tier Price</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sub in pending_subscriptions %}
+                    <tr>
+                        <td class="fw-bold" style="color: var(--navy-dark);">{{ sub.user.username }}</td>
+                        <td>{{ sub.plan.name|default:"Standard Plan" }}</td>
+                        <td><span class="badge bg-warning bg-opacity-10 text-warning px-2 py-1">Pending Approval</span></td>
+                        <td><strong>Rs. {{ sub.plan.price|default:"N/A" }}</strong></td>
+                        <td class="text-end">
+                            <form method="post" class="d-inline-flex gap-2 m-0">
+                                {% csrf_token %}
+                                <input type="hidden" name="subscription_id" value="{{ sub.id }}">
+                                <button type="submit" name="action" value="approve" class="btn btn-success btn-sm rounded-pill px-3 fw-bold" style="font-size: 12px;"><i class="bi bi-check-lg me-1"></i> Approve</button>
+                                <button type="submit" name="action" value="delete" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold" style="font-size: 12px;" onclick="return confirm('Delete this pending request?');"><i class="bi bi-trash me-1"></i> Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="p-0">
+                            <div class="empty-state">
+                                <div class="text-muted mb-2" style="font-size: 28px;"><i class="bi bi-inbox"></i></div>
+                                <div class="fw-bold" style="color: var(--navy-dark); font-size: 13px;">No Pending Requests</div>
+                                <div class="empty-state-text">There are currently no independent student subscription requests awaiting review.</div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Active & All Subscription Packages Records -->
+    <div class="card-box">
+        <h6 class="fw-bold mb-3" style="color: var(--navy-dark);">Active Subscription Packages & Records</h6>
+        <div class="table-responsive">
+            <table class="table sub-table align-middle">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Plan</th>
+                        <th>Status</th>
+                        <th>Expires On</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sub in subscriptions %}
+                    <tr>
+                        <td class="fw-bold" style="color: var(--navy-dark);">{{ sub.user.username }}</td>
+                        <td>{{ sub.plan.name|default:"Standard Plan" }}</td>
+                        <td>
+                            {% if sub.is_active or sub.payment_status|lower == 'approved' %}
+                                <span class="badge bg-success bg-opacity-10 text-success px-2 py-1">Active</span>
+                            {% elif sub.payment_status|lower == 'pending' %}
+                                <span class="badge bg-warning bg-opacity-10 text-warning px-2 py-1">Pending</span>
+                            {% else %}
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary px-2 py-1">{{ sub.payment_status|title|default:"Inactive" }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ sub.end_date|default:"N/A" }}</td>
+                        <td class="text-end">
+                            <form method="post" class="d-inline-flex gap-1 m-0">
+                                {% csrf_token %}
+                                <input type="hidden" name="subscription_id" value="{{ sub.id }}">
+                                {% if sub.payment_status|lower != 'approved' and not sub.is_active %}
+                                    <button type="submit" name="action" value="approve" class="btn btn-outline-success btn-sm rounded-pill px-2 py-1 fw-bold" style="font-size: 11px;" title="Approve"><i class="bi bi-check-lg"></i></button>
+                                {% endif %}
+                                <button type="submit" name="action" value="delete" class="btn btn-outline-danger btn-sm rounded-pill px-2 py-1 fw-bold" style="font-size: 11px;" title="Delete Record" onclick="return confirm('Are you sure you want to delete this subscription record?');"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="p-0">
+                            <div class="empty-state">
+                                <div class="text-success mb-2" style="font-size: 32px;"><i class="bi bi-check-circle-fill"></i></div>
+                                <div class="fw-bold" style="color: var(--navy-dark); font-size: 14px;">No Active Subscriptions Found</div>
+                                <div class="empty-state-text">There are currently no active subscription records in the system.</div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

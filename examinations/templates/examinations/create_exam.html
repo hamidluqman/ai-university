@@ -1,0 +1,320 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Institution Assessment - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --blue-hover: #125e93;
+    --green: #16866F;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+
+body {
+    background: linear-gradient(180deg, #F8FAFC 0%, #F4F6F8 100%) !important;
+    color: var(--text) !important;
+    font-family: 'Inter', sans-serif !important;
+    min-height: 100vh;
+}
+
+.assessment-container {
+    max-width: 1000px;
+    margin: 35px auto;
+    padding: 0 15px;
+}
+
+.form-card {
+    background: #FFFFFF !important;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    padding: 35px;
+}
+
+.form-title {
+    font-family: 'Manrope', sans-serif;
+    color: var(--navy-dark);
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.form-card label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.form-card input[type="text"],
+.form-card input[type="number"],
+.form-card input[type="datetime-local"],
+.form-card select,
+.form-card textarea {
+    width: 100%;
+    padding: 11px 15px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s ease;
+}
+
+.form-card input:focus,
+.form-card select:focus,
+.form-card textarea:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(22, 119, 184, 0.12);
+    outline: none;
+}
+
+.section-box {
+    background: #F8FAFB !important;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.section-box h5 {
+    font-family: 'Manrope', sans-serif;
+    color: var(--navy-dark);
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.form-check-input {
+    width: 1.2em;
+    height: 1.2em;
+    margin-top: 0.15em;
+    border: 1px solid var(--border);
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: var(--blue);
+    border-color: var(--blue);
+}
+
+.form-check-label {
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    margin-left: 6px;
+}
+
+.btn-primary-custom {
+    background-color: var(--blue);
+    border-color: var(--blue);
+    color: #FFFFFF;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: all 0.2s ease;
+}
+
+.btn-primary-custom:hover {
+    background-color: var(--blue-hover);
+    border-color: var(--blue-hover);
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(22, 119, 184, 0.2);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="assessment-container">
+    <div class="form-card">
+        <h2 class="form-title">
+            <i class="bi bi-file-earmark-plus text-primary"></i> Create Institution Assessment
+        </h2>
+        
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form.title.label_tag }}
+                    {{ form.title }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form.exam_type.label_tag }}
+                    {{ form.exam_type }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form.assessment_flow.label_tag }}
+                    {{ form.assessment_flow }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form.scope_level.label_tag }}
+                    {{ form.scope_level }}
+                </div>
+            </div>
+
+            <!-- Board System Hierarchy Section -->
+            <div id="board-section" class="section-box">
+                <h5><i class="bi bi-journal-bookmark text-primary"></i> Board System Hierarchy</h5>
+                <div class="mb-3">
+                    {{ form.board_subject.label_tag }}
+                    {{ form.board_subject }}
+                </div>
+                <div class="mb-3">
+                    {{ form.board_topic.label_tag }}
+                    {{ form.board_topic }}
+                </div>
+                <div class="mb-3">
+                    {{ form.board_subtopic.label_tag }}
+                    {{ form.board_subtopic }}
+                </div>
+            </div>
+
+            <!-- Competitive System Hierarchy Section -->
+            <div id="competitive-section" class="section-box" style="display: none;">
+                <h5><i class="bi bi-award text-primary"></i> Competitive System Hierarchy</h5>
+                <div class="mb-3">
+                    {{ form.competitive_module.label_tag }}
+                    {{ form.competitive_module }}
+                </div>
+                <div class="mb-3">
+                    {{ form.competitive_submodule.label_tag }}
+                    {{ form.competitive_submodule }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    {{ form.total_questions.label_tag }}
+                    {{ form.total_questions }}
+                </div>
+                <div class="col-md-4 mb-3">
+                    {{ form.duration_minutes.label_tag }}
+                    {{ form.duration_minutes }}
+                </div>
+                <div class="col-md-4 mb-3">
+                    {{ form.passing_percentage.label_tag }}
+                    {{ form.passing_percentage }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form.start_time.label_tag }}
+                    {{ form.start_time }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form.end_time.label_tag }}
+                    {{ form.end_time }}
+                </div>
+            </div>
+
+            <div class="mb-4 form-check d-flex align-items-center">
+                {{ form.is_class_wide }} 
+                {{ form.is_class_wide.label_tag }}
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-outline-secondary px-4 fw-semibold" style="border-radius: 10px;">
+                    <i class="bi bi-arrow-left"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-primary-custom">
+                    <i class="bi bi-check-lg"></i> Save and Pool Questions
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const flowSelect = document.getElementById("id_assessment_flow");
+        const boardSec = document.getElementById("board-section");
+        const compSec = document.getElementById("competitive-section");
+        
+        const subjectSelect = document.getElementById("id_board_subject");
+        const topicSelect = document.getElementById("id_board_topic");
+        const subtopicSelect = document.getElementById("id_board_subtopic");
+
+        function updateFlow() {
+            if (flowSelect && flowSelect.value === 'competitive') {
+                boardSec.style.display = "none";
+                compSec.style.display = "block";
+            } else if (boardSec && compSec) {
+                boardSec.style.display = "block";
+                compSec.style.display = "none";
+            }
+        }
+
+        if (flowSelect) {
+            flowSelect.addEventListener("change", updateFlow);
+            updateFlow();
+        }
+
+        if (subjectSelect) {
+            subjectSelect.addEventListener("change", function() {
+                const subjectId = this.value;
+                topicSelect.innerHTML = '<option value="">---------</option>';
+                subtopicSelect.innerHTML = '<option value="">---------</option>';
+                if (!subjectId) return;
+
+                fetch(`{% url 'examinations:ajax_load_topics' %}?subject_id=${subjectId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(topic => {
+                            let option = document.createElement('option');
+                            option.value = topic.id;
+                            option.textContent = topic.title;
+                            topicSelect.appendChild(option);
+                        });
+                    });
+            });
+        }
+
+        if (topicSelect) {
+            topicSelect.addEventListener("change", function() {
+                const topicId = this.value;
+                subtopicSelect.innerHTML = '<option value="">---------</option>';
+                if (!topicId) return;
+
+                fetch(`{% url 'examinations:ajax_load_subtopics' %}?topic_id=${topicId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(sub => {
+                            let option = document.createElement('option');
+                            option.value = sub.id;
+                            option.textContent = sub.title;
+                            subtopicSelect.appendChild(option);
+                        });
+                    });
+            });
+        }
+    });
+</script>
+{% endblock %}

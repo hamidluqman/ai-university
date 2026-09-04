@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Assessments & Tests - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --green: #16866F;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+body { background: var(--page-bg) !important; color: var(--text) !important; font-family: 'Inter', sans-serif !important; }
+.student-container { max-width: 1200px; margin: 25px auto; padding: 0 15px; position: relative; }
+.student-container::before {
+    content: "AI UNIVERSITY";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-size: 8vw;
+    font-weight: 900;
+    font-family: 'Manrope', sans-serif;
+    color: rgba(23, 50, 77, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+}
+.header-box, .card-box { position: relative; z-index: 1; }
+.header-box { 
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); 
+    border-radius: 16px; 
+    padding: 30px 40px; 
+    color: #FFFFFF; 
+    box-shadow: var(--shadow-md); 
+    margin-bottom: 25px; 
+}
+.card-box { 
+    background: #FFFFFF; 
+    border: 1px solid var(--border); 
+    border-radius: 16px; 
+    box-shadow: var(--shadow-sm); 
+    padding: 24px; 
+    margin-bottom: 25px; 
+}
+.card-box-header { 
+    font-family: 'Manrope', sans-serif; 
+    color: var(--navy-dark); 
+    font-size: 18px; 
+    font-weight: 800; 
+    margin-bottom: 18px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 12px;
+}
+.table-custom th {
+    background: #F8FAFB !important;
+    color: var(--text-muted) !important;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 14px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    font-weight: 700;
+}
+.table-custom td {
+    background: #FFFFFF !important;
+    padding: 14px;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text) !important;
+    font-size: 13px;
+    vertical-align: middle;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="student-container">
+    
+    <!-- Header Block -->
+    <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h1 class="font-weight-bold mb-2" style="font-size: 24px;">Institution Assessments & Tests</h1>
+            <p class="mb-0 text-white-50">View your assigned tests, take evaluations, and check your submission results.</p>
+        </div>
+        <div>
+            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Assessments List Box -->
+    <div class="card-box">
+        <div class="card-box-header">
+            <span><i class="bi bi-pencil-square text-success me-2"></i> Institution Assessments & Tests</span>
+            <span class="badge bg-light text-dark border px-2 py-1">Total: {{ exams_data|length }}</span>
+        </div>
+        <div class="table-responsive w-100">
+            <table class="table table-custom align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Test Title</th>
+                        <th>Subject</th>
+                        <th>Date & Time Window</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in exams_data %}
+                    <tr>
+                        <td>
+                            <!-- Clickable Title to Trigger Details Flash Card Modal -->
+                            <a href="#" class="fw-bold text-dark text-decoration-none" data-bs-toggle="modal" data-bs-target="#examDetailModal{{ item.exam.id }}">
+                                {{ item.exam.title }} <i class="bi bi-info-circle text-primary ms-1 small"></i>
+                            </a>
+                        </td>
+                        <td>
+                            {% if item.exam.board_subject %}
+                                <span class="badge bg-info-subtle text-info border">{{ item.exam.board_subject.name }}</span>
+                            {% elif item.exam.competitive_module %}
+                                <span class="badge bg-warning-subtle text-warning border">{{ item.exam.competitive_module.title }}</span>
+                            {% else %}
+                                <span class="text-muted small">General</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="small text-muted">
+                                {% if item.exam.start_time %}
+                                    {{ item.exam.start_time|date:"M d, Y H:i" }}
+                                {% else %}
+                                    {{ item.exam.created_at|date:"M d, Y" }}
+                                {% endif %}
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            {% if item.has_attempted %}
+                                <div class="d-flex justify-content-end align-items-center gap-2">
+                                    <span class="badge bg-secondary-subtle text-secondary border px-3 py-2 rounded-pill fw-bold">Submitted</span>
+                                    <a href="{% url 'examinations:exam_result' item.latest_attempt_id %}" class="btn btn-sm px-3 py-1 rounded-pill fw-bold text-white shadow-sm" style="background-color: var(--navy); border-color: var(--navy); min-width: 110px; font-size: 13px;">View Result</a>
+                                </div>
+                            {% elif item.is_scheduled %}
+                                <button type="button" class="btn btn-sm btn-warning-subtle text-dark border border-warning px-3 py-1 rounded-pill fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#examDetailModal{{ item.exam.id }}" style="min-width: 110px; font-size: 13px;">
+                                    <i class="bi bi-clock me-1"></i> Scheduled
+                                </button>
+                            {% else %}
+                                <a href="{% url 'examinations:start_exam' item.exam.id %}" class="btn btn-sm px-3 py-1 rounded-pill fw-bold text-white shadow-sm" style="background-color: var(--green); border-color: var(--green); min-width: 110px; font-size: 13px;">Start Test</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    <!-- Modal Flash Card for Individual Exam Details -->
+                    <div class="modal fade" id="examDetailModal{{ item.exam.id }}" tabindex="-1" aria-labelledby="examDetailModalLabel{{ item.exam.id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content shadow-lg" style="border-radius: 16px;">
+                                <div class="modal-header px-4 py-3 bg-light" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+                                    <h5 class="modal-title fw-bold text-dark" id="examDetailModalLabel{{ item.exam.id }}">
+                                        <i class="bi bi-journal-richtext text-primary me-2"></i> Test Details
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body p-4">
+                                    <h4 class="fw-bold text-navy mb-3">{{ item.exam.title }}</h4>
+                                    
+                                    <div class="mb-3 p-3 bg-light rounded border">
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                <span class="d-block small text-muted text-uppercase fw-bold">Subject</span>
+                                                <span class="text-dark fw-semibold">{% if item.exam.board_subject %}{{ item.exam.board_subject.name }}{% else %}General{% endif %}</span>
+                                            </div>
+                                            <div class="col-6">
+                                                <span class="d-block small text-muted text-uppercase fw-bold">Status</span>
+                                                {% if item.has_attempted %}
+                                                    <span class="badge bg-secondary">Submitted</span>
+                                                {% elif item.is_scheduled %}
+                                                    <span class="badge bg-warning text-dark">Scheduled</span>
+                                                {% else %}
+                                                    <span class="badge bg-success">Active / Ready</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <span class="d-block small text-muted text-uppercase fw-bold mb-1">Schedule Window</span>
+                                        <p class="text-dark mb-1">
+                                            <i class="bi bi-calendar-event me-2 text-primary"></i> 
+                                            <strong>Starts:</strong> {{ item.exam.start_time|default:"Not specified" }}
+                                        </p>
+                                        <p class="text-dark mb-0">
+                                            <i class="bi bi-calendar-x me-2 text-danger"></i> 
+                                            <strong>Ends:</strong> {{ item.exam.end_time|default:"Not specified" }}
+                                        </p>
+                                    </div>
+
+                                    {% if item.exam.description %}
+                                    <div class="mb-0">
+                                        <span class="d-block small text-muted text-uppercase fw-bold mb-1">Instructions / Description</span>
+                                        <p class="text-secondary small mb-0">{{ item.exam.description }}</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="modal-footer px-4 py-3 bg-light" style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+                                    <button type="button" class="btn btn-outline-secondary px-4 fw-semibold" data-bs-dismiss="modal" style="border-radius: 8px;">Close</button>
+                                    {% if not item.has_attempted and not item.is_scheduled %}
+                                        <a href="{% url 'examinations:start_exam' item.exam.id %}" class="btn btn-success px-4 fw-semibold text-white shadow-sm" style="border-radius: 8px;">Start Test Now</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-5">No assessments available for your class right now.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

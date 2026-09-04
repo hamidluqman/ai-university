@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - AI University</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light py-5">
+<div class="container" style="max-width: 800px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold text-dark m-0">My Subscriptions & Billing</h3>
+        <div>
+            <a href="{% url 'subscriptions:subscription_plans' %}" class="btn btn-success btn-sm me-2 fw-semibold">Browse Plans</a>
+            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-outline-secondary btn-sm">Back to Dashboard</a>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if subscriptions %}
+        <div class="row g-4">
+            {% for sub in subscriptions %}
+            <div class="col-12">
+                <div class="card shadow-sm border-0 rounded-4 p-4 bg-white">
+                    <div class="d-md-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="badge 
+                                {% if sub.payment_status == 'approved' %}bg-success
+                                {% elif sub.payment_status == 'pending' %}bg-warning text-dark
+                                {% else %}bg-danger{% endif %} mb-2 text-uppercase fw-semibold px-3 py-2">
+                                Status: {{ sub.get_payment_status_display }}
+                            </span>
+                            <h4 class="fw-bold text-dark mt-1">{{ sub.plan.name }}</h4>
+                            <p class="text-muted small mb-1">Price: <strong>PKR {{ sub.plan.price }}</strong></p>
+                            {% if sub.payment_reference %}
+                            <p class="text-muted small mb-1">Reference ID: <code>{{ sub.payment_reference }}</code></p>
+                            {% endif %}
+                            {% if sub.start_date and sub.end_date %}
+                            <p class="text-muted small mb-0">Valid: {{ sub.start_date|date:"M d, Y" }} — {{ sub.end_date|date:"M d, Y" }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="mt-3 mt-md-0">
+                            <a href="{% url 'subscriptions:submit_payment_with_id' sub.id %}" class="btn btn-primary fw-semibold px-4 py-2">
+                                💳 Submit / Update Payment
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card shadow-sm border-0 rounded-4 p-5 text-center bg-white">
+            <p class="text-muted mb-3">You do not have any active or pending subscriptions attached to your account.</p>
+            <a href="{% url 'subscriptions:subscription_plans' %}" class="btn btn-primary fw-semibold">Browse Subscription Plans</a>
+        </div>
+    {% endif %}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

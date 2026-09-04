@@ -1,0 +1,291 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Exam: {{ exam.title }} - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --green: #16866F;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+body { background: var(--page-bg) !important; color: var(--text) !important; font-family: 'Inter', sans-serif !important; }
+
+.watermark-container {
+    position: relative;
+    min-height: 90vh;
+}
+.watermark-container::before {
+    content: "AI UNIVERSITY";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-size: 8vw;
+    font-weight: 900;
+    font-family: 'Manrope', sans-serif;
+    color: rgba(23, 50, 77, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+}
+.exam-content-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+.card-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    padding: 30px;
+    margin-bottom: 25px;
+}
+.header-box {
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+    border-radius: 16px;
+    padding: 25px 30px;
+    color: #FFFFFF;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 25px;
+}
+.timer-badge-q {
+    background: rgba(255, 193, 7, 0.2);
+    border: 1px solid rgba(255, 193, 7, 0.4);
+    color: #FFC107;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.timer-badge-total {
+    background: rgba(220, 53, 69, 0.2);
+    border: 1px solid rgba(220, 53, 69, 0.4);
+    color: #FF6B6B;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.question-step { display: none; }
+.question-step.active { display: block; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="watermark-container py-3">
+    <div class="container my-4 exam-content-wrapper" style="max-width: 850px;">
+        
+        <!-- Header Card -->
+        <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold" style="font-size: 11px;">Official Institution Exam</span>
+                <h2 class="fw-extrabold text-white mt-1 mb-1" style="font-family: 'Manrope', sans-serif; font-size: 22px;">{{ exam.title }}</h2>
+                <p class="text-white-50 small mb-0">Full-screen mode active. 20-second per-question timer with auto-advance.</p>
+            </div>
+            
+            <div class="d-flex gap-2">
+                <span id="questionTimer" class="timer-badge-q"><i class="bi bi-clock"></i> Q-Time: 20s</span>
+                <span id="totalTimer" class="timer-badge-total"><i class="bi bi-hourglass-split"></i> Total: --:--</span>
+            </div>
+        </div>
+
+        <form id="examForm" method="post" action="{% url 'examinations:take_exam' exam.id %}">
+            {% csrf_token %}
+            
+            {% for q in questions %}
+                <div class="card-box bg-white question-step {% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-bold">Question {{ forloop.counter }} of {{ questions|length }}</span>
+                    </div>
+                    
+                    <h5 class="fw-bold text-dark mb-4" style="font-family: 'Manrope', sans-serif; font-size: 18px;">{{ q.question_text }}</h5>
+                    
+                    {% if q.question_image %}
+                        <div class="mb-4">
+                            <img src="{{ q.question_image.url }}" alt="Question Image" class="img-fluid rounded border shadow-sm" style="max-height: 200px;">
+                        </div>
+                    {% endif %}
+                    
+                    <div class="d-flex flex-column gap-3 mb-4">
+                        <label class="p-3 border rounded-3 d-flex align-items-center gap-3 transition" style="cursor: pointer; background: #F9FBFC;">
+                            <input class="form-check-input mt-0" type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_opt1" value="A">
+                            <span class="fw-medium text-dark w-100">
+                                <strong>A)</strong> {{ q.option_a }}
+                                {% if q.option_a_image %}<br><img src="{{ q.option_a_image.url }}" class="img-fluid mt-2 rounded border" style="max-height: 100px;">{% endif %}
+                            </span>
+                        </label>
+
+                        <label class="p-3 border rounded-3 d-flex align-items-center gap-3 transition" style="cursor: pointer; background: #F9FBFC;">
+                            <input class="form-check-input mt-0" type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_opt2" value="B">
+                            <span class="fw-medium text-dark w-100">
+                                <strong>B)</strong> {{ q.option_b }}
+                                {% if q.option_b_image %}<br><img src="{{ q.option_b_image.url }}" class="img-fluid mt-2 rounded border" style="max-height: 100px;">{% endif %}
+                            </span>
+                        </label>
+
+                        {% if q.option_c or q.option_c_image %}
+                        <label class="p-3 border rounded-3 d-flex align-items-center gap-3 transition" style="cursor: pointer; background: #F9FBFC;">
+                            <input class="form-check-input mt-0" type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_opt3" value="C">
+                            <span class="fw-medium text-dark w-100">
+                                <strong>C)</strong> {{ q.option_c }}
+                                {% if q.option_c_image %}<br><img src="{{ q.option_c_image.url }}" class="img-fluid mt-2 rounded border" style="max-height: 100px;">{% endif %}
+                            </span>
+                        </label>
+                        {% endif %}
+
+                        {% if q.option_d or q.option_d_image %}
+                        <label class="p-3 border rounded-3 d-flex align-items-center gap-3 transition" style="cursor: pointer; background: #F9FBFC;">
+                            <input class="form-check-input mt-0" type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_opt4" value="D">
+                            <span class="fw-medium text-dark w-100">
+                                <strong>D)</strong> {{ q.option_d }}
+                                {% if q.option_d_image %}<br><img src="{{ q.option_d_image.url }}" class="img-fluid mt-2 rounded border" style="max-height: 100px;">{% endif %}
+                            </span>
+                        </label>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <button type="button" class="btn btn-outline-secondary px-4 rounded-pill fw-semibold prev-btn" {% if forloop.first %}style="visibility:hidden;"{% endif %}>Previous</button>
+                        {% if not forloop.last %}
+                            <button type="button" class="btn btn-primary px-5 rounded-pill fw-bold next-btn" style="background-color: var(--blue); border-color: var(--blue);">Next</button>
+                        {% else %}
+                            <button type="submit" id="submitBtn" class="btn btn-success px-5 rounded-pill fw-bold shadow-sm" style="background-color: var(--green); border-color: var(--green);">Submit Exam</button>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="card-box text-center py-5 bg-white">
+                    <p class="text-muted mb-3">No questions available for this exam.</p>
+                    <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-primary rounded-pill px-4 fw-semibold">Back to Dashboard</a>
+                </div>
+            {% endfor %}
+        </form>
+    </div>
+</div>
+
+<script>
+    let totalSeconds = Number("{{ total_duration_seconds|default:0 }}");
+    let questionSeconds = 20;
+    const totalTimerDisplay = document.getElementById('totalTimer');
+    const questionTimerDisplay = document.getElementById('questionTimer');
+    const examForm = document.getElementById('examForm');
+    let isSubmitted = false;
+
+    const steps = document.querySelectorAll('.question-step');
+    let currentIndex = 0;
+
+    // Enter Fullscreen on load
+    window.onload = () => {
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen().catch(() => {});
+        }
+    };
+
+    // Main Timer
+    const totalInterval = setInterval(() => {
+        if (totalSeconds <= 0) {
+            clearInterval(totalInterval);
+            submitExam();
+            return;
+        }
+        totalSeconds--;
+        let mins = Math.floor(totalSeconds / 60);
+        let secs = totalSeconds % 60;
+        totalTimerDisplay.innerHTML = `<i class="bi bi-hourglass-split"></i> Total: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }, 1000);
+
+    // Individual Question Timer (20 seconds per question)
+    let qInterval = setInterval(runQuestionTimer, 1000);
+
+    function runQuestionTimer() {
+        if (questionSeconds <= 0) {
+            handleNextQuestion();
+            return;
+        }
+        questionSeconds--;
+        questionTimerDisplay.innerHTML = `<i class="bi bi-clock"></i> Q-Time: ${questionSeconds}s`;
+    }
+
+    function handleNextQuestion() {
+        if (currentIndex < steps.length - 1) {
+            steps[currentIndex].classList.remove('active');
+            currentIndex++;
+            steps[currentIndex].classList.add('active');
+            questionSeconds = 20;
+            questionTimerDisplay.innerHTML = `<i class="bi bi-clock"></i> Q-Time: 20s`;
+        } else {
+            clearInterval(qInterval);
+            submitExam();
+        }
+    }
+
+    document.querySelectorAll('.next-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (currentIndex < steps.length - 1) {
+                steps[currentIndex].classList.remove('active');
+                currentIndex++;
+                steps[currentIndex].classList.add('active');
+                questionSeconds = 20;
+                questionTimerDisplay.innerHTML = `<i class="bi bi-clock"></i> Q-Time: 20s`;
+            }
+        });
+    });
+
+    document.querySelectorAll('.prev-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                steps[currentIndex].classList.remove('active');
+                currentIndex--;
+                steps[currentIndex].classList.add('active');
+                questionSeconds = 20;
+                questionTimerDisplay.innerHTML = `<i class="bi bi-clock"></i> Q-Time: 20s`;
+            }
+        });
+    });
+
+    function submitExam() {
+        if (!isSubmitted) {
+            isSubmitted = true;
+            if(document.fullscreenElement) {
+                document.exitFullscreen().catch(() => {});
+            }
+            examForm.submit();
+        }
+    }
+
+    examForm.addEventListener('submit', function(e) {
+        if (isSubmitted && document.getElementById('submitBtn').disabled) {
+            return;
+        }
+        isSubmitted = true;
+        const submitBtn = document.getElementById('submitBtn');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Submitted";
+        }
+    });
+</script>
+{% endblock %}

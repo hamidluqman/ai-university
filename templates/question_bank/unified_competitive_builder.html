@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+
+{% block title %}Unified Competitive Hierarchy Builder - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<!-- Google Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --navy-medium: #244762;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-dark: #10283F;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --blue-light: #DDECF5;
+    --green: #16866F;
+    --green-light: #DCEFEA;
+    --purple: #7651A8;
+    --gold: #C58A19;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+
+body {
+    background: linear-gradient(180deg, #F8FAFC 0%, #F4F6F8 100%) !important;
+    color: var(--text) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 16px !important;
+    position: relative;
+    min-height: 100vh;
+}
+
+body::before {
+    content: "AI UNIVERSITY";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-family: 'Manrope', sans-serif;
+    font-size: 13vw;
+    font-weight: 800;
+    color: rgba(105, 117, 134, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: 4px;
+}
+
+.builder-container {
+    position: relative;
+    z-index: 1;
+    max-width: 950px;
+    margin: 25px auto 45px auto;
+    padding: 0 15px;
+}
+
+.builder-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 35px;
+    box-shadow: var(--shadow-sm);
+}
+
+.builder-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.builder-title {
+    font-family: 'Manrope', sans-serif;
+    color: var(--navy-dark);
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.switch-btn {
+    background: #F1F5F8;
+    color: var(--navy);
+    border: 1px solid #DCE4EA;
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.switch-btn:hover {
+    background: var(--navy);
+    color: #FFFFFF;
+}
+
+.step-card {
+    background: #FBFCFD;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s ease;
+}
+
+.step-card:hover {
+    border-color: #CBD5DF;
+}
+
+.step-label {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    color: var(--navy-dark);
+    font-size: 15px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.form-select, .form-control {
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    padding: 12px 16px !important;
+    font-size: 15px !important;
+    color: var(--text) !important;
+    background-color: #FFFFFF !important;
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: var(--blue) !important;
+    box-shadow: 0 0 0 3px rgba(22, 119, 184, 0.1) !important;
+}
+
+.save-btn {
+    background: var(--navy) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 14px !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    width: 100%;
+    transition: background 0.2s ease;
+    box-shadow: 0 4px 12px rgba(23, 50, 77, 0.15);
+}
+
+.save-btn:hover {
+    background: var(--navy-dark) !important;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="builder-container">
+    <div class="builder-card">
+        <div class="builder-header">
+            <div>
+                <h3 class="builder-title">
+                    <i class="bi bi-trophy me-2" style="color: var(--navy);"></i>
+                    Competitive Hierarchy Builder
+                </h3>
+                <div class="text-muted" style="font-size: 13px; margin-top: 4px;">
+                    Structure competitive exams, modules, and submodules.
+                </div>
+            </div>
+            <a href="{% url 'question_bank:unified_board_builder' %}" class="switch-btn">
+                <i class="bi bi-book me-1"></i> Switch to Board Builder
+            </a>
+        </div>
+
+        {% if messages %}
+            {% for m in messages %}
+                <div class="alert alert-success border-0 shadow-sm mb-4" style="background: var(--green-light); color: var(--green); border-radius: 10px; font-size: 14px; font-weight: 600;">
+                    <i class="bi bi-check-circle-fill me-2"></i>{{ m }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- Step 1: Exam -->
+            <div class="step-card">
+                <label class="step-label">1. Select or Create Competitive Exam</label>
+                <select name="exam_select" id="exam_select" class="form-select mb-3">
+                    <option value="">-- Select Existing Exam --</option>
+                    {% for e in exams %}
+                        <option value="{{ e.id }}">{{ e.title }}</option>
+                    {% endfor %}
+                </select>
+                <input type="text" name="new_exam_name" placeholder="OR Enter New Exam Name (e.g. MDCAT)" class="form-control">
+            </div>
+
+            <!-- Step 2: Module -->
+            <div class="step-card" id="module_box" style="display:none;">
+                <label class="step-label">2. Select or Create Module</label>
+                <select name="module_select" id="module_select" class="form-select mb-3">
+                    <option value="">-- Select Existing Module --</option>
+                </select>
+                <input type="text" name="new_module_name" placeholder="OR Enter New Module Name (e.g. Organic Chemistry)" class="form-control">
+            </div>
+
+            <!-- Step 3: SubModule -->
+            <div class="step-card" id="submodule_box" style="display:none;">
+                <label class="step-label">3. Create SubModule</label>
+                <input type="text" name="new_submodule_name" placeholder="Enter SubModule Name (e.g. Hydrocarbons)" class="form-control">
+            </div>
+
+            <button type="submit" class="save-btn mt-3">
+                <i class="bi bi-check2-circle me-1"></i> Save Hierarchy Entry
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const examSel = document.getElementById('exam_select');
+    const modSel = document.getElementById('module_select');
+
+    const modBox = document.getElementById('module_box');
+    const subModBox = document.getElementById('submodule_box');
+
+    examSel.addEventListener('change', async function() {
+        if (this.value) {
+            modBox.style.display = 'block';
+            const res = await fetch(`/question-bank/api/modules/${this.value}/`);
+            const data = await res.json();
+            modSel.innerHTML = '<option value="">-- Select Existing Module --</option>';
+            data.forEach(m => {
+                modSel.innerHTML += `<option value="${m.id}">${m.title}</option>`;
+            });
+        } else {
+            modBox.style.display = 'none';
+        }
+    });
+
+    modSel.addEventListener('change', function() {
+        if (this.value) {
+            subModBox.style.display = 'block';
+        } else {
+            subModBox.style.display = 'none';
+        }
+    });
+</script>
+{% endblock %}

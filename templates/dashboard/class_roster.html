@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Class Roster: {{ board_class.name }} - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --green: #16866F;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+
+body {
+    background: linear-gradient(180deg, #F8FAFC 0%, #F4F6F8 100%) !important;
+    color: var(--text) !important;
+    font-family: 'Inter', sans-serif !important;
+    min-height: 100vh;
+}
+
+.roster-container {
+    max-width: 1400px;
+    margin: 25px auto;
+    padding: 0 15px;
+}
+
+.roster-header-bar {
+    background: #FFFFFF !important;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 30px;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.brand-title {
+    font-family: 'Manrope', sans-serif;
+    color: var(--navy-dark);
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0 0 4px 0;
+}
+
+.card-box {
+    background: #FFFFFF !important;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    padding: 24px;
+}
+
+.table-custom th {
+    background: #F8FAFB !important;
+    color: var(--text-muted) !important;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 14px 18px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    font-weight: 700;
+}
+
+.table-custom td {
+    background: #FFFFFF !important;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text) !important;
+    font-size: 14px;
+    vertical-align: middle;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="roster-container">
+    
+    <div class="roster-header-bar">
+        <div>
+            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-sm btn-outline-secondary mb-2" style="border-radius: 8px;">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+            <h1 class="brand-title">Student Roster: {{ board_class.name }}</h1>
+            <div class="text-muted small">Institution: <span class="fw-bold text-primary">{{ institution.name|default:"Independent" }}</span></div>
+        </div>
+
+        <!-- Optional Subject Filter -->
+        <form method="get" class="d-flex align-items-center gap-2">
+            <select name="subject_id" class="form-select form-select-sm" onchange="this.form.submit()" style="border-radius: 8px;">
+                <option value="">All Subjects Roster</option>
+                {% for sub in assigned_subjects %}
+                <option value="{{ sub.id }}" {% if selected_subject.id == sub.id %}selected{% endif %}>{{ sub.name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    <div class="card-box">
+        <div class="table-responsive">
+            <table class="table table-custom align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Roll Number</th>
+                        <th>Full Name</th>
+                        <th>Username / Email</th>
+                        <th>Student Type</th>
+                        <th class="text-end">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td><code>{{ student.roll_number|default:"N/A" }}</code></td>
+                        <td><strong>{{ student.user.full_name|default:student.user.username }}</strong></td>
+                        <td>{{ student.user.email }}</td>
+                        <td>
+                            <span class="badge bg-primary-subtle text-primary border px-2 py-1">{{ student.get_student_type_display }}</span>
+                        </td>
+                        <td class="text-end">
+                            <span class="badge bg-success-subtle text-success border px-2 py-1">Enrolled</span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-5">
+                            <i class="bi bi-people display-6 d-block mb-2 text-muted opacity-50"></i>
+                            <span class="fw-semibold">No students found registered for this class.</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

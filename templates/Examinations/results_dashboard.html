@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --green: #16866F;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+body { background: var(--page-bg) !important; color: var(--text) !important; font-family: 'Inter', sans-serif !important; }
+
+.watermark-container {
+    position: relative;
+    min-height: 90vh;
+}
+.watermark-container::before {
+    content: "AI UNIVERSITY";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-size: 8vw;
+    font-weight: 900;
+    font-family: 'Manrope', sans-serif;
+    color: rgba(23, 50, 77, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+}
+.dashboard-content-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+.card-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    padding: 24px;
+    margin-bottom: 25px;
+}
+.header-box {
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+    border-radius: 16px;
+    padding: 30px;
+    color: #FFFFFF;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 25px;
+}
+.table-custom th {
+    background: #F8FAFB !important;
+    color: var(--text-muted) !important;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 14px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    font-weight: 700;
+}
+.table-custom td {
+    background: #FFFFFF !important;
+    padding: 14px;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text) !important;
+    font-size: 13px;
+    vertical-align: middle;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="watermark-container py-3">
+    <div class="container my-4 dashboard-content-wrapper" style="max-width: 1200px;">
+        
+        {% if is_teacher %}
+            <!-- Teacher & Institution Dashboard View -->
+            <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold" style="font-size: 11px;">Instructor Portal</span>
+                    <h2 class="fw-extrabold text-white mt-1 mb-1" style="font-family: 'Manrope', sans-serif; font-size: 24px;">Institution & Teacher Dashboard</h2>
+                    <p class="text-white-50 small mb-0">Class-wise and test-wise student performance reports.</p>
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="{% url 'examinations:download_teacher_pdf' %}{% if selected_class or selected_subject %}?{% if selected_class %}class_id={{ selected_class }}{% endif %}{% if selected_class and selected_subject %}&{% endif %}{% if selected_subject %}subject_id={{ selected_subject }}{% endif %}{% endif %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+                        <i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i> Filtered PDF
+                    </a>
+                    <a href="{% url 'examinations:create_exam' %}" class="btn btn-success btn-sm rounded-pill px-3 fw-bold text-white shadow-sm" style="background-color: var(--green); border-color: var(--green);">Create New Test +</a>
+                </div>
+            </div>
+
+            <!-- Filter Toolbar -->
+            <div class="card-box bg-white">
+                <form method="get" class="row g-3 align-items-center">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold small text-muted text-uppercase">Filter by Class</label>
+                        <select name="class_id" class="form-select form-select-sm rounded-3 py-2" onchange="this.form.submit()">
+                            <option value="">All Classes</option>
+                            {% for c in board_classes %}
+                                <option value="{{ c.id }}" {% if selected_class == c.id|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold small text-muted text-uppercase">Filter by Subject</label>
+                        <select name="subject_id" class="form-select form-select-sm rounded-3 py-2" onchange="this.form.submit()">
+                            <option value="">All Subjects</option>
+                            {% for s in board_subjects %}
+                                <option value="{{ s.id }}" {% if selected_subject == s.id|stringformat:"s" %}selected{% endif %}>{{ s.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <a href="{% url 'examinations:results_dashboard' %}" class="btn btn-sm btn-outline-secondary w-100 rounded-pill fw-semibold py-2">Reset Filters</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card-box bg-white">
+                <h4 class="fw-bold mb-4" style="font-family: 'Manrope', sans-serif; color: var(--navy-dark); font-size: 18px;">
+                    <i class="bi bi-people-fill text-success me-2"></i> Student Submissions
+                </h4>
+                {% if attempts %}
+                    <div class="table-responsive">
+                        <table class="table table-custom align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Student Name</th>
+                                    <th>Exam Title</th>
+                                    <th>Score</th>
+                                    <th>Percentage</th>
+                                    <th>Status</th>
+                                    <th>Submitted At</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for att in attempts %}
+                                    <tr>
+                                        <td class="fw-bold text-dark">{{ att.student.get_full_name|default:att.student.username }}</td>
+                                        <td>{{ att.exam.title }}</td>
+                                        <td>{{ att.score }} / {{ att.total_marks }}</td>
+                                        <td><strong>{{ att.percentage|floatformat:1 }}%</strong></td>
+                                        <td>
+                                            {% if att.is_passed %}
+                                                <span class="badge bg-success-subtle text-success border border-success px-3 py-1 rounded-pill fw-semibold">Passed</span>
+                                            {% else %}
+                                                <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-1 rounded-pill fw-semibold">Failed</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-muted small">{{ att.submitted_at|date:"M d, Y H:i" }}</td>
+                                        <td class="text-end">
+                                            <a href="{% url 'examinations:exam_result' att.id %}" class="btn btn-sm btn-outline-primary px-3 fw-semibold rounded-pill" style="border-color: var(--blue); color: var(--blue);">View Details</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5 text-muted">
+                        <i class="bi bi-folder2-open display-6 d-block mb-2 text-secondary opacity-50"></i>
+                        <p class="mb-0 fw-semibold">No student submissions found matching your filters.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+        {% else %}
+            <!-- Student Dashboard View -->
+            <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold" style="font-size: 11px;">Student Portal</span>
+                    <h2 class="fw-extrabold text-white mt-1 mb-1" style="font-family: 'Manrope', sans-serif; font-size: 24px;">Your Exam History & Performance</h2>
+                    <p class="text-white-50 small mb-0">Track your past test attempts, scores, and official examinations.</p>
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="{% url 'examinations:download_pdf' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+                        <i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i> PDF Report
+                    </a>
+                    <a href="{% url 'examinations:official_exams' %}" class="btn btn-success btn-sm rounded-pill px-3 fw-bold text-white shadow-sm" style="background-color: var(--green); border-color: var(--green);">Take Official Exam</a>
+                </div>
+            </div>
+
+            <div class="card-box bg-white">
+                <h4 class="fw-bold mb-4" style="font-family: 'Manrope', sans-serif; color: var(--navy-dark); font-size: 18px;">
+                    <i class="bi bi-journal-check text-primary me-2"></i> Attempt History
+                </h4>
+                {% if attempts %}
+                    <div class="table-responsive">
+                        <table class="table table-custom align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Exam Title</th>
+                                    <th>Score</th>
+                                    <th>Percentage</th>
+                                    <th>Status</th>
+                                    <th>Submitted At</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for att in attempts %}
+                                    <tr>
+                                        <td class="fw-bold text-dark">{{ att.exam.title }}</td>
+                                        <td>{{ att.score }} / {{ att.total_marks }}</td>
+                                        <td><strong>{{ att.percentage|floatformat:1 }}%</strong></td>
+                                        <td>
+                                            {% if att.is_passed %}
+                                                <span class="badge bg-success-subtle text-success border border-success px-3 py-1 rounded-pill fw-semibold">Passed</span>
+                                            {% else %}
+                                                <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-1 rounded-pill fw-semibold">Failed</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-muted small">{{ att.submitted_at|date:"M d, Y H:i" }}</td>
+                                        <td class="text-end">
+                                            <a href="{% url 'examinations:exam_result' att.id %}" class="btn btn-sm btn-primary px-3 fw-semibold rounded-pill text-white" style="background-color: var(--blue); border-color: var(--blue);">View Details</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5 text-muted">
+                        <i class="bi bi-journal-x display-6 d-block mb-2 text-secondary opacity-50"></i>
+                        <p class="mb-0 fw-semibold">You haven't attempted any exams yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+        
+    </div>
+</div>
+{% endblock %}

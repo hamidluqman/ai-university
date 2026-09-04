@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Results: {{ exam.title }} - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --green: #16866F;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+
+body {
+    background: linear-gradient(180deg, #F8FAFC 0%, #F4F6F8 100%) !important;
+    color: var(--text) !important;
+    font-family: 'Inter', sans-serif !important;
+    min-height: 100vh;
+}
+
+.results-container {
+    max-width: 1400px;
+    margin: 25px auto;
+    padding: 0 15px;
+    position: relative;
+}
+
+/* AI University Watermark Layer */
+.results-container::before {
+    content: "AI UNIVERSITY";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-size: 8vw;
+    font-weight: 900;
+    font-family: 'Manrope', sans-serif;
+    color: rgba(23, 50, 77, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+}
+
+.results-header-bar, .card-box {
+    position: relative;
+    z-index: 1;
+}
+
+.results-header-bar {
+    background: #FFFFFF !important;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 30px;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.brand-title {
+    font-family: 'Manrope', sans-serif;
+    color: var(--navy-dark);
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0 0 4px 0;
+}
+
+.card-box {
+    background: #FFFFFF !important;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    padding: 24px;
+}
+
+.table-custom th {
+    background: #F8FAFB !important;
+    color: var(--text-muted) !important;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 14px 18px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    font-weight: 700;
+}
+
+.table-custom td {
+    background: #FFFFFF !important;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text) !important;
+    font-size: 14px;
+    vertical-align: middle;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="results-container">
+    
+    <div class="results-header-bar">
+        <div>
+            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-sm btn-outline-secondary mb-2 fw-semibold px-3" style="border-radius: 8px;">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+            <h1 class="brand-title">Assessment Results: {{ exam.title }}</h1>
+            <div class="text-muted small">
+                Subject: <span class="fw-bold text-primary">{{ exam.board_subject.name|default:"General" }}</span> | 
+                Total Enrolled: <span class="fw-bold">{{ total_students }}</span> | 
+                Submitted: <span class="fw-bold text-success">{{ submitted_count }}</span> | 
+                Absent: <span class="fw-bold text-danger">{{ absent_count }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-box">
+        <div class="table-responsive">
+            <table class="table table-custom align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Roll Number</th>
+                        <th>Student Name</th>
+                        <th>Status</th>
+                        <th>Score & Percentage</th>
+                        <th>Submission Time</th>
+                        <th class="text-end">Result Outcome</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in report_rows %}
+                    <tr>
+                        <td><code>{{ row.profile.roll_number|default:"N/A" }}</code></td>
+                        <td><strong>{{ row.student.full_name|default:row.student.username }}</strong></td>
+                        <td>
+                            {% if row.status == 'Submitted' %}
+                            <span class="badge bg-success-subtle text-success border px-2 py-1">Present / Submitted</span>
+                            {% else %}
+                            <span class="badge bg-danger-subtle text-danger border px-2 py-1">Absent / Unattempted</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ row.score_display }}</td>
+                        <td>{{ row.submitted_at|date:"M d, Y - H:i"|default:"N/A" }}</td>
+                        <td class="text-end">
+                            {% if row.status == 'Submitted' %}
+                                {% if row.is_passed %}
+                                <span class="badge bg-primary-subtle text-primary border px-2 py-1">Passed</span>
+                                {% else %}
+                                <span class="badge bg-warning-subtle text-warning border px-2 py-1">Failed</span>
+                                {% endif %}
+                            {% else %}
+                            <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-5">
+                            <i class="bi bi-journal-x display-6 d-block mb-2 text-muted opacity-50"></i>
+                            <span class="fw-semibold">No students found assigned to this test's class/subject.</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

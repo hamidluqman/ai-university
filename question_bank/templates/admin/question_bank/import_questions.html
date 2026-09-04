@@ -1,0 +1,457 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+
+<div id="content-main">
+
+    <form method="post" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="errornote">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+
+        <!-- ================================================= -->
+        <!-- Assessment Selection -->
+        <!-- ================================================= -->
+
+        <fieldset class="module aligned">
+
+            <h2>Assessment Selection</h2>
+
+            <div class="form-row">
+
+                {{ form.assessment_type.errors }}
+
+                {{ form.assessment_type.label_tag }}
+
+                {{ form.assessment_type }}
+
+                {% if form.assessment_type.help_text %}
+                    <div class="help">
+                        {{ form.assessment_type.help_text }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <div class="form-row">
+
+                {{ form.library.errors }}
+
+                {{ form.library.label_tag }}
+
+                {{ form.library }}
+
+                {% if form.library.help_text %}
+                    <div class="help">
+                        {{ form.library.help_text }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+        </fieldset>
+
+
+        <!-- ================================================= -->
+        <!-- Board Structure -->
+        <!-- ================================================= -->
+
+        <fieldset
+            class="module aligned"
+            id="board-fields"
+        >
+
+            <h2>Board Structure</h2>
+
+
+            <div class="form-row">
+
+                {{ form.school_class.errors }}
+
+                {{ form.school_class.label_tag }}
+
+                {{ form.school_class }}
+
+                {% if form.school_class.help_text %}
+                    <div class="help">
+                        {{ form.school_class.help_text }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <div class="form-row">
+
+                {{ form.subject.errors }}
+
+                {{ form.subject.label_tag }}
+
+                {{ form.subject }}
+
+                {% if form.subject.help_text %}
+                    <div class="help">
+                        {{ form.subject.help_text }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <div class="form-row">
+
+                {{ form.chapter.errors }}
+
+                {{ form.chapter.label_tag }}
+
+                {{ form.chapter }}
+
+                {% if form.chapter.help_text %}
+                    <div class="help">
+                        {{ form.chapter.help_text }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <div class="form-row">
+
+                {{ form.topic.errors }}
+
+                {{ form.topic.label_tag }}
+
+                {{ form.topic }}
+
+                {% if form.topic.help_text %}
+                    <div class="help">
+                        {{ form.topic.help_text }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <div class="form-row">
+
+                {{ form.subtopic.errors }}
+
+                {{ form.subtopic.label_tag }}
+
+                {{ form.subtopic }}
+
+                {% if form.subtopic.help_text %}
+                    <div class="help">
+                        {{ form.subtopic.help_text }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+        </fieldset>
+
+
+        <!-- ================================================= -->
+        <!-- Competitive Structure -->
+        <!-- ================================================= -->
+
+        <fieldset
+            class="module aligned"
+            id="competitive-fields"
+        >
+
+            <h2>Competitive / Entry Test Structure</h2>
+
+
+            <div class="form-row">
+
+                {{ form.assessment_subject.errors }}
+
+                {{ form.assessment_subject.label_tag }}
+
+                {{ form.assessment_subject }}
+
+                {% if form.assessment_subject.help_text %}
+                    <div class="help">
+                        {{ form.assessment_subject.help_text }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <div class="form-row">
+
+                {{ form.module.errors }}
+
+                {{ form.module.label_tag }}
+
+                {{ form.module }}
+
+                {% if form.module.help_text %}
+                    <div class="help">
+                        {{ form.module.help_text }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <div class="form-row">
+
+                {{ form.submodule.errors }}
+
+                {{ form.submodule.label_tag }}
+
+                {{ form.submodule }}
+
+                {% if form.submodule.help_text %}
+                    <div class="help">
+                        {{ form.submodule.help_text }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+        </fieldset>
+
+
+        <!-- ================================================= -->
+        <!-- Question Information -->
+        <!-- ================================================= -->
+
+        <fieldset class="module aligned">
+
+            <h2>Question Information</h2>
+
+
+            <div class="form-row">
+
+                {{ form.question_type.errors }}
+
+                {{ form.question_type.label_tag }}
+
+                {{ form.question_type }}
+
+                {% if form.question_type.help_text %}
+                    <div class="help">
+                        {{ form.question_type.help_text }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <div class="form-row">
+
+                {{ form.source.errors }}
+
+                {{ form.source.label_tag }}
+
+                {{ form.source }}
+
+                {% if form.source.help_text %}
+                    <div class="help">
+                        {{ form.source.help_text }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <div class="form-row">
+
+                {{ form.category.errors }}
+
+                {{ form.category.label_tag }}
+
+                {{ form.category }}
+
+                {% if form.category.help_text %}
+                    <div class="help">
+                        {{ form.category.help_text }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+        </fieldset>
+
+
+        <!-- ================================================= -->
+        <!-- Excel File -->
+        <!-- ================================================= -->
+
+        <fieldset class="module aligned">
+
+            <h2>Excel File</h2>
+
+
+            <div class="form-row">
+
+                {{ form.excel_file.errors }}
+
+                {{ form.excel_file.label_tag }}
+
+                {{ form.excel_file }}
+
+                {% if form.excel_file.help_text %}
+                    <div class="help">
+                        <p>
+                            {{ form.excel_file.help_text }}
+                        </p>
+                    </div>
+                {% endif %}
+
+            </div>
+
+        </fieldset>
+
+
+        <!-- ================================================= -->
+        <!-- Submit -->
+        <!-- ================================================= -->
+
+        <div class="submit-row">
+
+            <input
+                type="submit"
+                value="Import Questions"
+                class="default"
+            >
+
+            <a
+                href="{% url 'admin:question_bank_question_changelist' %}"
+                class="button"
+            >
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- JavaScript -->
+<!-- ===================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const assessmentType =
+            document.getElementById(
+                "id_assessment_type"
+            );
+
+        const boardFields =
+            document.getElementById(
+                "board-fields"
+            );
+
+        const competitiveFields =
+            document.getElementById(
+                "competitive-fields"
+            );
+
+
+        function updateFields() {
+
+            if (!assessmentType) {
+                return;
+            }
+
+
+            const selectedOption =
+                assessmentType.options[
+                    assessmentType.selectedIndex
+                ];
+
+
+            if (!selectedOption) {
+                return;
+            }
+
+
+            /*
+             * Get the actual category
+             * supplied by the Django form.
+             */
+
+            const category =
+                selectedOption.getAttribute(
+                    "data-category"
+                );
+
+
+            /*
+             * Board
+             */
+
+            if (
+                category === "board"
+            ) {
+
+                boardFields.style.display =
+                    "block";
+
+                competitiveFields.style.display =
+                    "none";
+
+            }
+
+
+            /*
+             * Competitive / Entry Test /
+             * Other
+             */
+
+            else {
+
+                boardFields.style.display =
+                    "none";
+
+                competitiveFields.style.display =
+                    "block";
+
+            }
+
+        }
+
+
+        /*
+         * Run when Assessment Type
+         * changes.
+         */
+
+        assessmentType.addEventListener(
+            "change",
+            updateFields
+        );
+
+
+        /*
+         * Run when page first opens.
+         */
+
+        updateFields();
+
+    }
+
+);
+
+</script>
+
+{% endblock %}

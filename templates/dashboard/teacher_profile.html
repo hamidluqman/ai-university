@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Teacher Profile Settings - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --blue-hover: #125e93;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+
+body {
+    background: linear-gradient(180deg, #F8FAFC 0%, #F4F6F8 100%) !important;
+    color: var(--text) !important;
+    font-family: 'Inter', sans-serif !important;
+    min-height: 100vh;
+}
+
+.profile-container {
+    max-width: 800px;
+    margin: 35px auto;
+    padding: 0 15px;
+}
+
+.form-card {
+    background: #FFFFFF !important;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    padding: 35px;
+}
+
+.form-title {
+    font-family: 'Manrope', sans-serif;
+    color: var(--navy-dark);
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-card label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.form-card input {
+    width: 100%;
+    padding: 11px 15px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s ease;
+}
+
+.form-card input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(22, 119, 184, 0.12);
+    outline: none;
+}
+
+.form-card input:disabled,
+.form-card input[readonly] {
+    background-color: #F8FAFB;
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+.btn-primary-custom {
+    background-color: var(--blue);
+    border-color: var(--blue);
+    color: #FFFFFF;
+    font-weight: 700;
+    padding: 11px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.btn-primary-custom:hover {
+    background-color: var(--blue-hover);
+    border-color: var(--blue-hover);
+    color: #FFFFFF;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="form-card">
+        <h2 class="form-title">
+            <i class="bi bi-person-badge text-primary"></i> Teacher Profile Settings
+        </h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" style="border-radius: 10px;">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label>Full Name (Locked)</label>
+                    <input type="text" class="form-control" value="{{ user.get_full_name|default:user.username }}" disabled>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>Teacher ID (Locked)</label>
+                    <input type="text" class="form-control" value="TCH-{{ user.id }}" disabled>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label>Username (Locked)</label>
+                    <input type="text" class="form-control" value="{{ user.username }}" disabled>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-control" value="{{ user.email }}" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="phone_number">Phone Number</label>
+                    <input type="text" id="phone_number" name="phone_number" class="form-control" value="{{ phone_number }}">
+                </div>
+            </div>
+
+            <hr class="my-4" style="border-color: var(--border);">
+
+            <h5 class="fw-bold mb-3" style="color: var(--navy-dark); font-size: 16px;">Change Password</h5>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="new_password">New Password</label>
+                    <input type="password" id="new_password" name="new_password" class="form-control" placeholder="Leave blank to keep current">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="confirm_password">Confirm New Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Confirm new password">
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center pt-3 mt-3 border-top">
+                <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-outline-secondary px-4 fw-semibold" style="border-radius: 10px;">
+                    <i class="bi bi-arrow-left"></i> Back to Dashboard
+                </a>
+                <button type="submit" class="btn btn-primary-custom">
+                    <i class="bi bi-check-lg"></i> Update Profile
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

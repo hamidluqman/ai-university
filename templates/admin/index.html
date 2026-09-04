@@ -1,0 +1,14 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+<div style="background: #ffffff; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #ccd0d4; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+    <h2 style="margin-top: 0; color: #1e1e1e;">Unified Management Hubs</h2>
+    <p style="color: #666; margin-bottom: 15px;">Fast multi-tiered builders for onboarding accounts & building question bank hierarchies:</p>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <a href="/accounts/hub/" class="button" style="background: #0d6efd; color: white; font-weight: bold; padding: 8px 14px; text-decoration: none; border-radius: 4px;">User Onboarding Hub</a>
+        <a href="/questions/board-builder/" class="button" style="background: #198754; color: white; font-weight: bold; padding: 8px 14px; text-decoration: none; border-radius: 4px;">+ Single Form Board Hierarchy Builder</a>
+        <a href="/questions/competitive-builder/" class="button" style="background: #212529; color: white; font-weight: bold; padding: 8px 14px; text-decoration: none; border-radius: 4px;">+ Single Form Competitive Hierarchy Builder</a>
+    </div>
+</div>
+{{ block.super }}
+{% endblock %}

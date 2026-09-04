@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Performance Report: {{ attempt.exam.title }} - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --text: #182433;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --green: #16866F;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+body { background: var(--page-bg) !important; color: var(--text) !important; font-family: 'Inter', sans-serif !important; }
+
+.watermark-container {
+    position: relative;
+    min-height: 85vh;
+}
+.watermark-container::before {
+    content: "AI UNIVERSITY";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-size: 8vw;
+    font-weight: 900;
+    font-family: 'Manrope', sans-serif;
+    color: rgba(23, 50, 77, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+}
+.report-content-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+.card-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    padding: 30px;
+    margin-bottom: 25px;
+}
+.header-box {
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+    border-radius: 16px;
+    padding: 30px;
+    color: #FFFFFF;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 25px;
+}
+.stat-pill {
+    background: #F9FBFC;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="watermark-container py-3">
+    <div class="container my-4 report-content-wrapper" style="max-width: 800px;">
+        
+        <!-- Header Card -->
+        <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold" style="font-size: 11px;">Assessment Report</span>
+                <h2 class="fw-extrabold text-white mt-1 mb-1" style="font-family: 'Manrope', sans-serif; font-size: 24px;">{{ attempt.exam.title }}</h2>
+                <p class="text-white-50 small mb-0">Detailed breakdown of your performance and test score.</p>
+            </div>
+            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+                <i class="bi bi-arrow-left"></i> Dashboard
+            </a>
+        </div>
+
+        <!-- Report Card Details -->
+        <div class="card-box bg-white">
+            <h5 class="fw-bold mb-4" style="font-family: 'Manrope', sans-serif; color: var(--navy-dark);">Score Summary</h5>
+            
+            <div class="stat-pill">
+                <span class="text-muted fw-semibold">Final Score</span>
+                <span class="fw-bold text-dark fs-5">{{ attempt.score }} / {{ attempt.total_marks }}</span>
+            </div>
+
+            <div class="stat-pill">
+                <span class="text-muted fw-semibold">Percentage</span>
+                <span class="fw-bold text-dark fs-5">{{ attempt.percentage|floatformat:1 }}%</span>
+            </div>
+
+            <div class="stat-pill">
+                <span class="text-muted fw-semibold">Status</span>
+                <span class="badge {% if attempt.is_passed %}bg-success-subtle text-success border border-success{% else %}bg-danger-subtle text-danger border border-danger{% endif %} px-3 py-2 rounded-pill fw-bold" style="font-size: 13px;">
+                    {% if attempt.is_passed %}Passed{% else %}Failed{% endif %}
+                </span>
+            </div>
+
+            <div class="stat-pill mb-4">
+                <span class="text-muted fw-semibold">Attempt Type</span>
+                <span class="fw-semibold text-dark">{% if attempt.is_practice %}Practice Session{% else %}Formal Institution Assessment{% endif %}</span>
+            </div>
+
+            <div class="text-end">
+                <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold">Return to Dashboard</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

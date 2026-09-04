@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Courses & Learning Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light py-4">
+    <div class="container">
+        <h2 class="mb-4">My Learning Hub & Video Courses</h2>
+
+        <!-- Dynamic Dropdown Filter & Search Bar -->
+        <div class="card shadow-sm p-4 bg-white mb-4">
+            <h5 class="text-primary mb-3">Filter Curriculum Hierarchy</h5>
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold text-secondary">Board Class</label>
+                    <select name="class" class="form-select">
+                        <option value="">All Classes</option>
+                        {% for cls in available_classes %}
+                            <option value="{{ cls }}" {% if selected_class == cls %}selected{% endif %}>{{ cls }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold text-secondary">Subject</label>
+                    <select name="subject" class="form-select">
+                        <option value="">All Subjects</option>
+                        {% for subj in available_subjects %}
+                            <option value="{{ subj }}" {% if selected_subject == subj %}selected{% endif %}>{{ subj }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold text-secondary">Competitive Exam</label>
+                    <select name="exam" class="form-select">
+                        <option value="">All Exams</option>
+                        {% for ex in available_exams %}
+                            <option value="{{ ex }}" {% if selected_exam == ex %}selected{% endif %}>{{ ex }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold text-secondary">Exam Module</label>
+                    <select name="module" class="form-select">
+                        <option value="">All Modules</option>
+                        {% for mod in available_modules %}
+                            <option value="{{ mod }}" {% if selected_module == mod %}selected{% endif %}>{{ mod }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-10">
+                    <input type="text" name="q" class="form-control" placeholder="Search keywords across lectures..." value="{{ search_query }}">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-dark w-100">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="row">
+            <!-- Left Column: Multi-Level Curriculum Hierarchy -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm p-4 bg-white mb-4">
+                    <h4 class="text-primary mb-3">Available Video Curriculum</h4>
+                    
+                    <!-- Board Classes Hierarchy -->
+                    <h5 class="text-secondary mt-3">Board Classes</h5>
+                    {% for b_class, subjects in board_tree.items %}
+                        <div class="border rounded p-3 mb-3 bg-light">
+                            <h5 class="text-dark fw-bold border-bottom pb-2">Class: {{ b_class }}</h5>
+                            {% for subject, chapters in subjects.items %}
+                                <div class="ms-3 my-3">
+                                    <h6 class="text-secondary">Subject: {{ subject }}</h6>
+                                    {% for chapter, topics in chapters.items %}
+                                        <div class="ms-4 my-2 border-start ps-3">
+                                            <strong class="text-dark">Chapter:</strong> {{ chapter }}
+                                            {% for topic, subtopics in topics.items %}
+                                                <div class="ms-3 my-2">
+                                                    <span class="text-muted">Topic:</span> {{ topic }}
+                                                    {% for sub_tuple, questions in subtopics.items %}
+                                                        <div class="ms-3 my-2 d-flex justify-content-between align-items-center bg-white p-2 rounded border shadow-sm">
+                                                            <span><em>Subtopic:</em> {{ sub_tuple.0 }} <span class="badge bg-secondary ms-2">{{ questions|length }} videos</span></span>
+                                                            {% if sub_tuple.1 %}
+                                                                <a href="{% url 'courses:course_player' 'board' sub_tuple.1 %}" class="btn btn-dark btn-sm">Watch Videos</a>
+                                                            {% endif %}
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% empty %}
+                        <p class="text-muted small">No board video curriculum matches your selected filters.</p>
+                    {% endfor %}
+
+                    <!-- Competitive Exams Hierarchy -->
+                    <h5 class="text-success mt-4">Competitive Exams</h5>
+                    {% for exam, modules in comp_tree.items %}
+                        <div class="border rounded p-3 mb-3 bg-light">
+                            <h5 class="text-dark fw-bold border-bottom pb-2">Exam: {{ exam }}</h5>
+                            {% for module, submodules in modules.items %}
+                                <div class="ms-3 my-3">
+                                    <h6 class="text-secondary">Module: {{ module }}</h6>
+                                    {% for sub_tuple, questions in submodules.items %}
+                                        <div class="ms-4 my-2 d-flex justify-content-between align-items-center bg-white p-2 rounded border shadow-sm">
+                                            <span><em>Submodule:</em> {{ sub_tuple.0 }} <span class="badge bg-secondary ms-2">{{ questions|length }} videos</span></span>
+                                            {% if sub_tuple.1 %}
+                                                <a href="{% url 'courses:course_player' 'competitive' sub_tuple.1 %}" class="btn btn-dark btn-sm">Watch Videos</a>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% empty %}
+                        <p class="text-muted small">No competitive exam curriculum matches your selected filters.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Right Column: Student Watch Progress -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm p-4 bg-white">
+                    <h4 class="text-dark mb-3">My Watch Progress</h4>
+                    <div class="list-group list-group-flush" style="max-height: 500px; overflow-y: auto;">
+                        {% for progress in progress_records %}
+                            <div class="list-group-item px-0">
+                                <h6 class="mb-1 small fw-bold text-dark">{{ progress.question.question_text|truncatechars:45 }}</h6>
+                                <span class="badge {% if progress.is_completed %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {% if progress.is_completed %}Completed{% else %}In Progress{% endif %}
+                                </span>
+                            </div>
+                        {% empty %}
+                            <p class="text-muted small">No progress records found.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

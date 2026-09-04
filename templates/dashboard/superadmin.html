@@ -1,0 +1,997 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Superadmin Command Center - AI University LMS{% endblock %}
+
+{% block extra_head %}
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Google Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+/* ============================================================
+   AI UNIVERSITY LMS
+   SUPER ADMIN COMMAND CENTER
+   PREMIUM LIGHT / NAVY EDITION
+   ============================================================ */
+
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --navy-medium: #244762;
+    --page-bg: #F4F6F8;
+    --page-bg-2: #F8FAFC;
+    --card: #FFFFFF;
+    --card-soft: #FBFCFD;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-dark: #10283F;
+    --text-muted: #697586;
+    --text-light: #8A96A6;
+    --blue: #1677B8;
+    --blue-light: #DDECF5;
+    --green: #16866F;
+    --green-light: #DCEFEA;
+    --purple: #7651A8;
+    --purple-light: #E9E1F2;
+    --gold: #C58A19;
+    --gold-light: #F4E8C9;
+    --burgundy: #A94E68;
+    --burgundy-light: #F2E0E6;
+    --shadow-xs: 0 2px 6px rgba(23, 50, 77, 0.04);
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+    --shadow-lg: 0 18px 45px rgba(23, 50, 77, 0.11);
+}
+
+body {
+    background: linear-gradient(180deg, #F8FAFC 0%, #F4F6F8 100%) !important;
+    color: var(--text) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 15px !important;
+    position: relative;
+    min-height: 100vh;
+}
+
+/* ============================================================
+   BACKGROUND WATERMARK FOR ALL LAYERS
+   ============================================================ */
+
+body::before {
+    content: "AI UNIVERSITY";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-family: 'Manrope', sans-serif;
+    font-size: 13vw;
+    font-weight: 800;
+    color: rgba(105, 117, 134, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: 4px;
+}
+
+.app-content-header {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+.superadmin-dashboard {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1800px;
+    margin: 0 auto;
+    padding-bottom: 40px;
+}
+
+/* ============================================================
+   STICKY COMMAND HEADER (ZERO TOP GAP & SINGLE LINE COMPACT)
+   ============================================================ */
+
+.superadmin-header {
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+    overflow: visible;
+    background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 18px 18px;
+    padding: 12px 20px;
+    box-shadow: var(--shadow-md);
+    margin-top: 0 !important;
+    margin-bottom: 22px;
+    backdrop-filter: blur(12px);
+}
+
+.superadmin-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--navy), var(--blue), var(--purple), var(--gold));
+    z-index: 2;
+}
+
+.brand-section {
+    position: relative;
+    z-index: 2;
+}
+
+.command-logo {
+    max-height: 42px;
+    width: auto;
+}
+
+.brand-title {
+    font-family: 'Manrope', sans-serif;
+    color: var(--navy-dark);
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -.3px;
+    line-height: 1.2;
+}
+
+.brand-subtitle {
+    color: var(--text-muted);
+    font-size: 10px;
+    margin-top: 0px;
+    line-height: 1.1;
+}
+
+/* ============================================================
+   TOP NAV BUTTONS & NAVY BLUE ADMIN DROPDOWN (SINGLE LINE)
+   ============================================================ */
+
+.admin-nav {
+    position: relative;
+    z-index: 1060;
+    flex-wrap: nowrap !important;
+}
+
+.admin-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 9px;
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    color: var(--navy);
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all .25s ease;
+    box-shadow: var(--shadow-xs);
+}
+
+.admin-nav-btn:hover {
+    transform: translateY(-2px);
+    background: #F9FBFC;
+    color: var(--navy-dark);
+    border-color: #C7D1DA;
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-nav-btn i {
+    font-size: 13px;
+}
+
+/* Navy Blue Admin Profile Dropdown Button */
+.admin-profile-dropdown .dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    border-radius: 9px;
+    background: var(--navy);
+    border: 1px solid var(--navy);
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all .2s ease;
+}
+
+.admin-profile-dropdown .dropdown-toggle:hover {
+    background: var(--navy-dark);
+    border-color: var(--navy-dark);
+    color: #FFFFFF;
+}
+
+/* Polished Lighter White Dropdown Menu with Larger Fonts & Icons */
+.admin-profile-dropdown .dropdown-menu {
+    background: #FFFFFF !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-lg) !important;
+    z-index: 1070 !important;
+    margin-top: 10px !important;
+    border-radius: 12px;
+    padding: 10px;
+    min-width: 180px;
+}
+
+.admin-profile-dropdown .dropdown-item {
+    color: var(--text) !important;
+    font-size: 14.5px !important;
+    font-weight: 700 !important;
+    border-radius: 8px;
+    padding: 10px 14px;
+    transition: background 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-profile-dropdown .dropdown-item:hover {
+    background: #F4F6F8 !important;
+    color: var(--navy-dark) !important;
+}
+
+/* Full Red Colored Logout Button Styling */
+.admin-profile-dropdown .logout-submit-btn {
+    width: 100%;
+    background: #DC3545 !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    font-size: 14.5px !important;
+    font-weight: 700 !important;
+    text-align: left !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    transition: background 0.2s ease !important;
+    box-shadow: 0 2px 6px rgba(220, 53, 69, 0.25) !important;
+}
+
+.admin-profile-dropdown .logout-submit-btn:hover {
+    background: #BD2130 !important;
+    color: #FFFFFF !important;
+}
+
+/* ============================================================
+   STATISTICS CARDS (CLEAN NUMBER BLOCKS)
+   ============================================================ */
+
+.stat-card {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    background: linear-gradient(145deg, #FFFFFF 0%, #FBFCFD 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: #CBD5DF;
+}
+
+.stat-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 3px;
+}
+
+.stat-institutions::before { background: linear-gradient(90deg, #1677B8, #55A7D1); }
+.stat-students::before { background: linear-gradient(90deg, #16866F, #4EB39C); }
+.stat-subscriptions::before { background: linear-gradient(90deg, #7651A8, #A17BC7); }
+.stat-payments::before { background: linear-gradient(90deg, #C58A19, #E0B354); }
+
+.stat-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.stat-label {
+    color: var(--text-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .7px;
+    font-weight: 700;
+}
+
+.stat-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 20px;
+}
+
+.icon-blue { background: var(--blue-light); color: var(--blue); }
+.icon-green { background: var(--green-light); color: var(--green); }
+.icon-purple { background: var(--purple-light); color: var(--purple); }
+.icon-gold { background: var(--gold-light); color: var(--gold); }
+
+.stat-value-box {
+    margin: 10px 0 15px 0;
+}
+
+.stat-number {
+    color: var(--navy-dark);
+    font-family: 'Manrope', sans-serif;
+    font-size: 38px;
+    line-height: 1.1;
+    font-weight: 800;
+}
+
+.stat-unit {
+    color: var(--text-light);
+    font-size: 10px;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    font-weight: 700;
+}
+
+.stat-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-light);
+}
+
+.stat-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.status-blue { color: var(--blue); }
+.status-green { color: var(--green); }
+.status-purple { color: var(--purple); }
+.status-gold { color: var(--gold); }
+
+.stat-action {
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--navy);
+    transition: color .2s ease;
+}
+
+.stat-action:hover {
+    color: var(--blue);
+}
+
+/* ============================================================
+   ANALYTICS CARD (PIE CHART WRAPPER)
+   ============================================================ */
+
+.analytics-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    padding: 22px;
+    width: 100%;
+    height: 100%;
+}
+
+.analytics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.analytics-title {
+    color: var(--navy-dark);
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+}
+
+.analytics-title i {
+    color: var(--navy);
+}
+
+.analytics-description {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+
+.telemetry-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 11px;
+    border-radius: 20px;
+    background: #F1F5F8;
+    color: var(--navy);
+    border: 1px solid #DEE5EB;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.analytics-chart {
+    position: relative;
+    height: 340px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ============================================================
+   PAYMENT TABLE (LIGHTER WHITE BACKGROUND & DARKER TEXT)
+   ============================================================ */
+
+.payment-card {
+    background: #FFFFFF !important;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.payment-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.payment-title {
+    color: var(--navy-dark);
+    font-family: 'Manrope', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.payment-subtitle {
+    color: var(--text-muted);
+    font-size: 11px;
+    margin-top: 3px;
+}
+
+.payment-open-btn {
+    background: #F1F5F8;
+    color: var(--navy);
+    border: 1px solid #DCE4EA;
+    padding: 9px 14px;
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.payment-open-btn:hover {
+    background: var(--navy);
+    color: #FFFFFF;
+}
+
+.payment-table {
+    margin: 0;
+    background: #FFFFFF !important;
+}
+
+.payment-table thead th {
+    background: #F8FAFB;
+    color: #748091;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 13px 22px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.payment-table tbody td {
+    padding: 24px 22px;
+    background: #FFFFFF !important;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-dark) !important;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.payment-table tbody tr {
+    background: #FFFFFF !important;
+    transition: background .2s ease;
+}
+
+.payment-table tbody tr:hover {
+    background: #F9FBFC !important;
+}
+
+.payment-user {
+    color: var(--navy-dark) !important;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.payment-email {
+    color: var(--text-muted) !important;
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+.pending-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--gold-light);
+    color: #9A6A0E;
+    border: 1px solid #EAD9AD;
+    border-radius: 20px;
+    padding: 6px 11px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.review-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.review-btn:hover {
+    background: #116D5B;
+    color: #FFFFFF;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 55px 20px;
+    background: #FAFBFC !important;
+}
+
+.empty-state-icon {
+    font-size: 42px;
+    color: var(--green);
+    opacity: .9;
+}
+
+.empty-state-title {
+    margin-top: 10px;
+    color: var(--navy-dark) !important;
+    font-size: 15px;
+    font-weight: 800;
+    font-family: 'Manrope', sans-serif;
+}
+
+.empty-state-text {
+    color: var(--text-muted) !important;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+@media (max-width: 1400px) {
+    .superadmin-header .d-flex {
+        gap: 15px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .superadmin-header { padding: 12px; }
+    .admin-nav { margin-top: 10px; }
+    .admin-nav-btn { font-size: 11px; padding: 7px 9px; }
+    .analytics-chart { height: 260px; }
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="superadmin-dashboard">
+
+    <!-- ========================================================
+         STICKY COMMAND HEADER (RIBBON - SINGLE LINE)
+         ======================================================== -->
+
+    <div class="superadmin-header">
+
+        <div class="d-flex align-items-center justify-content-between flex-nowrap w-100 gap-3">
+
+            <!-- Brand with Logo -->
+            <div class="brand-section d-flex align-items-center gap-3 flex-shrink-0">
+                <img src="{% static 'images/logo.png' %}" alt="AI University Logo" class="command-logo">
+                <div>
+                    <div class="brand-title">
+                        AI University Command Center
+                    </div>
+                    <div class="brand-subtitle">
+                        Master Administration & System Intelligence Dashboard
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation & Profile Dropdown (Forced Single Line) -->
+            <div class="admin-nav d-flex align-items-center gap-2 flex-shrink-0">
+
+                <a href="{% url 'accounts:user_hub' %}" class="admin-nav-btn">
+                    <i class="bi bi-building"></i>
+                    Institutions
+                </a>
+
+                <a href="{% url 'accounts:user_hub' %}" class="admin-nav-btn">
+                    <i class="bi bi-people" style="color: var(--green);"></i>
+                    Students
+                </a>
+
+                <a href="{% url 'subscriptions:admin_subscription_panel' %}" class="admin-nav-btn">
+                    <i class="bi bi-shield-check" style="color: var(--purple);"></i>
+                    Subscriptions
+                </a>
+
+                <a href="{% url 'question_bank:unified_board_builder' %}" class="admin-nav-btn">
+                    <i class="bi bi-diagram-3" style="color: var(--gold);"></i>
+                    Board Builder
+                </a>
+
+                <!-- Corrected namespace/url pattern for Competitive Builder -->
+                <a href="{% url 'question_bank:unified_competitive_builder' %}" class="admin-nav-btn">
+                    <i class="bi bi-trophy" style="color: var(--burgundy);"></i>
+                    Competitive Builder
+                </a>
+
+                <!-- Add Question Button Styled with Lighter Theme Color -->
+                <a href="{% url 'question_bank:add_question' %}" class="admin-nav-btn">
+                    <i class="bi bi-plus-circle" style="color: var(--blue);"></i>
+                    Add Question
+                </a>
+
+                <!-- Admin Profile / Logout Menu Dropdown -->
+                <div class="dropdown admin-profile-dropdown">
+                    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle" style="font-size: 16px;"></i>
+                        <span>{{ request.user.username|default:"admin" }}</span>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                        <li>
+                            <a class="dropdown-item py-2 px-3" href="{% url 'accounts:superadmin_profile' %}">
+                                <i class="bi bi-person-fill-gear text-primary" style="font-size: 19px;"></i> 
+                                <span style="font-size: 14.5px; font-weight: 700;">Profile</span>
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider my-1 border-secondary opacity-25"></li>
+                        <li class="px-2 py-1">
+                            <form method="post" action="{% url 'accounts:logout' %}" class="m-0">
+                                {% csrf_token %}
+                                <button type="submit" class="logout-submit-btn">
+                                    <i class="bi bi-box-arrow-right" style="font-size: 16px;"></i> Log Out
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================================
+         FOUR METRIC BLOCKS (REAL FIGURES)
+         ======================================================== -->
+
+    <div class="row g-3 mb-4">
+
+        <!-- INSTITUTIONS -->
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card stat-institutions">
+                <div class="stat-top">
+                    <div class="stat-label">Registered Institutions</div>
+                    <div class="stat-icon icon-blue">
+                        <i class="bi bi-building"></i>
+                    </div>
+                </div>
+
+                <div class="stat-value-box">
+                    <div class="stat-number">{{ institutions_count|default:0 }}</div>
+                    <div class="stat-unit">Total Campuses</div>
+                </div>
+
+                <div class="stat-footer">
+                    <div class="stat-status status-blue">
+                        <i class="bi bi-patch-check-fill"></i> Verified Campuses
+                    </div>
+                    <a href="{% url 'accounts:user_hub' %}" class="stat-action">Manage →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- STUDENTS -->
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card stat-students">
+                <div class="stat-top">
+                    <div class="stat-label">Independent Students</div>
+                    <div class="stat-icon icon-green">
+                        <i class="bi bi-people"></i>
+                    </div>
+                </div>
+
+                <div class="stat-value-box">
+                    <div class="stat-number">{{ independent_students_count|default:0 }}</div>
+                    <div class="stat-unit">Active Learners</div>
+                </div>
+
+                <div class="stat-footer">
+                    <div class="stat-status status-green">
+                        <i class="bi bi-person-check-fill"></i> Enrolled Users
+                    </div>
+                    <a href="{% url 'accounts:user_hub' %}" class="stat-action">Manage →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUBSCRIPTIONS -->
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card stat-subscriptions">
+                <div class="stat-top">
+                    <div class="stat-label">Active Subscriptions</div>
+                    <div class="stat-icon icon-purple">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                </div>
+
+                <div class="stat-value-box">
+                    <div class="stat-number">{{ active_subscriptions_count|default:0 }}</div>
+                    <div class="stat-unit">Fully Authorized</div>
+                </div>
+
+                <div class="stat-footer">
+                    <div class="stat-status status-purple">
+                        <i class="bi bi-award-fill"></i> Paid & Active
+                    </div>
+                    <a href="{% url 'subscriptions:admin_subscription_panel' %}" class="stat-action">View →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAYMENTS -->
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card stat-payments">
+                <div class="stat-top">
+                    <div class="stat-label">Pending Payments</div>
+                    <div class="stat-icon icon-gold">
+                        <i class="bi bi-credit-card"></i>
+                    </div>
+                </div>
+
+                <div class="stat-value-box">
+                    <div class="stat-number">{{ pending_payments.count|default:0 }}</div>
+                    <div class="stat-unit">Pending Reviews</div>
+                </div>
+
+                <div class="stat-footer">
+                    <div class="stat-status status-gold">
+                        <i class="bi bi-clock-fill"></i> Requires Audit
+                    </div>
+                    <a href="{% url 'subscriptions:admin_subscription_panel' %}" class="stat-action">Review →</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========================================================
+         ANALYTICS PIE CHART (RESTORED FULL WIDTH)
+         ======================================================== -->
+
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="analytics-card">
+                <div class="analytics-header">
+                    <div>
+                        <div class="analytics-title">
+                            <i class="bi bi-pie-chart-fill me-2"></i>
+                            System Proportions & Analytics
+                        </div>
+                        <div class="analytics-description">
+                            Platform distribution across institutions, learners, subscriptions and payment activity.
+                        </div>
+                    </div>
+
+                    <div class="telemetry-badge">
+                        <i class="bi bi-activity"></i>
+                        LIVE TELEMETRY
+                    </div>
+                </div>
+
+                <div class="analytics-chart">
+                    <canvas id="systemAnalyticsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================
+         PAYMENT VERIFICATION QUEUE (LIGHTER WHITE BACKGROUND & DARK TEXT)
+         ======================================================== -->
+
+    <div class="payment-card">
+        <div class="payment-header">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div>
+                    <div class="payment-title">
+                        <i class="bi bi-receipt-cutoff me-2" style="color: var(--gold);"></i>
+                        Pending Payment Verification Queue
+                    </div>
+                    <div class="payment-subtitle">
+                        Review and authorize pending subscription payments.
+                    </div>
+                </div>
+
+                <a href="{% url 'subscriptions:admin_subscription_panel' %}" class="payment-open-btn">
+                    Open Subscription Panel
+                    <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table payment-table align-middle">
+                <thead>
+                    <tr>
+                        <th>User / Institution</th>
+                        <th>Plan Details</th>
+                        <th>Status</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in pending_payments %}
+                    <tr>
+                        <td>
+                            <div class="payment-user">
+                                {% if payment.user %}
+                                    {{ payment.user.username }}
+                                {% elif payment.institution %}
+                                    {{ payment.institution.name }}
+                                {% else %}
+                                    System Record
+                                {% endif %}
+                            </div>
+                            <div class="payment-email">
+                                {% if payment.user and payment.user.email %}
+                                    {{ payment.user.email }}
+                                {% else %}
+                                    No email registered
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            <span style="font-weight: 600; color: var(--navy-dark);">
+                                {% if payment.plan %}{{ payment.plan.name }}{% else %}Standard Subscription Plan{% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="pending-badge">
+                                <i class="bi bi-clock-history"></i>
+                                Pending Review
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <a href="{% url 'subscriptions:approve_subscription' payment.id %}" class="review-btn">
+                                <i class="bi bi-check-lg"></i>
+                                Approve & Activate
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="p-0">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                </div>
+                                <div class="empty-state-title">All Payments Verified</div>
+                                <div class="empty-state-text">There are currently no pending subscription payments requiring review.</div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const institutionsCount = Number("{{ institutions_count|default:0 }}");
+    const studentsCount = Number("{{ independent_students_count|default:0 }}");
+    const subscriptionsCount = Number("{{ active_subscriptions_count|default:0 }}");
+    const pendingCount = Number("{{ pending_payments.count|default:0 }}");
+
+    const analyticsCanvas = document.getElementById("systemAnalyticsChart");
+    if (analyticsCanvas) {
+        new Chart(analyticsCanvas.getContext("2d"), {
+            type: "pie",
+            data: {
+                labels: ["Institutions", "Students", "Subscriptions", "Pending Payments"],
+                datasets: [{
+                    data: [institutionsCount, studentsCount, subscriptionsCount, pendingCount],
+                    backgroundColor: [
+                        "#1677B8",
+                        "#16866F",
+                        "#7651A8",
+                        "#C58A19"
+                    ],
+                    borderColor: "#FFFFFF",
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { family: "Inter", size: 12, weight: "600" },
+                            color: "#182433",
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: "#10283F",
+                        titleColor: "#FFFFFF",
+                        bodyColor: "#E9EEF3",
+                        borderColor: "#2E4D68",
+                        borderWidth: 1,
+                        padding: 12,
+                        cornerRadius: 8
+                    }
+                },
+                scales: {
+                    x: { display: false },
+                    y: { display: false }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

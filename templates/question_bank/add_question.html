@@ -1,0 +1,558 @@
+{% extends 'base.html' %}
+
+{% block title %}Create & Import Questions - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<!-- Google Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --navy-medium: #244762;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-dark: #10283F;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --blue-light: #DDECF5;
+    --green: #16866F;
+    --green-light: #DCEFEA;
+    --purple: #7651A8;
+    --gold: #C58A19;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+
+body {
+    background: linear-gradient(180deg, #F8FAFC 0%, #F4F6F8 100%) !important;
+    color: var(--text) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 16px !important;
+    position: relative;
+    min-height: 100vh;
+}
+
+body::before {
+    content: "AI UNIVERSITY";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-family: 'Manrope', sans-serif;
+    font-size: 13vw;
+    font-weight: 800;
+    color: rgba(105, 117, 134, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: 4px;
+}
+
+.builder-container {
+    position: relative;
+    z-index: 1;
+    max-width: 1000px;
+    margin: 25px auto 45px auto;
+    padding: 0 15px;
+}
+
+.builder-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 35px;
+    box-shadow: var(--shadow-sm);
+}
+
+.builder-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.builder-title {
+    font-family: 'Manrope', sans-serif;
+    color: var(--navy-dark);
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.switch-btn {
+    background: #F1F5F8;
+    color: var(--navy);
+    border: 1px solid #DCE4EA;
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.switch-btn:hover {
+    background: var(--navy);
+    color: #FFFFFF;
+}
+
+.step-card {
+    background: #FBFCFD;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 22px;
+    transition: border-color 0.2s ease;
+}
+
+.step-card:hover {
+    border-color: #CBD5DF;
+}
+
+.step-section-title {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    color: var(--navy-dark);
+    font-size: 16px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.form-label {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    color: var(--navy-dark);
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.form-select, .form-control {
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    padding: 12px 16px !important;
+    font-size: 15px !important;
+    color: var(--text) !important;
+    background-color: #FFFFFF !important;
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: var(--blue) !important;
+    box-shadow: 0 0 0 3px rgba(22, 119, 184, 0.1) !important;
+}
+
+/* Custom styling for file input buttons */
+input[type="file"]::file-selector-button {
+    background-color: var(--navy);
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    margin-right: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.2s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background-color: var(--navy-dark);
+}
+
+.save-btn {
+    background: var(--navy) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 14px !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    width: 100%;
+    transition: background 0.2s ease;
+    box-shadow: 0 4px 12px rgba(23, 50, 77, 0.15);
+}
+
+.save-btn:hover {
+    background: var(--navy-dark) !important;
+}
+
+/* Modal Content Clean White Styling */
+.modal-content {
+    background-color: #FFFFFF !important;
+    color: var(--text) !important;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    padding: 10px;
+}
+
+.modal-content .form-label,
+.modal-content .modal-title,
+.modal-content h6,
+.modal-content p,
+.modal-content span {
+    color: var(--text-dark) !important;
+}
+
+.modal-content .text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Green Action Button for Excel Upload */
+.modal-import-btn {
+    background: var(--green) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 10px 20px !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    transition: background 0.2s ease !important;
+    box-shadow: 0 4px 12px rgba(22, 134, 111, 0.2) !important;
+}
+
+.modal-import-btn:hover {
+    background: #116D5B !important;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="builder-container">
+    <div class="builder-card">
+        
+        <!-- Header -->
+        <div class="builder-header">
+            <div>
+                <h3 class="builder-title">
+                    <i class="bi bi-plus-circle me-2" style="color: var(--navy);"></i>
+                    Unified Question Creator
+                </h3>
+                <div class="text-muted" style="font-size: 13px; margin-top: 4px;">
+                    Create single assessment items or bulk-import via verified data sheets.
+                </div>
+            </div>
+            <div>
+                <button type="button" class="btn btn-success btn-sm me-2 fw-bold px-3 py-2" style="border-radius: 9px;" data-bs-toggle="modal" data-bs-target="#excelModal">
+                    <i class="bi bi-file-earmark-excel me-1"></i> Import from Excel
+                </button>
+                <a href="javascript:history.back()" class="switch-btn">Return to Dashboard</a>
+            </div>
+        </div>
+
+        <!-- Prominent Save/Error Status Alerts -->
+        {% if messages %}
+            {% for m in messages %}
+                <div class="alert alert-{% if m.tags == 'error' %}danger{% else %}{{ m.tags }}{% endif %} alert-dismissible fade show fw-bold mb-4 shadow-sm" role="alert" style="border-radius: 10px; font-size: 14px;">
+                    {{ m }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if form.errors %}
+            <div class="alert alert-danger mb-4 shadow-sm" style="border-radius: 10px;">
+                <h6 class="fw-bold m-0 mb-1">⚠️ Form Save Errors:</h6>
+                <ul class="mb-0 ps-3 small">
+                    {% for field, errors in form.errors.items %}
+                        <li><strong>{{ field|title }}:</strong> {{ errors|striptags }}</li>
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Flow & Hierarchy Scoping -->
+            <div class="step-card">
+                <div class="step-section-title">1. Academic Classification</div>
+                <div class="mb-3">
+                    <label class="form-label">Assessment Flow</label>
+                    {{ form.assessment_flow }}
+                </div>
+
+                <!-- Board Hierarchy -->
+                <div id="board_hierarchy_box" class="mt-3 pt-3 border-top">
+                    <div class="row g-3">
+                        <div class="col-md-4"><label class="form-label small">Board Class</label>{{ form.board_class }}</div>
+                        <div class="col-md-4"><label class="form-label small">Subject</label>{{ form.board_subject }}</div>
+                        <div class="col-md-4"><label class="form-label small">Chapter</label>{{ form.board_chapter }}</div>
+                        <div class="col-md-6 mt-3"><label class="form-label small">Topic</label>{{ form.board_topic }}</div>
+                        <div class="col-md-6 mt-3"><label class="form-label small">SubTopic</label>{{ form.board_subtopic }}</div>
+                    </div>
+                </div>
+
+                <!-- Competitive Hierarchy -->
+                <div id="competitive_hierarchy_box" class="mt-3 pt-3 border-top" style="display:none;">
+                    <div class="row g-3">
+                        <div class="col-md-4"><label class="form-label small">Competitive Exam</label>{{ form.competitive_exam }}</div>
+                        <div class="col-md-4"><label class="form-label small">Module</label>{{ form.competitive_module }}</div>
+                        <div class="col-md-4"><label class="form-label small">SubModule</label>{{ form.competitive_submodule }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Statement & Media -->
+            <div class="step-card">
+                <div class="step-section-title">2. Question Statement & Media</div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Question Text <span class="text-muted small fw-normal">(Optional if image is provided)</span></label>
+                    {{ form.question_text }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-dark">Question Image / Diagram <span class="text-muted small fw-normal">(Optional)</span></label>
+                    {{ form.question_image }}
+                </div>
+
+                <!-- Options -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Option A</label>
+                        {{ form.option_a }}
+                        <div class="mt-2"><label class="small text-muted">Image A (Optional)</label>{{ form.option_a_image }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Option B</label>
+                        {{ form.option_b }}
+                        <div class="mt-2"><label class="small text-muted">Image B (Optional)</label>{{ form.option_b_image }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Option C</label>
+                        {{ form.option_c }}
+                        <div class="mt-2"><label class="small text-muted">Image C (Optional)</label>{{ form.option_c_image }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Option D</label>
+                        {{ form.option_d }}
+                        <div class="mt-2"><label class="small text-muted">Image D (Optional)</label>{{ form.option_d_image }}</div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-success">Correct Option</label>
+                    {{ form.correct_option }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Explanation / Hint</label>
+                    {{ form.explanation }}
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label text-danger">YouTube Solution Video URL (Optional)</label>
+                    {{ form.youtube_url }}
+                </div>
+            </div>
+
+            <button type="submit" class="save-btn mt-3">
+                <i class="bi bi-check2-circle me-1"></i> Save Question
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal for Excel Import with Full Hierarchy Mapping -->
+<div class="modal fade" id="excelModal" tabindex="-1" aria-labelledby="excelModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form action="{% url 'question_bank:import_questions_excel' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-header border-bottom-0 pb-0">
+          <h5 class="builder-title fs-5" id="excelModalLabel">Bulk Import via Excel</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body pt-3">
+          <div class="mb-3">
+            <label class="form-label">Assessment Flow</label>
+            <select name="assessment_flow" id="excel_assessment_flow" class="form-select fw-bold">
+              <option value="board">Board Type</option>
+              <option value="competitive">Competitive Type</option>
+            </select>
+          </div>
+
+          <!-- Board Hierarchy Mapping -->
+          <div id="excel_board_box" class="step-card bg-white border">
+            <h6 class="step-section-title fs-6">Board Classification Scope</h6>
+            <div class="row g-2">
+              <div class="col-md-4"><label class="form-label small">Class</label>{{ form.board_class }}</div>
+              <div class="col-md-4"><label class="form-label small">Subject</label><select name="excel_board_subject" id="excel_board_subject" class="form-select"><option value="">-- Select Subject --</option></select></div>
+              <div class="col-md-4"><label class="form-label small">Chapter</label><select name="excel_board_chapter" id="excel_board_chapter" class="form-select"><option value="">-- Select Chapter --</option></select></div>
+              <div class="col-md-6 mt-2"><label class="form-label small">Topic</label><select name="excel_board_topic" id="excel_board_topic" class="form-select"><option value="">-- Select Topic --</option></select></div>
+              <div class="col-md-6 mt-2"><label class="form-label small">SubTopic</label><select name="excel_board_subtopic" id="excel_board_subtopic" class="form-select"><option value="">-- Select SubTopic --</option></select></div>
+            </div>
+          </div>
+
+          <!-- Competitive Hierarchy Mapping -->
+          <div id="excel_competitive_box" class="step-card bg-white border" style="display:none;">
+            <h6 class="step-section-title fs-6">Competitive Classification Scope</h6>
+            <div class="row g-2">
+              <div class="col-md-4"><label class="form-label small">Exam</label>{{ form.competitive_exam }}</div>
+              <div class="col-md-4"><label class="form-label small">Module</label><select name="excel_competitive_module" id="excel_competitive_module" class="form-select"><option value="">-- Select Module --</option></select></div>
+              <div class="col-md-4"><label class="form-label small">SubModule</label><select name="excel_competitive_submodule" id="excel_competitive_submodule" class="form-select"><option value="">-- Select SubModule --</option></select></div>
+            </div>
+          </div>
+
+          <p class="small text-muted mb-2">
+            Upload an Excel sheet (<code>.xlsx</code>) with columns: <strong>question_text, option_a, option_b, option_c, option_d, correct_option, explanation, youtube_url</strong>.
+          </p>
+          <div class="mb-3">
+            <label class="form-label">Select Excel File</label>
+            <input type="file" name="excel_file" class="form-control" accept=".xlsx, .xls" required>
+          </div>
+        </div>
+        <div class="modal-footer border-top-0">
+          <button type="button" class="btn btn-outline-secondary px-4 py-2" style="border-radius: 9px;" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="modal-import-btn">
+              <i class="bi bi-cloud-arrow-up-fill me-1"></i> Upload & Import
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const flowSelect = document.getElementById('id_assessment_flow');
+    const boardBox = document.getElementById('board_hierarchy_box');
+    const compBox = document.getElementById('competitive_hierarchy_box');
+
+    function toggleFlow() {
+        if (flowSelect.value === 'board') {
+            boardBox.style.display = 'block';
+            compBox.style.display = 'none';
+        } else {
+            boardBox.style.display = 'none';
+            compBox.style.display = 'block';
+        }
+    }
+
+    if (flowSelect) {
+        flowSelect.addEventListener('change', toggleFlow);
+        toggleFlow();
+    }
+
+    // Excel Modal Flow Switch
+    const excelFlow = document.getElementById('excel_assessment_flow');
+    const excelBoardBox = document.getElementById('excel_board_box');
+    const excelCompBox = document.getElementById('excel_competitive_box');
+
+    if (excelFlow) {
+        excelFlow.addEventListener('change', function() {
+            if (this.value === 'board') {
+                excelBoardBox.style.display = 'block';
+                excelCompBox.style.display = 'none';
+            } else {
+                excelBoardBox.style.display = 'none';
+                excelCompBox.style.display = 'block';
+            }
+        });
+    }
+
+    async function populateSelect(url, selectEl, defaultText) {
+        selectEl.innerHTML = `<option value="">${defaultText}</option>`;
+        if (!url) return;
+        const res = await fetch(url);
+        const data = await res.json();
+        data.forEach(item => {
+            selectEl.innerHTML += `<option value="${item.id}">${item.title || item.name}</option>`;
+        });
+    }
+
+    // Main Form Cascades
+    const boardClassEl = document.getElementById('id_board_class');
+    const boardSubjectEl = document.getElementById('id_board_subject');
+    const boardChapterEl = document.getElementById('id_board_chapter');
+    const boardTopicEl = document.getElementById('id_board_topic');
+    const compExamEl = document.getElementById('id_competitive_exam');
+    const compModuleEl = document.getElementById('id_competitive_module');
+
+    if (boardClassEl) {
+        boardClassEl.addEventListener('change', function() {
+            populateSelect(this.value ? `/question-bank/api/subjects/${this.value}/` : '', document.getElementById('id_board_subject'), '-- Select Subject --');
+        });
+    }
+    if (boardSubjectEl) {
+        boardSubjectEl.addEventListener('change', function() {
+            populateSelect(this.value ? `/question-bank/api/chapters/${this.value}/` : '', document.getElementById('id_board_chapter'), '-- Select Chapter --');
+        });
+    }
+    if (boardChapterEl) {
+        boardChapterEl.addEventListener('change', function() {
+            populateSelect(this.value ? `/question-bank/api/topics/${this.value}/` : '', document.getElementById('id_board_topic'), '-- Select Topic --');
+        });
+    }
+    if (boardTopicEl) {
+        boardTopicEl.addEventListener('change', function() {
+            populateSelect(this.value ? `/question-bank/api/subtopics/${this.value}/` : '', document.getElementById('id_board_subtopic'), '-- Select SubTopic --');
+        });
+    }
+
+    if (compExamEl) {
+        compExamEl.addEventListener('change', function() {
+            populateSelect(this.value ? `/question-bank/api/modules/${this.value}/` : '', document.getElementById('id_competitive_module'), '-- Select Module --');
+        });
+    }
+    if (compModuleEl) {
+        compModuleEl.addEventListener('change', function() {
+            populateSelect(this.value ? `/question-bank/api/submodules/${this.value}/` : '', document.getElementById('id_competitive_submodule'), '-- Select SubModule --');
+        });
+    }
+
+    // Excel Modal Cascades
+    const excelBoardSubj = document.getElementById('excel_board_subject');
+    const excelBoardChap = document.getElementById('excel_board_chapter');
+    const excelBoardTop = document.getElementById('excel_board_topic');
+    const excelCompMod = document.getElementById('excel_competitive_module');
+
+    document.querySelectorAll('#excelModal select[name="board_class"]').forEach(el => {
+        el.addEventListener('change', function() {
+            populateSelect(this.value ? `/question-bank/api/subjects/${this.value}/` : '', excelBoardSubj, '-- Select Subject --');
+        });
+    });
+    if (excelBoardSubj) {
+        excelBoardSubj.addEventListener('change', function() {
+            populateSelect(this.value ? `/question-bank/api/chapters/${this.value}/` : '', excelBoardChap, '-- Select Chapter --');
+        });
+    }
+    if (excelBoardChap) {
+        excelBoardChap.addEventListener('change', function() {
+            populateSelect(this.value ? `/question-bank/api/topics/${this.value}/` : '', excelBoardTop, '-- Select Topic --');
+        });
+    }
+    if (excelBoardTop) {
+        excelBoardTop.addEventListener('change', function() {
+            populateSelect(this.value ? `/question-bank/api/subtopics/${this.value}/` : '', document.getElementById('excel_board_subtopic'), '-- Select SubTopic --');
+        });
+    }
+
+    document.querySelectorAll('#excelModal select[name="competitive_exam"]').forEach(el => {
+        el.addEventListener('change', function() {
+            populateSelect(this.value ? `/question-bank/api/modules/${this.value}/` : '', excelCompMod, '-- Select Module --');
+        });
+    });
+    if (excelCompMod) {
+        excelCompMod.addEventListener('change', function() {
+            populateSelect(this.value ? `/question-bank/api/submodules/${this.value}/` : '', document.getElementById('excel_competitive_submodule'), '-- Select SubModule --');
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Pending - AI University</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light d-flex align-items-center justify-content-center vh-100">
+<div class="card shadow-sm border-0 rounded-4 p-5 text-center bg-white" style="max-width: 500px; width: 100%;">
+    <div class="mb-3 text-warning">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16">
+            <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.032.984a7 7 0 0 0-.938-.598l.452-.88a8 8 0 0 1 1.035.657zM3.55 1.534a7 7 0 0 0-.992.536l.6 1.05a8 8 0 0 1 .914-.492zM14 8A6 6 0 1 1 6 2a6 6 0 0 1 8 6"/>
+            <path d="M8.5 5.5a.5.5 0 0 0-1 0v3.25a.5.5 0 0 0 1.025.15l1.5-1.5a.5.5 0 0 0-.707-.708L8.5 8.793z"/>
+        </svg>
+    </div>
+    <h3 class="fw-bold text-dark mb-2">Account Pending Activation</h3>
+    <p class="text-muted small mb-4">
+        Your subscription is currently pending payment verification. Please submit your payment receipt or transaction reference so our team can approve your access.
+    </p>
+    <div class="d-grid gap-2">
+        <a href="{% url 'subscriptions:submit_payment' %}" class="btn btn-primary fw-semibold py-2">Submit Payment Receipt</a>
+        <a href="{% url 'accounts:logout' %}" class="btn btn-outline-secondary py-2">Log Out</a>
+    </div>
+</div>
+</body>
+</html>

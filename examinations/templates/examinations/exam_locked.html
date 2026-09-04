@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Access Restricted - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --text: #182433;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --red-subtle: #FDF2F2;
+    --red-border: #F8B4B4;
+    --red-text: #9B2C2C;
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+body { background: var(--page-bg) !important; color: var(--text) !important; font-family: 'Inter', sans-serif !important; }
+
+.watermark-container {
+    position: relative;
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.watermark-container::before {
+    content: "AI UNIVERSITY";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-size: 8vw;
+    font-weight: 900;
+    font-family: 'Manrope', sans-serif;
+    color: rgba(23, 50, 77, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+}
+.restricted-content-wrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 600px;
+    padding: 0 15px;
+}
+.restricted-card {
+    background: var(--card);
+    border: 1px solid var(--red-border);
+    border-top: 5px solid var(--red-text);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    padding: 40px 30px;
+    text-align: center;
+}
+.restricted-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--red-subtle);
+    color: var(--red-text);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin: 0 auto 20px auto;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="watermark-container">
+    <div class="restricted-content-wrapper">
+        <div class="restricted-card">
+            <div class="restricted-icon">
+                <i class="bi bi-shield-lock-fill"></i>
+            </div>
+            <h3 class="fw-extrabold mb-3" style="font-family: 'Manrope', sans-serif; color: var(--navy-dark); font-size: 22px;">Access Restricted</h3>
+            <p class="text-muted mb-4 small" style="line-height: 1.6;">This assessment belongs to a different institution or is restricted based on your account profile settings.</p>
+            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-primary px-5 py-2 rounded-pill fw-bold shadow-sm" style="background-color: var(--blue); border-color: var(--blue);">Return to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

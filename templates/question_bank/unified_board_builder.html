@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+
+{% block title %}Unified Board Hierarchy Builder - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<!-- Google Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --navy-medium: #244762;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-dark: #10283F;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --blue-light: #DDECF5;
+    --green: #16866F;
+    --green-light: #DCEFEA;
+    --purple: #7651A8;
+    --gold: #C58A19;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+
+body {
+    background: linear-gradient(180deg, #F8FAFC 0%, #F4F6F8 100%) !important;
+    color: var(--text) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 16px !important;
+    position: relative;
+    min-height: 100vh;
+}
+
+body::before {
+    content: "AI UNIVERSITY";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-family: 'Manrope', sans-serif;
+    font-size: 13vw;
+    font-weight: 800;
+    color: rgba(105, 117, 134, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: 4px;
+}
+
+.builder-container {
+    position: relative;
+    z-index: 1;
+    max-width: 950px;
+    margin: 25px auto 45px auto;
+    padding: 0 15px;
+}
+
+.builder-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 35px;
+    box-shadow: var(--shadow-sm);
+}
+
+.builder-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.builder-title {
+    font-family: 'Manrope', sans-serif;
+    color: var(--navy-dark);
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.switch-btn {
+    background: #F1F5F8;
+    color: var(--navy);
+    border: 1px solid #DCE4EA;
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.switch-btn:hover {
+    background: var(--navy);
+    color: #FFFFFF;
+}
+
+.step-card {
+    background: #FBFCFD;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s ease;
+}
+
+.step-card:hover {
+    border-color: #CBD5DF;
+}
+
+.step-label {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    color: var(--navy-dark);
+    font-size: 15px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.form-select, .form-control {
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    padding: 12px 16px !important;
+    font-size: 15px !important;
+    color: var(--text) !important;
+    background-color: #FFFFFF !important;
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: var(--blue) !important;
+    box-shadow: 0 0 0 3px rgba(22, 119, 184, 0.1) !important;
+}
+
+.save-btn {
+    background: var(--navy) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 14px !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    width: 100%;
+    transition: background 0.2s ease;
+    box-shadow: 0 4px 12px rgba(23, 50, 77, 0.15);
+}
+
+.save-btn:hover {
+    background: var(--navy-dark) !important;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="builder-container">
+    <div class="builder-card">
+        <div class="builder-header">
+            <div>
+                <h3 class="builder-title">
+                    <i class="bi bi-diagram-3 me-2" style="color: var(--navy);"></i>
+                    Board Hierarchy Builder
+                </h3>
+                <div class="text-muted" style="font-size: 13px; margin-top: 4px;">
+                    Structure academic classes, subjects, chapters, topics, and subtopics.
+                </div>
+            </div>
+            <a href="{% url 'question_bank:unified_competitive_builder' %}" class="switch-btn">
+                <i class="bi bi-trophy me-1"></i> Switch to Competitive
+            </a>
+        </div>
+
+        {% if messages %}
+            {% for m in messages %}
+                <div class="alert alert-success border-0 shadow-sm mb-4" style="background: var(--green-light); color: var(--green); border-radius: 10px; font-size: 14px; font-weight: 600;">
+                    <i class="bi bi-check-circle-fill me-2"></i>{{ m }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- Step 1: Class -->
+            <div class="step-card">
+                <label class="step-label">1. Select or Create Class</label>
+                <select name="class_select" id="class_select" class="form-select mb-3">
+                    <option value="">-- Select Existing Class --</option>
+                    {% for c in classes %}
+                        <option value="{{ c.id }}">{{ c.name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="text" name="new_class_name" placeholder="OR Enter New Class Name (e.g. Class 11)" class="form-control">
+            </div>
+
+            <!-- Step 2: Subject -->
+            <div class="step-card" id="subject_box" style="display:none;">
+                <label class="step-label">2. Select or Create Subject</label>
+                <select name="subject_select" id="subject_select" class="form-select mb-3">
+                    <option value="">-- Select Existing Subject --</option>
+                </select>
+                <input type="text" name="new_subject_name" placeholder="OR Enter New Subject Name (e.g. Biology)" class="form-control">
+            </div>
+
+            <!-- Step 3: Chapter -->
+            <div class="step-card" id="chapter_box" style="display:none;">
+                <label class="step-label">3. Select or Create Chapter</label>
+                <select name="chapter_select" id="chapter_select" class="form-select mb-3">
+                    <option value="">-- Select Existing Chapter --</option>
+                </select>
+                <input type="text" name="new_chapter_name" placeholder="OR Enter New Chapter Name (e.g. Cell Biology)" class="form-control">
+            </div>
+
+            <!-- Step 4: Topic -->
+            <div class="step-card" id="topic_box" style="display:none;">
+                <label class="step-label">4. Select or Create Topic</label>
+                <select name="topic_select" id="topic_select" class="form-select mb-3">
+                    <option value="">-- Select Existing Topic --</option>
+                </select>
+                <input type="text" name="new_topic_name" placeholder="OR Enter New Topic Name (e.g. Mitochondria)" class="form-control">
+            </div>
+
+            <!-- Step 5: SubTopic -->
+            <div class="step-card" id="subtopic_box" style="display:none;">
+                <label class="step-label">5. Create SubTopic</label>
+                <input type="text" name="new_subtopic_name" placeholder="Enter SubTopic Name (e.g. ATP Synthesis)" class="form-control">
+            </div>
+
+            <button type="submit" class="save-btn mt-3">
+                <i class="bi bi-check2-circle me-1"></i> Save Hierarchy Entry
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const classSel = document.getElementById('class_select');
+    const subjSel = document.getElementById('subject_select');
+    const chapSel = document.getElementById('chapter_select');
+    const topSel = document.getElementById('topic_select');
+
+    const subjBox = document.getElementById('subject_box');
+    const chapBox = document.getElementById('chapter_box');
+    const topBox = document.getElementById('topic_box');
+    const subTopBox = document.getElementById('subtopic_box');
+
+    classSel.addEventListener('change', async function() {
+        if (this.value) {
+            subjBox.style.display = 'block';
+            const res = await fetch(`/question-bank/api/subjects/${this.value}/`);
+            const data = await res.json();
+            subjSel.innerHTML = '<option value="">-- Select Existing Subject --</option>';
+            data.forEach(s => subjSel.innerHTML += `<option value="${s.id}">${s.name || s.title}</option>`);
+        } else {
+            subjBox.style.display = 'none';
+        }
+    });
+
+    subjSel.addEventListener('change', async function() {
+        if (this.value) {
+            chapBox.style.display = 'block';
+            const res = await fetch(`/question-bank/api/chapters/${this.value}/`);
+            const data = await res.json();
+            chapSel.innerHTML = '<option value="">-- Select Existing Chapter --</option>';
+            data.forEach(c => chapSel.innerHTML += `<option value="${c.id}">${c.title || c.name}</option>`);
+        } else {
+            chapBox.style.display = 'none';
+        }
+    });
+
+    chapSel.addEventListener('change', async function() {
+        if (this.value) {
+            topBox.style.display = 'block';
+            const res = await fetch(`/question-bank/api/topics/${this.value}/`);
+            const data = await res.json();
+            topSel.innerHTML = '<option value="">-- Select Existing Topic --</option>';
+            data.forEach(t => topSel.innerHTML += `<option value="${t.id}">${t.title || t.name}</option>`);
+        } else {
+            topBox.style.display = 'none';
+        }
+    });
+
+    topSel.addEventListener('change', function() {
+        if (this.value) {
+            subTopBox.style.display = 'block';
+        } else {
+            subTopBox.style.display = 'none';
+        }
+    });
+</script>
+{% endblock %}

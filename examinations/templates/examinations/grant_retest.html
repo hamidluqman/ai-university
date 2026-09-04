@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Grant Class Retest: {{ exam.title }} - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --text: #182433;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --warning-bg: #FEF3C7;
+    --warning-border: #F59E0B;
+    --warning-text: #92400E;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+body { background: var(--page-bg) !important; color: var(--text) !important; font-family: 'Inter', sans-serif !important; }
+
+.watermark-container {
+    position: relative;
+    min-height: 85vh;
+}
+.watermark-container::before {
+    content: "AI UNIVERSITY";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-size: 8vw;
+    font-weight: 900;
+    font-family: 'Manrope', sans-serif;
+    color: rgba(23, 50, 77, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+}
+.retest-content-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+.card-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    padding: 30px;
+    margin-bottom: 25px;
+}
+.header-box {
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+    border-radius: 16px;
+    padding: 30px;
+    color: #FFFFFF;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 25px;
+}
+.warning-box {
+    background: var(--warning-bg);
+    border: 1px solid var(--warning-border);
+    color: var(--warning-text);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 25px;
+    font-size: 14px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="watermark-container py-3">
+    <div class="container my-4 retest-content-wrapper" style="max-width: 800px;">
+        
+        <!-- Header Card -->
+        <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <span class="badge bg-warning text-dark px-3 py-1 mb-2 rounded-pill fw-bold" style="font-size: 11px;">Teacher Controls</span>
+                <h2 class="fw-extrabold text-white mt-1 mb-1" style="font-family: 'Manrope', sans-serif; font-size: 24px;">Grant Class Retest</h2>
+                <p class="text-white-50 small mb-0">Authorize a retest permission for the entire class cohort.</p>
+            </div>
+            <a href="{% url 'examinations:results_dashboard' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+                <i class="bi bi-arrow-left"></i> Dashboard
+            </a>
+        </div>
+
+        <!-- Form Card -->
+        <div class="card-box bg-white">
+            <p class="text-muted mb-2 small text-uppercase fw-bold">Target Assessment</p>
+            <h4 class="fw-bold text-dark mb-4" style="font-family: 'Manrope', sans-serif;">{{ exam.title }}</h4>
+            
+            <div class="warning-box">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> Granting a retest will allow all students enrolled in this course/class to retake the assessment.
+            </div>
+
+            <form method="post" class="d-flex gap-3 align-items-center flex-wrap">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-warning px-4 py-2 rounded-pill fw-bold text-dark shadow-sm" style="background-color: #F59E0B; border-color: #F59E0B;">
+                    <i class="bi bi-arrow-repeat me-1"></i> Grant Retest Permission for Entire Class
+                </button>
+                <a href="{% url 'examinations:results_dashboard' %}" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold">Cancel</a>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
