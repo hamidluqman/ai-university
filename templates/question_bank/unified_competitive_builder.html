@@ -79,6 +79,8 @@ body::before {
     margin-bottom: 28px;
     padding-bottom: 18px;
     border-bottom: 1px solid var(--border-light);
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 .builder-title {
@@ -89,20 +91,28 @@ body::before {
     margin: 0;
 }
 
-.switch-btn {
-    background: #F1F5F8;
-    color: var(--navy);
-    border: 1px solid #DCE4EA;
+.action-btn-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.excel-btn {
+    background: var(--green-light);
+    color: var(--green);
+    border: 1px solid #B8E2D7;
     padding: 9px 16px;
     border-radius: 10px;
     font-size: 13px;
     font-weight: 700;
     text-decoration: none;
     transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
 }
 
-.switch-btn:hover {
-    background: var(--navy);
+.excel-btn:hover {
+    background: var(--green);
     color: #FFFFFF;
 }
 
@@ -174,9 +184,16 @@ body::before {
                     Structure competitive exams, modules, and submodules.
                 </div>
             </div>
-            <a href="{% url 'question_bank:unified_board_builder' %}" class="switch-btn">
-                <i class="bi bi-book me-1"></i> Switch to Board Builder
-            </a>
+            <div class="action-btn-group">
+                {% if request.user.is_superuser %}
+                <button type="button" class="excel-btn" data-bs-toggle="modal" data-bs-target="#excelImportModal">
+                    <i class="bi bi-file-earmark-excel-fill me-1"></i> Bulk Excel Import
+                </button>
+                {% endif %}
+                <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-outline-secondary btn-sm fw-bold px-3 py-2" style="border-radius: 10px; font-size: 13px;">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+                </a>
+            </div>
         </div>
 
         {% if messages %}
@@ -223,6 +240,37 @@ body::before {
         </form>
     </div>
 </div>
+
+{% if request.user.is_superuser %}
+<!-- Excel Import Modal -->
+<div class="modal fade" id="excelImportModal" tabindex="-1" aria-labelledby="excelImportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header border-bottom px-4 pt-4 pb-3">
+                <h5 class="modal-title fw-bold text-dark" id="excelImportModalLabel">
+                    <i class="bi bi-file-earmark-excel-fill text-success me-2"></i>Bulk Import Competitive Hierarchies
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{% url 'question_bank:bulk_import_hierarchies' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="hierarchy_type" value="competitive">
+                <div class="modal-body p-4">
+                    <p class="text-muted small mb-3">Upload an Excel (.xlsx) file containing your columns (Exam, Module, Submodule) to instantly bulk-populate the competitive hierarchy database.</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-uppercase text-secondary">Select Excel Spreadsheet</label>
+                        <input type="file" name="excel_file" class="form-control" accept=".xlsx, .xls" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-top px-4 pb-4 pt-3">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-pill fw-semibold" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success btn-sm px-4 rounded-pill fw-bold">Upload & Process</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block extra_js %}
