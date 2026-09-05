@@ -3,7 +3,6 @@
 {% block title %}Unified Competitive Hierarchy Builder - AI University LMS{% endblock %}
 
 {% block extra_head %}
-<!-- Google Font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -24,6 +23,8 @@
     --blue-light: #DDECF5;
     --green: #16866F;
     --green-light: #DCEFEA;
+    --red: #D93838;
+    --red-light: #FDE8E8;
     --purple: #7651A8;
     --gold: #C58A19;
     --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
@@ -216,6 +217,37 @@ body::before {
     background-color: #FAFCFE !important;
 }
 
+/* Custom Action Buttons */
+.btn-action-edit {
+    background: var(--blue-light);
+    color: var(--blue);
+    border: none;
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+.btn-action-edit:hover {
+    background: var(--blue);
+    color: #FFFFFF;
+}
+
+.btn-action-delete {
+    background: var(--red-light);
+    color: var(--red);
+    border: none;
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+.btn-action-delete:hover {
+    background: var(--red);
+    color: #FFFFFF;
+}
+
 /* Custom Styled Theme Modal */
 .custom-modal-content {
     background: var(--card);
@@ -300,7 +332,6 @@ body::before {
         <form method="POST">
             {% csrf_token %}
 
-            <!-- Step 1: Exam -->
             <div class="step-card">
                 <label class="step-label">1. Select or Create Competitive Exam</label>
                 <select name="exam_select" id="exam_select" class="form-select mb-3">
@@ -312,7 +343,6 @@ body::before {
                 <input type="text" name="new_exam_name" placeholder="OR Enter New Exam Name (e.g. MDCAT)" class="form-control">
             </div>
 
-            <!-- Step 2: Module -->
             <div class="step-card" id="module_box" style="display:none;">
                 <label class="step-label">2. Select or Create Module</label>
                 <select name="module_select" id="module_select" class="form-select mb-3">
@@ -321,7 +351,6 @@ body::before {
                 <input type="text" name="new_module_name" placeholder="OR Enter New Module Name (e.g. Organic Chemistry)" class="form-control">
             </div>
 
-            <!-- Step 3: SubModule -->
             <div class="step-card" id="submodule_box" style="display:none;">
                 <label class="step-label">3. Create SubModule</label>
                 <input type="text" name="new_submodule_name" placeholder="Enter SubModule Name (e.g. Hydrocarbons)" class="form-control">
@@ -333,7 +362,6 @@ body::before {
         </form>
     </div>
 
-    <!-- Created Competitive Hierarchies List Section -->
     <div class="hierarchy-list-card">
         <h5 class="fw-bold mb-3" style="color: var(--navy-dark); font-family: 'Manrope', sans-serif;">
             <i class="bi bi-list-nested me-2 text-primary"></i>Existing Competitive Exams & Modules
@@ -361,7 +389,21 @@ body::before {
                             {% endif %}
                         </td>
                         <td class="text-end">
-                            <a href="javascript:void(0);" class="text-primary fw-bold text-decoration-none small">View Details</a>
+                            <div class="d-flex align-items-center justify-content-end gap-2">
+                                <button type="button" class="btn btn-link text-primary fw-bold text-decoration-none small p-0 me-1" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#detailsModal" 
+                                        data-examname="{{ e.title }}"
+                                        data-examid="{{ e.id }}">
+                                    View
+                                </button>
+                                <button type="button" class="btn-action-edit" onclick="alert('Edit feature for exam {{ e.title }}')">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </button>
+                                <button type="button" class="btn-action-delete" onclick="if(confirm('Are you sure you want to delete {{ e.title }}?')) alert('Delete action triggered');">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </div>
                         </td>
                     </tr>
                     {% empty %}
@@ -379,7 +421,6 @@ body::before {
 </div>
 
 {% if request.user.is_superuser %}
-<!-- Theme-Matched Excel Import Modal -->
 <div class="modal fade" id="excelImportModal" tabindex="-1" aria-labelledby="excelImportModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content custom-modal-content">
@@ -408,6 +449,30 @@ body::before {
     </div>
 </div>
 {% endif %}
+
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content custom-modal-content">
+            <div class="custom-modal-header d-flex align-items-center justify-content-between">
+                <h5 class="custom-modal-title" id="detailsModalLabel">
+                    <i class="bi bi-trophy text-primary me-2"></i>Competitive Exam Details: <span id="modalExamName" class="text-dark"></span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="custom-modal-body" style="max-height: 60vh; overflow-y: auto;">
+                <div id="modalLoading" class="text-center py-4">
+                    <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
+                    <span class="text-muted ms-2 small">Loading modules & submodules...</span>
+                </div>
+                <div id="modalBodyContent" style="display: none;">
+                    </div>
+            </div>
+            <div class="custom-modal-footer d-flex justify-content-end">
+                <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-3 fw-semibold" data-bs-dismiss="modal" style="border-radius: 10px;">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
@@ -439,5 +504,49 @@ body::before {
             subModBox.style.display = 'none';
         }
     });
+
+    // View Details Modal Handler
+    const detailsModal = document.getElementById('detailsModal');
+    if (detailsModal) {
+        detailsModal.addEventListener('show.bs.modal', async function (event) {
+            const button = event.relatedTarget;
+            const examName = button.getAttribute('data-examname');
+            const examId = button.getAttribute('data-examid');
+
+            document.getElementById('modalExamName').textContent = examName;
+            const loadingEl = document.getElementById('modalLoading');
+            const contentEl = document.getElementById('modalBodyContent');
+
+            loadingEl.style.display = 'block';
+            contentEl.style.display = 'none';
+            contentEl.innerHTML = '';
+
+            try {
+                const res = await fetch(`/question-bank/api/modules/${examId}/`);
+                const modules = await res.json();
+
+                if (modules.length === 0) {
+                    contentEl.innerHTML = '<p class="text-muted text-center py-3 small">No modules found for this competitive exam.</p>';
+                } else {
+                    let html = '<div class="d-flex flex-column gap-2">';
+                    for (let mod of modules) {
+                        html += `
+                            <div class="p-3 border rounded-3 bg-light">
+                                <div class="fw-bold text-dark small">
+                                    <i class="bi bi-journal-text text-primary me-2"></i>${mod.title}
+                                </div>
+                            </div>`;
+                    }
+                    html += '</div>';
+                    contentEl.innerHTML = html;
+                }
+            } catch (err) {
+                contentEl.innerHTML = '<p class="text-danger text-center py-3 small">Failed to load hierarchy details.</p>';
+            } finally {
+                loadingEl.style.display = 'none';
+                contentEl.style.display = 'block';
+            }
+        });
+    }
 </script>
 {% endblock %}

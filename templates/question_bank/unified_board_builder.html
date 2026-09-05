@@ -23,6 +23,8 @@
     --blue-light: #DDECF5;
     --green: #16866F;
     --green-light: #DCEFEA;
+    --red: #D93838;
+    --red-light: #FDE8E8;
     --purple: #7651A8;
     --gold: #C58A19;
     --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
@@ -215,6 +217,37 @@ body::before {
     background-color: #FAFCFE !important;
 }
 
+/* Custom Action Buttons */
+.btn-action-edit {
+    background: var(--blue-light);
+    color: var(--blue);
+    border: none;
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+.btn-action-edit:hover {
+    background: var(--blue);
+    color: #FFFFFF;
+}
+
+.btn-action-delete {
+    background: var(--red-light);
+    color: var(--red);
+    border: none;
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+.btn-action-delete:hover {
+    background: var(--red);
+    color: #FFFFFF;
+}
+
 /* Custom Styled Theme Modal */
 .custom-modal-content {
     background: var(--card);
@@ -372,13 +405,21 @@ body::before {
                             {% endif %}
                         </td>
                         <td class="text-end">
-                            <button type="button" class="btn btn-link text-primary fw-bold text-decoration-none small p-0 view-details-btn" 
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#detailsModal" 
-                                    data-classname="{{ c.name }}"
-                                    data-classid="{{ c.id }}">
-                                View Details
-                            </button>
+                            <div class="d-flex align-items-center justify-content-end gap-2">
+                                <button type="button" class="btn btn-link text-primary fw-bold text-decoration-none small p-0 me-1" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#detailsModal" 
+                                        data-classname="{{ c.name }}"
+                                        data-classid="{{ c.id }}">
+                                    View
+                                </button>
+                                <button type="button" class="btn-action-edit" onclick="alert('Edit feature for class {{ c.name }}')">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </button>
+                                <button type="button" class="btn-action-delete" onclick="if(confirm('Are you sure you want to delete {{ c.name }}?')) alert('Delete action triggered');">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </div>
                         </td>
                     </tr>
                     {% empty %}
@@ -506,7 +547,7 @@ body::before {
         }
     });
 
-    // View Details Modal Trigger Handler with Deep Tree Nested Fetching
+    // View Details Modal Handler
     const detailsModal = document.getElementById('detailsModal');
     if (detailsModal) {
         detailsModal.addEventListener('show.bs.modal', async function (event) {
@@ -549,9 +590,7 @@ body::before {
                             } else {
                                 html += '<div class="ms-3 text-muted smaller italic mt-1">No chapters added yet</div>';
                             }
-                        } catch (e) {
-                            // skip chapters on minor error
-                        }
+                        } catch (e) {}
 
                         html += `</div>`;
                     }
