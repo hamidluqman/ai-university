@@ -65,7 +65,7 @@ body::before {
 }
 
 .builder-card {
-    background: #FFFFFF;
+    background: var(--card);
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 35px;
@@ -118,7 +118,7 @@ body::before {
 }
 
 .step-card {
-    background: #FBFCFD;
+    background: var(--card);
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 22px;
@@ -145,7 +145,7 @@ body::before {
     padding: 12px 16px !important;
     font-size: 15px !important;
     color: var(--text) !important;
-    background-color: #FFFFFF !important;
+    background-color: var(--card) !important;
 }
 
 .form-select:focus, .form-control:focus {
@@ -171,7 +171,7 @@ body::before {
 }
 
 .hierarchy-list-card {
-    background: #FFFFFF;
+    background: var(--card);
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 30px;
@@ -180,27 +180,45 @@ body::before {
 
 .table-custom {
     margin-bottom: 0;
+    background: var(--card) !important;
 }
+
 .table-custom th {
-    background: #F8FAFB !important;
+    background: var(--card) !important;
     color: var(--text-muted) !important;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--border) !important;
+    border-top: none !important;
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: .5px;
-    padding: 12px 16px;
-}
-.table-custom td {
     padding: 14px 16px;
-    font-size: 13px;
+}
+
+.table-custom td {
+    background: var(--card) !important;
+    padding: 16px;
+    font-size: 14px;
     vertical-align: middle;
-    color: var(--text);
-    border-bottom: 1px solid var(--border-light);
+    color: var(--text) !important;
+    border-bottom: 1px solid var(--border-light) !important;
+    border-top: none !important;
+}
+
+.table-custom tr {
+    background: var(--card) !important;
+}
+
+.table-custom tbody tr:hover {
+    background-color: #FAFCFE !important;
+}
+
+.table-custom tbody tr:hover td {
+    background-color: #FAFCFE !important;
 }
 
 /* Custom Styled Theme Modal */
 .custom-modal-content {
-    background: #FFFFFF;
+    background: var(--card);
     border: 1px solid var(--border);
     border-radius: 16px;
     box-shadow: var(--shadow-md);
