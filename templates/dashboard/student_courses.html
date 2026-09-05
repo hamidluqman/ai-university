@@ -92,17 +92,55 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
 }
 .chapter-box {
     margin-bottom: 12px;
-    padding: 12px;
-    background: #F9FBFC;
     border: 1px solid var(--border);
     border-radius: 10px;
+    overflow: hidden;
+    background: #F9FBFC;
+}
+.chapter-header {
+    padding: 12px 16px;
+    background: #F1F4F8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--navy-dark);
+}
+.chapter-body {
+    padding: 14px;
+    background: #FFFFFF;
+    border-top: 1px solid var(--border);
+}
+.topic-box {
+    margin-bottom: 10px;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #FFFFFF;
+}
+.topic-header {
+    padding: 10px 14px;
+    background: #F8FAFB;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text);
+}
+.topic-body {
+    padding: 12px;
+    background: #FFFFFF;
+    border-top: 1px solid var(--border-light);
 }
 .subtopic-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 8px 12px;
-    background: #FFFFFF;
+    background: #FAFBFC;
     border: 1px solid var(--border-light);
     border-radius: 8px;
     margin-top: 8px;
@@ -147,34 +185,58 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                         
                         {% with chapters=course.chapters.all %}
                             {% if chapters %}
-                                {% for chapter in chapters %}
-                                <div class="chapter-box">
-                                    <div class="fw-bold text-dark mb-2">Ch {{ chapter.chapter_number }}: {{ chapter.title }}</div>
-                                    
-                                    {% for topic in chapter.topics.all %}
-                                        <div class="ms-3 mb-2">
-                                            <div class="fw-semibold small text-secondary">Topic: {{ topic.title }}</div>
-                                            
-                                            {% for subtopic in topic.subtopics.all %}
-                                            <div class="subtopic-row">
-                                                <span class="small fw-medium text-dark"><i class="bi bi-dot text-primary"></i> {{ subtopic.title }}</span>
-                                                <div class="d-flex gap-1 align-items-center">
-                                                    <a href="{% url 'courses:course_player' 'board' subtopic.id %}" class="btn btn-sm btn-outline-danger py-0 px-2 fw-semibold" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-play-fill"></i> Video</a>
-                                                    
-                                                    {% if subtopic.id in user_attempts %}
-                                                        <a href="{% url 'examinations:start_board_exam' subtopic.id %}?retest=true" class="btn btn-sm btn-outline-warning text-dark border-warning py-0 px-2 fw-semibold" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-arrow-repeat"></i> Retest</a>
-                                                    {% else %}
-                                                        <a href="{% url 'examinations:start_board_exam' subtopic.id %}" class="btn btn-sm btn-primary py-0 px-2 fw-semibold" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-play-circle-fill me-1"></i> Start Test</a>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                            {% endfor %}
+                                <div class="accordion" id="chaptersAccordion{{ course.id }}">
+                                    {% for chapter in chapters %}
+                                    <div class="chapter-box">
+                                        <div class="chapter-header" data-bs-toggle="collapse" data-bs-target="#chapterCollapse{{ course.id }}_{{ chapter.id }}">
+                                            <span class="fw-bold text-dark small"><i class="bi bi-bookmark-fill me-2 text-primary"></i> Ch {{ chapter.chapter_number }}: {{ chapter.title }}</span>
+                                            <i class="bi bi-chevron-down text-muted small"></i>
                                         </div>
-                                    {% empty %}
-                                        <div class="text-muted small ms-3">No topics listed for this chapter yet.</div>
+                                        <div id="chapterCollapse{{ course.id }}_{{ chapter.id }}" class="collapse" data-bs-parent="#chaptersAccordion{{ course.id }}">
+                                            <div class="chapter-body">
+                                                {% if chapter.topics.all %}
+                                                    <div class="accordion" id="topicsAccordion{{ chapter.id }}">
+                                                        {% for topic in chapter.topics.all %}
+                                                        <div class="topic-box">
+                                                            <div class="topic-header" data-bs-toggle="collapse" data-bs-target="#topicCollapse{{ chapter.id }}_{{ topic.id }}">
+                                                                <span class="small text-secondary"><i class="bi bi-file-earmark-text text-primary me-1"></i> Topic: {{ topic.title }}</span>
+                                                                <i class="bi bi-chevron-down text-muted small"></i>
+                                                            </div>
+                                                            <div id="topicCollapse{{ chapter.id }}_{{ topic.id }}" class="collapse" data-bs-parent="#topicsAccordion{{ chapter.id }}">
+                                                                <div class="topic-body">
+                                                                    {% if topic.subtopics.all %}
+                                                                        <div class="list-group">
+                                                                            {% for subtopic in topic.subtopics.all %}
+                                                                            <div class="subtopic-row">
+                                                                                <span class="small fw-medium text-dark"><i class="bi bi-dot text-primary"></i> {{ subtopic.title }}</span>
+                                                                                <div class="d-flex gap-1 align-items-center">
+                                                                                    <a href="{% url 'courses:course_player' 'board' subtopic.id %}" class="btn btn-sm btn-outline-danger py-0 px-2 fw-semibold" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-play-fill"></i> Video</a>
+                                                                                    
+                                                                                    {% if subtopic.id in user_attempts %}
+                                                                                        <a href="{% url 'examinations:start_board_exam' subtopic.id %}?retest=true" class="btn btn-sm btn-outline-warning text-dark border-warning py-0 px-2 fw-semibold" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-arrow-repeat"></i> Retest</a>
+                                                                                    {% else %}
+                                                                                        <a href="{% url 'examinations:start_board_exam' subtopic.id %}" class="btn btn-sm btn-primary py-0 px-2 fw-semibold" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-play-circle-fill me-1"></i> Start Test</a>
+                                                                                    {% endif %}
+                                                                                </div>
+                                                                            </div>
+                                                                            {% endfor %}
+                                                                        </div>
+                                                                    {% else %}
+                                                                        <div class="text-muted small">No subtopics available under this topic.</div>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% else %}
+                                                    <div class="text-muted small">No topics listed for this chapter yet.</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
                                     {% endfor %}
                                 </div>
-                                {% endfor %}
                             {% else %}
                                 <div class="text-center text-muted py-3">No detailed chapter scheme available for this course yet.</div>
                             {% endif %}
