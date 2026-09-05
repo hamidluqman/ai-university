@@ -145,7 +145,7 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                     <div class="course-card-body">
                         <h6 class="text-muted fw-bold text-uppercase small mb-3">Course Chapters & Subtopics Scheme</h6>
                         
-                        {% with chapters=course.chapters.all %}
+                        {% with chapters=course.chapters.all|dictsort:"chapter_number" %}
                             {% if chapters %}
                                 {% for chapter in chapters %}
                                 <div class="chapter-box">

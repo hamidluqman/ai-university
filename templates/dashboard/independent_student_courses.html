@@ -1,168 +1,189 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Assigned Courses & Competitive Exams{% endblock %}
+{% block title %}Assigned Courses - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --green: #16866F;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+body { background: var(--page-bg) !important; color: var(--text) !important; font-family: 'Inter', sans-serif !important; }
+.student-container { max-width: 1200px; margin: 25px auto; padding: 0 15px; position: relative; }
+.student-container::before {
+    content: "AI UNIVERSITY";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-size: 8vw;
+    font-weight: 900;
+    font-family: 'Manrope', sans-serif;
+    color: rgba(23, 50, 77, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+}
+.header-box, .card-box { position: relative; z-index: 1; }
+.header-box { 
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); 
+    border-radius: 16px; 
+    padding: 30px 40px; 
+    color: #FFFFFF; 
+    box-shadow: var(--shadow-md); 
+    margin-bottom: 25px; 
+}
+.card-box { 
+    background: #FFFFFF; 
+    border: 1px solid var(--border); 
+    border-radius: 16px; 
+    box-shadow: var(--shadow-sm); 
+    padding: 24px; 
+    margin-bottom: 25px; 
+}
+.card-box-header { 
+    font-family: 'Manrope', sans-serif; 
+    color: var(--navy-dark); 
+    font-size: 18px; 
+    font-weight: 800; 
+    margin-bottom: 18px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 12px;
+}
+.course-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    background: #FFFFFF;
+    overflow: hidden;
+}
+.course-card-header {
+    padding: 16px 20px;
+    background: #F8FAFB;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--navy-dark);
+}
+.course-card-body {
+    padding: 18px;
+    border-top: 1px solid var(--border);
+    background: #FFFFFF;
+}
+.chapter-box {
+    margin-bottom: 12px;
+    padding: 12px;
+    background: #F9FBFC;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+.subtopic-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    margin-top: 8px;
+    gap: 10px;
+}
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container-fluid px-4 py-4">
-    <!-- Page Header -->
-    <div class="row align-items-center mb-4">
-        <div class="col">
-            <h1 class="h3 fw-bold text-dark mb-1">Independent Student Dashboard</h1>
-            <p class="text-muted mb-0">Manage your enrolled board courses and competitive exam evaluation tracks seamlessly.</p>
+<div class="student-container">
+    
+    <!-- Header Block -->
+    <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h1 class="font-weight-bold mb-2" style="font-size: 24px;">Assigned Courses & Syllabus</h1>
+            <p class="mb-0 text-white-50">Explore your assigned chapters, video lectures, and practice modules.</p>
         </div>
-        <div class="col-auto d-flex gap-2">
-            <a href="{% url 'examinations:results_dashboard' %}" class="btn btn-outline-success btn-sm shadow-sm rounded-pill px-3">
-                <i class="bi bi-bar-chart-fill me-1"></i> View All Results
-            </a>
-            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-outline-primary btn-sm shadow-sm rounded-pill px-3">
-                <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+        <div>
+            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
             </a>
         </div>
     </div>
 
-    <!-- Board Courses Section -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white border-top border-primary border-4">
-        <div class="card-header bg-white border-bottom py-3 px-4">
-            <h5 class="fw-bold text-dark mb-0"><i class="bi bi-book-fill text-primary me-2"></i> Enrolled Board Courses</h5>
+    <!-- Courses List Box -->
+    <div class="card-box">
+        <div class="card-box-header">
+            <span><i class="bi bi-journal-richtext text-primary me-2"></i> All Assigned Courses</span>
+            <span class="badge bg-light text-dark border px-2 py-1">Total: {{ courses|length }}</span>
         </div>
-        <div class="card-body p-4 bg-white text-dark">
-            {% if courses %}
-                <div class="accordion custom-accordion" id="boardCoursesAccordion">
-                    {% for course in courses %}
-                    <div class="card mb-3 border rounded-3 overflow-hidden shadow-sm">
-                        <div class="card-header bg-light py-3 px-3 d-flex justify-content-between align-items-center" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#courseCollapse{{ course.id }}">
-                            <span class="fw-bold text-dark"><i class="bi bi-journal-text text-primary me-2"></i> {{ course.name }}</span>
-                            <i class="bi bi-chevron-down text-muted"></i>
-                        </div>
-                        <div id="courseCollapse{{ course.id }}" class="collapse" data-bs-parent="#boardCoursesAccordion">
-                            <div class="card-body bg-white p-3">
-                                {% if course.chapters.all %}
-                                    <div class="accordion" id="chaptersAccordion{{ course.id }}">
-                                        {% for chapter in course.chapters.all %}
-                                        <div class="card mb-2 border rounded-2 overflow-hidden">
-                                            <div class="card-header bg-light py-2 px-3 d-flex justify-content-between align-items-center" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#chapterCollapse{{ chapter.id }}">
-                                                <span class="fw-semibold text-secondary small"><i class="bi bi-bookmark-fill me-2 text-primary"></i> Chapter: {{ chapter.title }}</span>
-                                                <i class="bi bi-chevron-down text-muted small"></i>
-                                            </div>
-                                            <div id="chapterCollapse{{ chapter.id }}" class="collapse" data-bs-parent="#chaptersAccordion{{ course.id }}">
-                                                <div class="card-body bg-white p-3">
-                                                    {% if chapter.topics.all %}
-                                                        {% for topic in chapter.topics.all %}
-                                                        <div class="mb-3">
-                                                            <h6 class="fw-bold text-dark mb-2 small"><i class="bi bi-file-earmark-text text-primary me-1"></i> Topic: {{ topic.title }}</h6>
-                                                            {% if topic.subtopics.all %}
-                                                                <div class="list-group">
-                                                                    {% for subtopic in topic.subtopics.all %}
-                                                                    <div class="list-group-item d-flex justify-content-between align-items-center bg-light border rounded mb-2 shadow-sm p-2 px-3">
-                                                                        <div>
-                                                                            <h6 class="fw-bold text-dark mb-1 small">{{ subtopic.title }}</h6>
-                                                                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 10px;">Board Curriculum</span>
-                                                                        </div>
-                                                                        <div class="d-flex gap-2 align-items-center">
-                                                                            <a href="{% url 'courses:course_player' 'board' subtopic.id %}" class="btn btn-sm btn-outline-primary py-1 px-2 fw-semibold" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-play-fill"></i> Watch Video</a>
-                                                                            
-                                                                            {% if subtopic.id in user_attempts %}
-                                                                                <a href="{% url 'examinations:start_board_exam' subtopic.id %}?retest=true" class="btn btn-sm btn-outline-warning text-dark border-warning py-1 px-3 fw-semibold rounded-pill shadow-sm" style="font-size: 12px;"><i class="bi bi-arrow-repeat"></i> Retest</a>
-                                                                            {% else %}
-                                                                                <a href="{% url 'examinations:start_board_exam' subtopic.id %}" class="btn btn-sm btn-primary py-1 px-3 fw-semibold rounded-pill shadow-sm" style="font-size: 12px;"><i class="bi bi-play-circle-fill me-1"></i> Start Test</a>
-                                                                            {% endif %}
-                                                                        </div>
-                                                                    </div>
-                                                                    {% endfor %}
-                                                                </div>
-                                                            {% else %}
-                                                                <p class="text-muted small mb-0">No subtopics available under this topic.</p>
-                                                            {% endif %}
-                                                        </div>
-                                                        {% endfor %}
-                                                    {% else %}
-                                                        <p class="text-muted small mb-0">No topics available under this chapter.</p>
-                                                    {% endif %}
+
+        <div class="accordion w-100" id="coursesAccordion">
+            {% for course in courses %}
+            <div class="course-card">
+                <div class="course-card-header" data-bs-toggle="collapse" data-bs-target="#courseCollapse{{ forloop.counter }}">
+                    <span>{{ course.name }}</span>
+                    <i class="bi bi-chevron-down"></i>
+                </div>
+                <div id="courseCollapse{{ forloop.counter }}" class="collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#coursesAccordion">
+                    <div class="course-card-body">
+                        <h6 class="text-muted fw-bold text-uppercase small mb-3">Course Chapters & Subtopics Scheme</h6>
+                        
+                        {% with chapters=course.chapters.all|dictsort:"chapter_number" %}
+                            {% if chapters %}
+                                {% for chapter in chapters %}
+                                <div class="chapter-box">
+                                    <div class="fw-bold text-dark mb-2">Ch {{ chapter.chapter_number }}: {{ chapter.title }}</div>
+                                    
+                                    {% for topic in chapter.topics.all %}
+                                        <div class="ms-3 mb-2">
+                                            <div class="fw-semibold small text-secondary">Topic: {{ topic.title }}</div>
+                                            
+                                            {% for subtopic in topic.subtopics.all %}
+                                            <div class="subtopic-row">
+                                                <span class="small fw-medium text-dark"><i class="bi bi-dot text-primary"></i> {{ subtopic.title }}</span>
+                                                <div class="d-flex gap-1">
+                                                    <a href="{% url 'courses:course_player' 'board' subtopic.id %}" class="btn btn-sm btn-outline-danger py-0 px-2 fw-semibold" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-play-fill"></i> Video</a>
+                                                    <a href="{% url 'examinations:start_practice' subtopic.id %}" class="btn btn-sm btn-outline-success py-0 px-2 fw-semibold" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-check2-square"></i> Practice</a>
                                                 </div>
                                             </div>
+                                            {% endfor %}
                                         </div>
-                                        {% endfor %}
-                                    </div>
-                                {% else %}
-                                    <p class="text-muted small mb-0">No chapters available in this course.</p>
-                                {% endif %}
-                            </div>
-                        </div>
+                                    {% empty %}
+                                        <div class="text-muted small ms-3">No topics listed for this chapter yet.</div>
+                                    {% endfor %}
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="text-center text-muted py-3">No detailed chapter scheme available for this course yet.</div>
+                            {% endif %}
+                        {% endwith %}
                     </div>
-                    {% endfor %}
                 </div>
-            {% else %}
-                <p class="text-muted mb-0">No enrolled board courses found.</p>
-            {% endif %}
+            </div>
+            {% empty %}
+            <div class="text-center text-muted py-5">
+                <span>No courses or subjects currently assigned to your profile.</span>
+            </div>
+            {% endfor %}
         </div>
     </div>
 
-    <!-- Competitive Exams Section -->
-    <div class="card border-0 shadow-sm rounded-4 bg-white border-top border-warning border-4">
-        <div class="card-header bg-white border-bottom py-3 px-4">
-            <h5 class="fw-bold text-dark mb-0"><i class="bi bi-award-fill text-warning me-2"></i> Competitive Exam Tracks</h5>
-        </div>
-        <div class="card-body p-4 bg-white text-dark">
-            {% if competitive_hierarchy %}
-                <div class="accordion custom-accordion" id="competitiveExamsAccordion">
-                    {% for exam_title, modules_map in competitive_hierarchy.items %}
-                    <div class="card mb-3 border rounded-3 overflow-hidden shadow-sm">
-                        <div class="card-header bg-light py-3 px-3 d-flex justify-content-between align-items-center" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#examCollapse{{ forloop.counter }}">
-                            <span class="fw-bold text-dark"><i class="bi bi-patch-check-fill text-warning me-2"></i> Exam Category: {{ exam_title }}</span>
-                            <i class="bi bi-chevron-down text-muted"></i>
-                        </div>
-                        <div id="examCollapse{{ forloop.counter }}" class="collapse" data-bs-parent="#competitiveExamsAccordion">
-                            <div class="card-body bg-white p-3">
-                                {% if modules_map %}
-                                    <div class="accordion" id="modulesAccordion{{ forloop.counter }}">
-                                        {% for mod_title, submods in modules_map.items %}
-                                        <div class="card mb-2 border rounded-2 overflow-hidden">
-                                            <div class="card-header bg-light py-2 px-3 d-flex justify-content-between align-items-center" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#modCollapse{{ forloop.parentloop.counter }}_{{ forloop.counter }}">
-                                                <span class="fw-semibold text-secondary small"><i class="bi bi-award me-2 text-primary"></i> Module: {{ mod_title }}</span>
-                                                <i class="bi bi-chevron-down text-muted small"></i>
-                                            </div>
-                                            <div id="modCollapse{{ forloop.parentloop.counter }}_{{ forloop.counter }}" class="collapse" data-bs-parent="#modulesAccordion{{ forloop.parentloop.counter }}">
-                                                <div class="card-body bg-white p-3">
-                                                    {% if submods %}
-                                                        <div class="list-group">
-                                                            {% for sub in submods %}
-                                                            <div class="list-group-item d-flex justify-content-between align-items-center bg-light border rounded mb-2 shadow-sm p-2 px-3">
-                                                                <div>
-                                                                    <h6 class="fw-bold text-dark mb-1 small">{{ sub.title }}</h6>
-                                                                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle" style="font-size: 10px;">Evaluation Track</span>
-                                                                </div>
-                                                                <div class="d-flex gap-2 align-items-center">
-                                                                    <a href="{% url 'courses:course_player' 'competitive' sub.id %}" class="btn btn-sm btn-outline-primary py-1 px-2 fw-semibold" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-play-fill"></i> Watch Video</a>
-                                                                    
-                                                                    {% if sub.id in competitive_attempts %}
-                                                                        <a href="{% url 'examinations:start_competitive_exam' sub.id %}?retest=true" class="btn btn-sm btn-outline-warning text-dark border-warning py-1 px-3 fw-semibold rounded-pill shadow-sm" style="font-size: 12px;"><i class="bi bi-arrow-repeat"></i> Retest</a>
-                                                                    {% else %}
-                                                                        <a href="{% url 'examinations:start_competitive_exam' sub.id %}" class="btn btn-sm btn-primary py-1 px-3 fw-semibold rounded-pill shadow-sm" style="font-size: 12px;"><i class="bi bi-play-circle-fill me-1"></i> Start Test</a>
-                                                                    {% endif %}
-                                                                </div>
-                                                            </div>
-                                                            {% endfor %}
-                                                        </div>
-                                                    {% else %}
-                                                        <p class="text-muted small mb-0">No submodules available under this module.</p>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {% endfor %}
-                                    </div>
-                                {% else %}
-                                    <p class="text-muted small mb-0">No modules available under this competitive exam.</p>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p class="text-muted mb-0">No competitive exam tracks available.</p>
-            {% endif %}
-        </div>
-    </div>
 </div>
 {% endblock %}
