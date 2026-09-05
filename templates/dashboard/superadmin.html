@@ -612,8 +612,37 @@ body::before {
     margin-top: 4px;
 }
 
-/* Mobile adjustments for collapse menu */
+/* Mobile adjustments for single-line header and collapse menu */
 @media (max-width: 991.98px) {
+    .superadmin-header .container-fluid {
+        display: flex;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        flex-wrap: nowrap !important;
+    }
+    .brand-section {
+        flex-grow: 1;
+        min-width: 0;
+        gap: 8px !important;
+    }
+    .command-logo {
+        max-height: 32px !important;
+    }
+    .brand-title {
+        font-size: 13px !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .brand-subtitle {
+        display: none;
+    }
+    .navbar-toggler-custom {
+        padding: 5px 9px !important;
+        font-size: 16px !important;
+        flex-shrink: 0;
+    }
     .admin-nav {
         width: 100%;
         flex-direction: column !important;
@@ -642,7 +671,7 @@ body::before {
 <div class="superadmin-dashboard">
 
     <!-- ========================================================
-         STICKY COMMAND HEADER (RESPONSIVE NAVBAR WITH HAMBURGER)
+         STICKY COMMAND HEADER (RESPONSIVE NAVBAR WITH SINGLE LINE MOBILE)
          ======================================================== -->
 
     <nav class="superadmin-header navbar navbar-expand-lg p-0">
