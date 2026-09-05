@@ -70,6 +70,7 @@ body::before {
     border-radius: 16px;
     padding: 35px;
     box-shadow: var(--shadow-sm);
+    margin-bottom: 30px;
 }
 
 .builder-header {
@@ -168,6 +169,80 @@ body::before {
 .save-btn:hover {
     background: var(--navy-dark) !important;
 }
+
+.hierarchy-list-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: var(--shadow-sm);
+}
+
+.table-custom {
+    margin-bottom: 0;
+}
+.table-custom th {
+    background: #F8FAFB !important;
+    color: var(--text-muted) !important;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    padding: 12px 16px;
+}
+.table-custom td {
+    padding: 14px 16px;
+    font-size: 13px;
+    vertical-align: middle;
+    color: var(--text);
+    border-bottom: 1px solid var(--border-light);
+}
+
+/* Custom Styled Theme Modal */
+.custom-modal-content {
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+}
+.custom-modal-header {
+    background: #F8FAFB;
+    border-bottom: 1px solid var(--border);
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    padding: 20px 24px;
+}
+.custom-modal-title {
+    font-family: 'Manrope', sans-serif;
+    color: var(--navy-dark);
+    font-size: 18px;
+    font-weight: 800;
+    margin: 0;
+}
+.custom-modal-body {
+    padding: 24px;
+}
+.custom-modal-footer {
+    background: #F8FAFB;
+    border-top: 1px solid var(--border);
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+    padding: 16px 24px;
+}
+.btn-modal-primary {
+    background: var(--navy);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    padding: 9px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    transition: background 0.2s ease;
+}
+.btn-modal-primary:hover {
+    background: var(--navy-dark);
+    color: #FFFFFF;
+}
 </style>
 {% endblock %}
 
@@ -239,15 +314,59 @@ body::before {
             </button>
         </form>
     </div>
+
+    <!-- Created Competitive Hierarchies List Section -->
+    <div class="hierarchy-list-card">
+        <h5 class="fw-bold mb-3" style="color: var(--navy-dark); font-family: 'Manrope', sans-serif;">
+            <i class="bi bi-list-nested me-2 text-primary"></i>Existing Competitive Exams & Modules
+        </h5>
+        <div class="table-responsive">
+            <table class="table table-custom align-middle">
+                <thead>
+                    <tr>
+                        <th>Exam Title</th>
+                        <th>Associated Modules</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for e in exams %}
+                    <tr>
+                        <td class="fw-bold text-dark">{{ e.title }}</td>
+                        <td>
+                            {% if e.modules.all %}
+                                {% for m in e.modules.all %}
+                                    <span class="badge bg-light text-dark border me-1 mb-1 px-2 py-1">{{ m.title }}</span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="text-muted small italic">No modules added yet</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <a href="javascript:void(0);" class="text-primary fw-bold text-decoration-none small">View Details</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-3 d-block mb-1"></i>
+                            No competitive hierarchies created yet. Use the form above to add your first exam and modules.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 {% if request.user.is_superuser %}
-<!-- Excel Import Modal -->
+<!-- Theme-Matched Excel Import Modal -->
 <div class="modal fade" id="excelImportModal" tabindex="-1" aria-labelledby="excelImportModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-4 shadow">
-            <div class="modal-header border-bottom px-4 pt-4 pb-3">
-                <h5 class="modal-title fw-bold text-dark" id="excelImportModalLabel">
+        <div class="modal-content custom-modal-content">
+            <div class="custom-modal-header d-flex align-items-center justify-content-between">
+                <h5 class="custom-modal-title" id="excelImportModalLabel">
                     <i class="bi bi-file-earmark-excel-fill text-success me-2"></i>Bulk Import Competitive Hierarchies
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -255,16 +374,16 @@ body::before {
             <form method="POST" action="{% url 'question_bank:bulk_import_hierarchies' %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input type="hidden" name="hierarchy_type" value="competitive">
-                <div class="modal-body p-4">
+                <div class="custom-modal-body">
                     <p class="text-muted small mb-3">Upload an Excel (.xlsx) file containing your columns (Exam, Module, Submodule) to instantly bulk-populate the competitive hierarchy database.</p>
                     <div class="mb-3">
                         <label class="form-label fw-bold small text-uppercase text-secondary">Select Excel Spreadsheet</label>
                         <input type="file" name="excel_file" class="form-control" accept=".xlsx, .xls" required>
                     </div>
                 </div>
-                <div class="modal-footer border-top px-4 pb-4 pt-3">
-                    <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-pill fw-semibold" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success btn-sm px-4 rounded-pill fw-bold">Upload & Process</button>
+                <div class="custom-modal-footer d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-3 fw-semibold" data-bs-dismiss="modal" style="border-radius: 10px;">Cancel</button>
+                    <button type="submit" class="btn-modal-primary">Upload & Process</button>
                 </div>
             </form>
         </div>
