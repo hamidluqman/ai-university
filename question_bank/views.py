@@ -112,7 +112,7 @@ def unified_board_builder(request):
         messages.success(request, "Board hierarchy updated successfully!")
         return redirect('question_bank:unified_board_builder')
 
-    classes = BoardClass.objects.all()
+    classes = BoardClass.objects.prefetch_related('subjects').all()
     return render(request, 'question_bank/unified_board_builder.html', {'classes': classes})
 
 
@@ -129,7 +129,10 @@ def unified_competitive_builder(request):
         new_submodule_name = request.POST.get('new_submodule_name', '').strip()
 
         if new_exam_name:
-            exam, _ = CompetitiveExam.objects.get_or_create(title=new_exam_name)
+            exam, created = CompetitiveExam.objects.get_or_create(title=new_exam_name)
+            if created and not exam.code:
+                exam.code = f"EXAM_{exam.id}"
+                exam.save()
         elif exam_id:
             exam = CompetitiveExam.objects.get(id=exam_id)
         else:
@@ -148,7 +151,7 @@ def unified_competitive_builder(request):
         messages.success(request, "Competitive hierarchy updated successfully!")
         return redirect('question_bank:unified_competitive_builder')
 
-    exams = CompetitiveExam.objects.all()
+    exams = CompetitiveExam.objects.prefetch_related('modules').all()
     return render(request, 'question_bank/unified_competitive_builder.html', {'exams': exams})
 
 
@@ -231,6 +234,7 @@ def import_questions_excel(request):
 
     return redirect('question_bank:add_question')
 
+
 @login_required
 def api_filter_questions(request):
     """API endpoint to filter questions asynchronously for the content team dashboard."""
@@ -282,18 +286,74 @@ def api_filter_questions(request):
         'questions': questions_data
     })
 
+
 @user_passes_test(lambda u: u.is_superuser)
 def bulk_import_hierarchies(request):
+    """Fully functional bulk Excel import for both board and competitive hierarchies."""
     if request.method == 'POST':
         excel_file = request.FILES.get('excel_file')
         hierarchy_type = request.POST.get('hierarchy_type')
+        
         if excel_file:
             try:
                 df = pd.read_excel(excel_file)
-                for index, row in df.iterrows():
-                    # Process your board/competitive hierarchy rows here
-                    pass
+                df.columns = df.columns.str.strip()
+                
+                if hierarchy_type == 'board':
+                    for _, row in df.iterrows():
+                        class_name = str(row.get('Class', '')).strip()
+                        subject_name = str(row.get('Subject', '')).strip()
+                        chapter_name = str(row.get('Chapter', '')).strip()
+                        topic_name = str(row.get('Topic', '')).strip()
+                        subtopic_name = str(row.get('Subtopic', '')).strip()
+                        
+                        if class_name and class_name.lower() != 'nan':
+                            b_class, _ = BoardClass.objects.get_or_create(name=class_name)
+                            
+                            if subject_name and subject_name.lower() != 'nan':
+                                b_subject, _ = BoardSubject.objects.get_or_create(
+                                    board_class=b_class, name=subject_name
+                                )
+                                
+                                if chapter_name and chapter_name.lower() != 'nan':
+                                    b_chapter, _ = BoardChapter.objects.get_or_create(
+                                        subject=b_subject, title=chapter_name
+                                    )
+                                    
+                                    if topic_name and topic_name.lower() != 'nan':
+                                        b_topic, _ = BoardTopic.objects.get_or_create(
+                                            chapter=b_chapter, title=topic_name
+                                        )
+                                        
+                                        if subtopic_name and subtopic_name.lower() != 'nan':
+                                            BoardSubTopic.objects.get_or_create(
+                                                topic=b_topic, title=subtopic_name
+                                            )
+
+                elif hierarchy_type == 'competitive':
+                    for _, row in df.iterrows():
+                        exam_name = str(row.get('Exam', '')).strip()
+                        module_name = str(row.get('Module', '')).strip()
+                        submodule_name = str(row.get('Submodule', '')).strip()
+                        
+                        if exam_name and exam_name.lower() != 'nan':
+                            c_exam, created = CompetitiveExam.objects.get_or_create(title=exam_name)
+                            if created and not c_exam.code:
+                                c_exam.code = f"EXAM_{c_exam.id}"
+                                c_exam.save()
+                            
+                            if module_name and module_name.lower() != 'nan':
+                                c_module, _ = CompetitiveModule.objects.get_or_create(
+                                    exam=c_exam, title=module_name
+                                )
+                                
+                                if submodule_name and submodule_name.lower() != 'nan':
+                                    CompetitiveSubModule.objects.get_or_create(
+                                        module=c_module, title=submodule_name
+                                    )
+
                 messages.success(request, f"Successfully imported {hierarchy_type} hierarchies from Excel!")
             except Exception as e:
-                messages.error(request, f"Error processing file: {e}")
-    return redirect('accounts:dashboard_redirect')
+                messages.error(request, f"Error processing Excel file: {e}")
+                
+    return redirect(request.META.get('HTTP_REFERER', 'accounts:dashboard_redirect'))
