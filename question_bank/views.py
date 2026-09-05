@@ -1,7 +1,7 @@
 import pandas as pd
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from .models import (
     BoardClass, BoardSubject, BoardChapter, BoardTopic, BoardSubTopic,
@@ -281,3 +281,19 @@ def api_filter_questions(request):
         'total_questions': total_count,
         'questions': questions_data
     })
+
+@user_passes_test(lambda u: u.is_superuser)
+def bulk_import_hierarchies(request):
+    if request.method == 'POST':
+        excel_file = request.FILES.get('excel_file')
+        hierarchy_type = request.POST.get('hierarchy_type')
+        if excel_file:
+            try:
+                df = pd.read_excel(excel_file)
+                for index, row in df.iterrows():
+                    # Process your board/competitive hierarchy rows here
+                    pass
+                messages.success(request, f"Successfully imported {hierarchy_type} hierarchies from Excel!")
+            except Exception as e:
+                messages.error(request, f"Error processing file: {e}")
+    return redirect('accounts:dashboard_redirect')

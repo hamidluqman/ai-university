@@ -21,4 +21,5 @@ urlpatterns = [
     path('api/modules/<int:exam_id>/', views.get_competitive_modules, name='api_get_modules'),
     path('api/submodules/<int:module_id>/', views.get_competitive_submodules, name='api_get_submodules'),
     path('api/filter-questions/', views.api_filter_questions, name='api_filter_questions'),
+    path('bulk-import/', views.bulk_import_hierarchies, name='bulk_import_hierarchies'),
 ]
