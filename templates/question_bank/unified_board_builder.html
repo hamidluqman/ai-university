@@ -3,7 +3,6 @@
 {% block title %}Unified Board Hierarchy Builder - AI University LMS{% endblock %}
 
 {% block extra_head %}
-<!-- Google Font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -266,7 +265,6 @@ body::before {
 
 {% block content %}
 <div class="builder-container">
-    <!-- Form Card -->
     <div class="builder-card">
         <div class="builder-header">
             <div>
@@ -301,7 +299,6 @@ body::before {
         <form method="POST">
             {% csrf_token %}
 
-            <!-- Step 1: Class -->
             <div class="step-card">
                 <label class="step-label">1. Select or Create Class</label>
                 <select name="class_select" id="class_select" class="form-select mb-3">
@@ -313,7 +310,6 @@ body::before {
                 <input type="text" name="new_class_name" placeholder="OR Enter New Class Name (e.g. Class 11)" class="form-control">
             </div>
 
-            <!-- Step 2: Subject -->
             <div class="step-card" id="subject_box" style="display:none;">
                 <label class="step-label">2. Select or Create Subject</label>
                 <select name="subject_select" id="subject_select" class="form-select mb-3">
@@ -322,7 +318,6 @@ body::before {
                 <input type="text" name="new_subject_name" placeholder="OR Enter New Subject Name (e.g. Biology)" class="form-control">
             </div>
 
-            <!-- Step 3: Chapter -->
             <div class="step-card" id="chapter_box" style="display:none;">
                 <label class="step-label">3. Select or Create Chapter</label>
                 <select name="chapter_select" id="chapter_select" class="form-select mb-3">
@@ -331,7 +326,6 @@ body::before {
                 <input type="text" name="new_chapter_name" placeholder="OR Enter New Chapter Name (e.g. Cell Biology)" class="form-control">
             </div>
 
-            <!-- Step 4: Topic -->
             <div class="step-card" id="topic_box" style="display:none;">
                 <label class="step-label">4. Select or Create Topic</label>
                 <select name="topic_select" id="topic_select" class="form-select mb-3">
@@ -340,7 +334,6 @@ body::before {
                 <input type="text" name="new_topic_name" placeholder="OR Enter New Topic Name (e.g. Mitochondria)" class="form-control">
             </div>
 
-            <!-- Step 5: SubTopic -->
             <div class="step-card" id="subtopic_box" style="display:none;">
                 <label class="step-label">5. Create SubTopic</label>
                 <input type="text" name="new_subtopic_name" placeholder="Enter SubTopic Name (e.g. ATP Synthesis)" class="form-control">
@@ -352,7 +345,6 @@ body::before {
         </form>
     </div>
 
-    <!-- Created Board Hierarchies List Section -->
     <div class="hierarchy-list-card">
         <h5 class="fw-bold mb-3" style="color: var(--navy-dark); font-family: 'Manrope', sans-serif;">
             <i class="bi bi-list-nested me-2 text-primary"></i>Existing Board Classes & Hierarchies
@@ -380,7 +372,13 @@ body::before {
                             {% endif %}
                         </td>
                         <td class="text-end">
-                            <a href="javascript:void(0);" class="text-primary fw-bold text-decoration-none small">View Details</a>
+                            <button type="button" class="btn btn-link text-primary fw-bold text-decoration-none small p-0 view-details-btn" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#detailsModal" 
+                                    data-classname="{{ c.name }}"
+                                    data-classid="{{ c.id }}">
+                                View Details
+                            </button>
                         </td>
                     </tr>
                     {% empty %}
@@ -398,7 +396,6 @@ body::before {
 </div>
 
 {% if request.user.is_superuser %}
-<!-- Theme-Matched Excel Import Modal -->
 <div class="modal fade" id="excelImportModal" tabindex="-1" aria-labelledby="excelImportModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content custom-modal-content">
@@ -427,6 +424,30 @@ body::before {
     </div>
 </div>
 {% endif %}
+
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content custom-modal-content">
+            <div class="custom-modal-header d-flex align-items-center justify-content-between">
+                <h5 class="custom-modal-title" id="detailsModalLabel">
+                    <i class="bi bi-diagram-3 text-primary me-2"></i>Hierarchy Details: <span id="modalClassName" class="text-dark"></span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="custom-modal-body" style="max-height: 60vh; overflow-y: auto;">
+                <div id="modalLoading" class="text-center py-4">
+                    <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
+                    <span class="text-muted ms-2 small">Loading subjects & chapters...</span>
+                </div>
+                <div id="modalBodyContent" style="display: none;">
+                    </div>
+            </div>
+            <div class="custom-modal-footer d-flex justify-content-end">
+                <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-3 fw-semibold" data-bs-dismiss="modal" style="border-radius: 10px;">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
@@ -484,5 +505,66 @@ body::before {
             subTopBox.style.display = 'none';
         }
     });
+
+    // View Details Modal Trigger Handler with Deep Tree Nested Fetching
+    const detailsModal = document.getElementById('detailsModal');
+    if (detailsModal) {
+        detailsModal.addEventListener('show.bs.modal', async function (event) {
+            const button = event.relatedTarget;
+            const className = button.getAttribute('data-classname');
+            const classId = button.getAttribute('data-classid');
+
+            document.getElementById('modalClassName').textContent = className;
+            const loadingEl = document.getElementById('modalLoading');
+            const contentEl = document.getElementById('modalBodyContent');
+
+            loadingEl.style.display = 'block';
+            contentEl.style.display = 'none';
+            contentEl.innerHTML = '';
+
+            try {
+                const res = await fetch(`/question-bank/api/subjects/${classId}/`);
+                const subjects = await res.json();
+
+                if (subjects.length === 0) {
+                    contentEl.innerHTML = '<p class="text-muted text-center py-3 small">No subjects found for this class.</p>';
+                } else {
+                    let html = '<div class="d-flex flex-column gap-3">';
+                    for (let sub of subjects) {
+                        html += `
+                            <div class="p-3 border rounded-3 bg-light">
+                                <div class="fw-bold text-dark small mb-2">
+                                    <i class="bi bi-book-half text-primary me-2"></i>${sub.name || sub.title}
+                                </div>`;
+                        
+                        try {
+                            const chRes = await fetch(`/question-bank/api/chapters/${sub.id}/`);
+                            const chapters = await chRes.json();
+                            if (chapters.length > 0) {
+                                html += '<div class="ms-3 ps-2 border-start border-2 border-primary d-flex flex-column gap-2 mt-2">';
+                                for (let ch of chapters) {
+                                    html += `<div class="text-secondary small"><i class="bi bi-bookmark-fill me-1 text-muted" style="font-size: 10px;"></i> ${ch.title || ch.name}</div>`;
+                                }
+                                html += '</div>';
+                            } else {
+                                html += '<div class="ms-3 text-muted smaller italic mt-1">No chapters added yet</div>';
+                            }
+                        } catch (e) {
+                            // skip chapters on minor error
+                        }
+
+                        html += `</div>`;
+                    }
+                    html += '</div>';
+                    contentEl.innerHTML = html;
+                }
+            } catch (err) {
+                contentEl.innerHTML = '<p class="text-danger text-center py-3 small">Failed to load hierarchy details.</p>';
+            } finally {
+                loadingEl.style.display = 'none';
+                contentEl.style.display = 'block';
+            }
+        });
+    }
 </script>
 {% endblock %}
