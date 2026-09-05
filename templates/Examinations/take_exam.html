@@ -91,6 +91,35 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
 
 .question-step { display: none; }
 .question-step.active { display: block; }
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .watermark-container {
+        min-height: auto;
+    }
+    .exam-content-wrapper {
+        padding: 0 8px;
+    }
+    .header-box {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+    .header-box h2 {
+        font-size: 20px !important;
+    }
+    .card-box {
+        padding: 16px;
+        border-radius: 12px;
+    }
+    .header-box .d-flex.gap-2 {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .timer-badge-q, .timer-badge-total {
+        padding: 4px 10px;
+        font-size: 12px;
+    }
+}
 </style>
 {% endblock %}
 
@@ -100,15 +129,15 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
         
         <!-- Header Card -->
         <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <div>
-                <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold" style="font-size: 11px;">Official Institution Exam</span>
-                <h2 class="fw-extrabold text-white mt-1 mb-1" style="font-family: 'Manrope', sans-serif; font-size: 22px;">{{ exam.title }}</h2>
+            <div style="min-width: 0; flex-grow: 1;">
+                <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold text-nowrap" style="font-size: 11px;">Official Institution Exam</span>
+                <h2 class="fw-extrabold text-white mt-1 mb-1 text-break" style="font-family: 'Manrope', sans-serif; font-size: 22px;">{{ exam.title }}</h2>
                 <p class="text-white-50 small mb-0">Full-screen mode active. 20-second per-question timer with auto-advance.</p>
             </div>
             
-            <div class="d-flex gap-2">
-                <span id="questionTimer" class="timer-badge-q"><i class="bi bi-clock"></i> Q-Time: 20s</span>
-                <span id="totalTimer" class="timer-badge-total"><i class="bi bi-hourglass-split"></i> Total: --:--</span>
+            <div class="d-flex gap-2 flex-wrap">
+                <span id="questionTimer" class="timer-badge-q text-nowrap"><i class="bi bi-clock"></i> Q-Time: 20s</span>
+                <span id="totalTimer" class="timer-badge-total text-nowrap"><i class="bi bi-hourglass-split"></i> Total: --:--</span>
             </div>
         </div>
 
@@ -117,11 +146,11 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
             
             {% for q in questions %}
                 <div class="card-box bg-white question-step {% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-bold">Question {{ forloop.counter }} of {{ questions|length }}</span>
+                    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                        <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-bold text-nowrap">Question {{ forloop.counter }} of {{ questions|length }}</span>
                     </div>
                     
-                    <h5 class="fw-bold text-dark mb-4" style="font-family: 'Manrope', sans-serif; font-size: 18px;">{{ q.question_text }}</h5>
+                    <h5 class="fw-bold text-dark mb-4 text-break" style="font-family: 'Manrope', sans-serif; font-size: 18px;">{{ q.question_text }}</h5>
                     
                     {% if q.question_image %}
                         <div class="mb-4">
@@ -131,16 +160,16 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                     
                     <div class="d-flex flex-column gap-3 mb-4">
                         <label class="p-3 border rounded-3 d-flex align-items-center gap-3 transition" style="cursor: pointer; background: #F9FBFC;">
-                            <input class="form-check-input mt-0" type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_opt1" value="A">
-                            <span class="fw-medium text-dark w-100">
+                            <input class="form-check-input mt-0 flex-shrink-0" type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_opt1" value="A">
+                            <span class="fw-medium text-dark w-100 text-break">
                                 <strong>A)</strong> {{ q.option_a }}
                                 {% if q.option_a_image %}<br><img src="{{ q.option_a_image.url }}" class="img-fluid mt-2 rounded border" style="max-height: 100px;">{% endif %}
                             </span>
                         </label>
 
                         <label class="p-3 border rounded-3 d-flex align-items-center gap-3 transition" style="cursor: pointer; background: #F9FBFC;">
-                            <input class="form-check-input mt-0" type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_opt2" value="B">
-                            <span class="fw-medium text-dark w-100">
+                            <input class="form-check-input mt-0 flex-shrink-0" type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_opt2" value="B">
+                            <span class="fw-medium text-dark w-100 text-break">
                                 <strong>B)</strong> {{ q.option_b }}
                                 {% if q.option_b_image %}<br><img src="{{ q.option_b_image.url }}" class="img-fluid mt-2 rounded border" style="max-height: 100px;">{% endif %}
                             </span>
@@ -148,8 +177,8 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
 
                         {% if q.option_c or q.option_c_image %}
                         <label class="p-3 border rounded-3 d-flex align-items-center gap-3 transition" style="cursor: pointer; background: #F9FBFC;">
-                            <input class="form-check-input mt-0" type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_opt3" value="C">
-                            <span class="fw-medium text-dark w-100">
+                            <input class="form-check-input mt-0 flex-shrink-0" type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_opt3" value="C">
+                            <span class="fw-medium text-dark w-100 text-break">
                                 <strong>C)</strong> {{ q.option_c }}
                                 {% if q.option_c_image %}<br><img src="{{ q.option_c_image.url }}" class="img-fluid mt-2 rounded border" style="max-height: 100px;">{% endif %}
                             </span>
@@ -158,8 +187,8 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
 
                         {% if q.option_d or q.option_d_image %}
                         <label class="p-3 border rounded-3 d-flex align-items-center gap-3 transition" style="cursor: pointer; background: #F9FBFC;">
-                            <input class="form-check-input mt-0" type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_opt4" value="D">
-                            <span class="fw-medium text-dark w-100">
+                            <input class="form-check-input mt-0 flex-shrink-0" type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_opt4" value="D">
+                            <span class="fw-medium text-dark w-100 text-break">
                                 <strong>D)</strong> {{ q.option_d }}
                                 {% if q.option_d_image %}<br><img src="{{ q.option_d_image.url }}" class="img-fluid mt-2 rounded border" style="max-height: 100px;">{% endif %}
                             </span>
@@ -167,19 +196,19 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                         {% endif %}
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
-                        <button type="button" class="btn btn-outline-secondary px-4 rounded-pill fw-semibold prev-btn" {% if forloop.first %}style="visibility:hidden;"{% endif %}>Previous</button>
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top flex-wrap gap-2">
+                        <button type="button" class="btn btn-outline-secondary px-4 rounded-pill fw-semibold prev-btn text-nowrap" {% if forloop.first %}style="visibility:hidden;"{% endif %}>Previous</button>
                         {% if not forloop.last %}
-                            <button type="button" class="btn btn-primary px-5 rounded-pill fw-bold next-btn" style="background-color: var(--blue); border-color: var(--blue);">Next</button>
+                            <button type="button" class="btn btn-primary px-5 rounded-pill fw-bold next-btn text-nowrap" style="background-color: var(--blue); border-color: var(--blue);">Next</button>
                         {% else %}
-                            <button type="submit" id="submitBtn" class="btn btn-success px-5 rounded-pill fw-bold shadow-sm" style="background-color: var(--green); border-color: var(--green);">Submit Exam</button>
+                            <button type="submit" id="submitBtn" class="btn btn-success px-5 rounded-pill fw-bold shadow-sm text-nowrap" style="background-color: var(--green); border-color: var(--green);">Submit Exam</button>
                         {% endif %}
                     </div>
                 </div>
             {% empty %}
                 <div class="card-box text-center py-5 bg-white">
                     <p class="text-muted mb-3">No questions available for this exam.</p>
-                    <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-primary rounded-pill px-4 fw-semibold">Back to Dashboard</a>
+                    <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-primary rounded-pill px-4 fw-semibold text-nowrap">Back to Dashboard</a>
                 </div>
             {% endfor %}
         </form>

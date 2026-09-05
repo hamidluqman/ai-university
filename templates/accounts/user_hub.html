@@ -173,6 +173,8 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .hub-table {
@@ -204,6 +206,44 @@ body::before {
 .hub-table tbody tr:hover {
     background: #F9FBFC !important;
 }
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .hub-container {
+        padding: 0 8px;
+        margin: 10px auto;
+    }
+    .top-bar-card {
+        padding: 16px;
+        border-radius: 12px;
+        position: relative;
+        top: 0;
+    }
+    .top-bar-title {
+        font-size: 18px;
+    }
+    .action-buttons {
+        width: 100%;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .action-buttons > a {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+    .card-box {
+        padding: 16px;
+        border-radius: 12px;
+    }
+    .card-box-header {
+        font-size: 16px;
+    }
+    .hub-table td, .hub-table th {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+}
 </style>
 {% endblock %}
 
@@ -217,19 +257,19 @@ body::before {
             </h3>
             <div>
                 {% if is_institution_admin %}
-                    <span class="badge bg-warning-subtle text-dark px-2 py-1" style="font-weight: 700; border-radius: 6px; font-size: 13px;">Institutional Administrator View</span>
+                    <span class="badge bg-warning-subtle text-dark px-2 py-1 text-nowrap" style="font-weight: 700; border-radius: 6px; font-size: 13px;">Institutional Administrator View</span>
                 {% else %}
-                    <span class="badge bg-primary-subtle text-primary px-2 py-1" style="font-weight: 700; border-radius: 6px; font-size: 13px;">Global Superadmin View</span>
+                    <span class="badge bg-primary-subtle text-primary px-2 py-1 text-nowrap" style="font-weight: 700; border-radius: 6px; font-size: 13px;">Global Superadmin View</span>
                 {% endif %}
             </div>
         </div>
         <div class="action-buttons">
             {% if not is_institution_admin %}
-                <a href="{% url 'accounts:create_institution' %}" class="btn-custom-outline">+ Institution</a>
-                <a href="{% url 'accounts:create_content_team' %}" class="btn-custom-outline">+ Content Team</a>
+                <a href="{% url 'accounts:create_institution' %}" class="btn-custom-outline text-nowrap">+ Institution</a>
+                <a href="{% url 'accounts:create_content_team' %}" class="btn-custom-outline text-nowrap">+ Content Team</a>
             {% endif %}
-            <a href="{% url 'accounts:create_teacher' %}" class="btn-custom-success">+ Add Teacher</a>
-            <a href="{% url 'accounts:create_student' %}" class="btn-custom-primary">+ Add Student</a>
+            <a href="{% url 'accounts:create_teacher' %}" class="btn-custom-success text-nowrap">+ Add Teacher</a>
+            <a href="{% url 'accounts:create_student' %}" class="btn-custom-primary text-nowrap">+ Add Student</a>
         </div>
     </div>
 
@@ -247,7 +287,7 @@ body::before {
     <div class="card-box">
         <div class="card-box-header">
             <span>Content Team Members</span>
-            <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 13px;">Total: {{ content_team_members.count|default:0 }}</span>
+            <span class="badge bg-light text-dark border px-2 py-1 text-nowrap" style="font-size: 13px;">Total: {{ content_team_members.count|default:0 }}</span>
         </div>
         <div class="table-responsive">
             <table class="table hub-table align-middle">
@@ -262,13 +302,13 @@ body::before {
                 <tbody>
                     {% for member in content_team_members %}
                     <tr>
-                        <td><strong style="color: var(--navy-dark);">{{ member.username }}</strong></td>
-                        <td class="text-muted">{{ member.email|default:"N/A" }}</td>
-                        <td class="text-muted">{{ member.date_joined|date:"Y-m-d H:i" }}</td>
+                        <td><strong class="text-truncate d-inline-block" style="color: var(--navy-dark); max-width: 200px;">{{ member.username }}</strong></td>
+                        <td class="text-muted text-truncate d-inline-block" style="max-width: 220px;">{{ member.email|default:"N/A" }}</td>
+                        <td class="text-muted text-nowrap">{{ member.date_joined|date:"Y-m-d H:i" }}</td>
                         <td class="text-end">
                             <form action="{% url 'accounts:delete_content_team' member.id %}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete content team member {{ member.username }}?');">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold px-3 py-1" style="border-radius: 8px;">Delete</button>
+                                <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold px-3 py-1 text-nowrap" style="border-radius: 8px;">Delete</button>
                             </form>
                         </td>
                     </tr>
@@ -284,7 +324,7 @@ body::before {
     <div class="card-box">
         <div class="card-box-header">
             <span>Institutions</span>
-            <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 13px;">Total: {{ institutions.count }}</span>
+            <span class="badge bg-light text-dark border px-2 py-1 text-nowrap" style="font-size: 13px;">Total: {{ institutions.count }}</span>
         </div>
         <div class="table-responsive">
             <table class="table hub-table align-middle">
@@ -299,13 +339,13 @@ body::before {
                 <tbody>
                     {% for inst in institutions %}
                     <tr>
-                        <td><strong style="color: var(--navy-dark);">{{ inst.name }}</strong></td>
+                        <td><strong class="text-truncate d-inline-block" style="color: var(--navy-dark); max-width: 250px;">{{ inst.name }}</strong></td>
                         <td><code style="color: var(--navy);">{{ inst.code }}</code></td>
-                        <td class="text-muted">{{ inst.created_at|date:"Y-m-d H:i" }}</td>
+                        <td class="text-muted text-nowrap">{{ inst.created_at|date:"Y-m-d H:i" }}</td>
                         <td class="text-end">
                             <form action="{% url 'accounts:delete_institution' inst.id %}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete {{ inst.name }}?');">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold px-3 py-1" style="border-radius: 8px;">Delete</button>
+                                <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold px-3 py-1 text-nowrap" style="border-radius: 8px;">Delete</button>
                             </form>
                         </td>
                     </tr>
@@ -320,7 +360,7 @@ body::before {
     <div class="card-box">
         <div class="card-box-header">
             <span>Teachers</span>
-            <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 13px;">Total: {{ teachers.count }}</span>
+            <span class="badge bg-light text-dark border px-2 py-1 text-nowrap" style="font-size: 13px;">Total: {{ teachers.count }}</span>
         </div>
         <div class="table-responsive">
             <table class="table hub-table align-middle">
@@ -336,14 +376,14 @@ body::before {
                 <tbody>
                     {% for t in teachers %}
                     <tr>
-                        <td><strong style="color: var(--navy-dark);">{{ t.user.username }}</strong></td>
-                        <td class="text-muted">{{ t.user.email }}</td>
+                        <td><strong class="text-truncate d-inline-block" style="color: var(--navy-dark); max-width: 180px;">{{ t.user.username }}</strong></td>
+                        <td class="text-muted text-truncate d-inline-block" style="max-width: 200px;">{{ t.user.email }}</td>
                         <td><code style="color: var(--navy);">{{ t.employee_id }}</code></td>
-                        <td>{{ t.institution.name }}</td>
+                        <td class="text-truncate d-inline-block" style="max-width: 180px;">{{ t.institution.name }}</td>
                         <td class="text-end">
                             <form action="{% url 'accounts:delete_teacher' t.id %}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete teacher {{ t.user.username }}?');">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold px-3 py-1" style="border-radius: 8px;">Delete</button>
+                                <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold px-3 py-1 text-nowrap" style="border-radius: 8px;">Delete</button>
                             </form>
                         </td>
                     </tr>
@@ -358,7 +398,7 @@ body::before {
     <div class="card-box">
         <div class="card-box-header">
             <span>Institutional Students</span>
-            <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 13px;">Total: {{ institutional_students_count|default:students.count }}</span>
+            <span class="badge bg-light text-dark border px-2 py-1 text-nowrap" style="font-size: 13px;">Total: {{ institutional_students_count|default:students.count }}</span>
         </div>
         <div class="table-responsive">
             <table class="table hub-table align-middle">
@@ -375,14 +415,14 @@ body::before {
                     {% for s in students %}
                         {% if s.student_type == 'institutional' %}
                         <tr>
-                            <td><strong style="color: var(--navy-dark);">{{ s.user.username }}</strong></td>
-                            <td class="text-muted">{{ s.user.email }}</td>
-                            <td>{{ s.institution.name|default:"N/A" }}</td>
+                            <td><strong class="text-truncate d-inline-block" style="color: var(--navy-dark); max-width: 180px;">{{ s.user.username }}</strong></td>
+                            <td class="text-muted text-truncate d-inline-block" style="max-width: 200px;">{{ s.user.email }}</td>
+                            <td class="text-truncate d-inline-block" style="max-width: 180px;">{{ s.institution.name|default:"N/A" }}</td>
                             <td><code style="color: var(--navy);">{{ s.roll_number|default:"N/A" }}</code></td>
                             <td class="text-end">
                                 <form action="{% url 'accounts:delete_student' s.id %}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete student {{ s.user.username }}?');">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold px-3 py-1" style="border-radius: 8px;">Delete</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold px-3 py-1 text-nowrap" style="border-radius: 8px;">Delete</button>
                                 </form>
                             </td>
                         </tr>
@@ -398,7 +438,7 @@ body::before {
     <div class="card-box">
         <div class="card-box-header">
             <span>Independent Students</span>
-            <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 13px;">Total: {{ independent_students_count|default:students.count }}</span>
+            <span class="badge bg-light text-dark border px-2 py-1 text-nowrap" style="font-size: 13px;">Total: {{ independent_students_count|default:students.count }}</span>
         </div>
         <div class="table-responsive">
             <table class="table hub-table align-middle">
@@ -414,13 +454,13 @@ body::before {
                     {% for s in students %}
                         {% if s.student_type != 'institutional' %}
                         <tr>
-                            <td><strong style="color: var(--navy-dark);">{{ s.user.username }}</strong></td>
-                            <td class="text-muted">{{ s.user.email }}</td>
+                            <td><strong class="text-truncate d-inline-block" style="color: var(--navy-dark); max-width: 200px;">{{ s.user.username }}</strong></td>
+                            <td class="text-muted text-truncate d-inline-block" style="max-width: 220px;">{{ s.user.email }}</td>
                             <td><code style="color: var(--navy);">{{ s.roll_number|default:"N/A" }}</code></td>
                             <td class="text-end">
                                 <form action="{% url 'accounts:delete_student' s.id %}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete student {{ s.user.username }}?');">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold px-3 py-1" style="border-radius: 8px;">Delete</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold px-3 py-1 text-nowrap" style="border-radius: 8px;">Delete</button>
                                 </form>
                             </td>
                         </tr>

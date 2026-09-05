@@ -87,6 +87,37 @@ body {
     font-size: 14px;
     vertical-align: middle;
 }
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .roster-container {
+        padding: 0 8px;
+        margin: 10px auto;
+    }
+    .roster-header-bar {
+        padding: 18px;
+        border-radius: 12px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .brand-title {
+        font-size: 18px !important;
+    }
+    .card-box {
+        padding: 14px;
+        border-radius: 12px;
+    }
+    .table-custom td, .table-custom th {
+        padding: 12px 10px;
+        font-size: 13px;
+    }
+    .roster-header-bar form {
+        width: 100%;
+    }
+    .roster-header-bar select {
+        width: 100%;
+    }
+}
 </style>
 {% endblock %}
 
@@ -130,7 +161,7 @@ body {
                     <tr>
                         <td><code>{{ student.roll_number|default:"N/A" }}</code></td>
                         <td><strong>{{ student.user.full_name|default:student.user.username }}</strong></td>
-                        <td>{{ student.user.email }}</td>
+                        <td class="text-truncate" style="max-width: 200px;">{{ student.user.email }}</td>
                         <td>
                             <span class="badge bg-primary-subtle text-primary border px-2 py-1">{{ student.get_student_type_display }}</span>
                         </td>

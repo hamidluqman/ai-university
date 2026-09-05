@@ -67,6 +67,8 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
     align-items: center;
     border-bottom: 1px solid var(--border-light);
     padding-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 .course-card {
     border: 1px solid var(--border);
@@ -146,6 +148,40 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
     margin-top: 8px;
     gap: 10px;
 }
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .student-container {
+        padding: 0 8px;
+        margin: 10px auto;
+    }
+    .header-box {
+        padding: 20px;
+        border-radius: 12px;
+    }
+    .header-box h1 {
+        font-size: 20px !important;
+    }
+    .card-box {
+        padding: 14px;
+        border-radius: 12px;
+    }
+    .course-card-header, .chapter-header, .topic-header {
+        padding: 12px;
+        font-size: 13px;
+    }
+    .subtopic-row {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 8px;
+        padding: 10px;
+    }
+    .subtopic-row > div:last-child {
+        width: 100%;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+}
 </style>
 {% endblock %}
 
@@ -159,7 +195,7 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
             <p class="mb-0 text-white-50">Explore your assigned chapters, video lectures, and practice modules.</p>
         </div>
         <div>
-            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm text-nowrap">
                 <i class="bi bi-arrow-left"></i> Back to Dashboard
             </a>
         </div>
@@ -176,8 +212,8 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
             {% for course in courses %}
             <div class="course-card">
                 <div class="course-card-header" data-bs-toggle="collapse" data-bs-target="#courseCollapse{{ forloop.counter }}">
-                    <span>{{ course.name }}</span>
-                    <i class="bi bi-chevron-down"></i>
+                    <span class="text-truncate pe-2">{{ course.name }}</span>
+                    <i class="bi bi-chevron-down flex-shrink-0"></i>
                 </div>
                 <div id="courseCollapse{{ forloop.counter }}" class="collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#coursesAccordion">
                     <div class="course-card-body">
@@ -189,8 +225,8 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                                     {% for chapter in chapters %}
                                     <div class="chapter-box">
                                         <div class="chapter-header" data-bs-toggle="collapse" data-bs-target="#chapterCollapse{{ course.id }}_{{ chapter.id }}">
-                                            <span class="fw-bold text-dark small"><i class="bi bi-bookmark-fill me-2 text-primary"></i> Ch {{ chapter.chapter_number }}: {{ chapter.title }}</span>
-                                            <i class="bi bi-chevron-down text-muted small"></i>
+                                            <span class="fw-bold text-dark small text-truncate pe-2"><i class="bi bi-bookmark-fill me-2 text-primary"></i> Ch {{ chapter.chapter_number }}: {{ chapter.title }}</span>
+                                            <i class="bi bi-chevron-down text-muted small flex-shrink-0"></i>
                                         </div>
                                         <div id="chapterCollapse{{ course.id }}_{{ chapter.id }}" class="collapse" data-bs-parent="#chaptersAccordion{{ course.id }}">
                                             <div class="chapter-body">
@@ -199,8 +235,8 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                                                         {% for topic in chapter.topics.all %}
                                                         <div class="topic-box">
                                                             <div class="topic-header" data-bs-toggle="collapse" data-bs-target="#topicCollapse{{ chapter.id }}_{{ topic.id }}">
-                                                                <span class="small text-secondary"><i class="bi bi-file-earmark-text text-primary me-1"></i> Topic: {{ topic.title }}</span>
-                                                                <i class="bi bi-chevron-down text-muted small"></i>
+                                                                <span class="small text-secondary text-truncate pe-2"><i class="bi bi-file-earmark-text text-primary me-1"></i> Topic: {{ topic.title }}</span>
+                                                                <i class="bi bi-chevron-down text-muted small flex-shrink-0"></i>
                                                             </div>
                                                             <div id="topicCollapse{{ chapter.id }}_{{ topic.id }}" class="collapse" data-bs-parent="#topicsAccordion{{ chapter.id }}">
                                                                 <div class="topic-body">
@@ -209,13 +245,13 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                                                                             {% for subtopic in topic.subtopics.all %}
                                                                             <div class="subtopic-row">
                                                                                 <span class="small fw-medium text-dark"><i class="bi bi-dot text-primary"></i> {{ subtopic.title }}</span>
-                                                                                <div class="d-flex gap-1 align-items-center">
-                                                                                    <a href="{% url 'courses:course_player' 'board' subtopic.id %}" class="btn btn-sm btn-outline-danger py-0 px-2 fw-semibold" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-play-fill"></i> Video</a>
+                                                                                <div class="d-flex gap-1 align-items-center flex-wrap">
+                                                                                    <a href="{% url 'courses:course_player' 'board' subtopic.id %}" class="btn btn-sm btn-outline-danger py-0 px-2 fw-semibold text-nowrap" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-play-fill"></i> Video</a>
                                                                                     
                                                                                     {% if subtopic.id in user_attempts %}
-                                                                                        <a href="{% url 'examinations:start_board_exam' subtopic.id %}?retest=true" class="btn btn-sm btn-outline-warning text-dark border-warning py-0 px-2 fw-semibold" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-arrow-repeat"></i> Retest</a>
+                                                                                        <a href="{% url 'examinations:start_board_exam' subtopic.id %}?retest=true" class="btn btn-sm btn-outline-warning text-dark border-warning py-0 px-2 fw-semibold text-nowrap" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-arrow-repeat"></i> Retest</a>
                                                                                     {% else %}
-                                                                                        <a href="{% url 'examinations:start_board_exam' subtopic.id %}" class="btn btn-sm btn-primary py-0 px-2 fw-semibold" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-play-circle-fill me-1"></i> Start Test</a>
+                                                                                        <a href="{% url 'examinations:start_board_exam' subtopic.id %}" class="btn btn-sm btn-primary py-0 px-2 fw-semibold text-nowrap" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-play-circle-fill me-1"></i> Start Test</a>
                                                                                     {% endif %}
                                                                                 </div>
                                                                             </div>

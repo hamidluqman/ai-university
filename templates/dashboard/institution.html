@@ -123,6 +123,7 @@ body {
     display: flex;
     align-items: center;
     gap: 20px;
+    height: 100%;
 }
 
 .stat-icon {
@@ -133,6 +134,7 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 24px;
+    flex-shrink: 0;
 }
 
 .card-box {
@@ -153,6 +155,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .table-custom th {
@@ -174,6 +178,42 @@ body {
     color: var(--text) !important;
     font-size: 14px;
     vertical-align: middle;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .institution-dashboard-container {
+        padding: 0 8px;
+        margin: 10px auto;
+    }
+    .institution-header-bar {
+        padding: 18px;
+        border-radius: 12px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .dashboard-banner {
+        padding: 22px;
+        border-radius: 12px;
+    }
+    .dashboard-banner h1 {
+        font-size: 20px !important;
+    }
+    .stat-card {
+        padding: 18px;
+        border-radius: 12px;
+    }
+    .card-box {
+        padding: 16px;
+        border-radius: 12px;
+    }
+    .table-custom td, .table-custom th {
+        padding: 12px 10px;
+        font-size: 13px;
+    }
+    .card-box-header {
+        font-size: 16px;
+    }
 }
 </style>
 {% endblock %}
@@ -285,7 +325,7 @@ body {
                             <tr>
                                 <td><strong>{{ cls.name }}</strong></td>
                                 <td class="text-end">
-                                    <a href="{% url 'accounts:class_roster' cls.id %}" class="btn btn-sm btn-outline-primary px-3 fw-semibold" style="border-radius: 8px;">View Roster</a>
+                                    <a href="{% url 'accounts:class_roster' cls.id %}" class="btn btn-sm btn-outline-primary px-3 fw-semibold text-nowrap" style="border-radius: 8px;">View Roster</a>
                                 </td>
                             </tr>
                             {% empty %}
@@ -319,19 +359,19 @@ body {
                         <tbody>
                             {% for exam in exams %}
                             <tr>
-                                <td><strong>{{ exam.title }}</strong></td>
+                                <td><strong class="text-truncate d-inline-block" style="max-width: 200px;">{{ exam.title }}</strong></td>
                                 <td>
-                                    <span class="text-muted small">
+                                    <span class="text-muted small text-truncate d-inline-block" style="max-width: 120px;">
                                         {{ exam.creator.get_full_name|default:exam.creator.username|default:"System Admin" }}
                                     </span>
                                 </td>
-                                <td>{{ exam.created_at|date:"M d, Y"|default:"N/A" }}</td>
+                                <td class="text-nowrap">{{ exam.created_at|date:"M d, Y"|default:"N/A" }}</td>
                                 <td class="text-end">
                                     <div class="d-flex justify-content-end gap-2">
-                                        <a href="{% url 'accounts:exam_results' exam.id %}" class="btn btn-sm btn-outline-primary px-3 fw-semibold" style="border-radius: 8px;">Results</a>
+                                        <a href="{% url 'accounts:exam_results' exam.id %}" class="btn btn-sm btn-outline-primary px-3 fw-semibold text-nowrap" style="border-radius: 8px;">Results</a>
                                         <form method="post" action="{% url 'accounts:delete_exam' exam.id %}" class="m-0" onsubmit="return confirm('Are you sure you want to delete this exam?');">
                                             {% csrf_token %}
-                                            <button type="submit" class="btn btn-sm btn-outline-danger px-3 fw-semibold" style="border-radius: 8px;">Delete</button>
+                                            <button type="submit" class="btn btn-sm btn-outline-danger px-3 fw-semibold text-nowrap" style="border-radius: 8px;">Delete</button>
                                         </form>
                                     </div>
                                 </td>
@@ -354,7 +394,7 @@ body {
             <span>Institution Teachers & Assignments</span>
             <div class="d-flex align-items-center gap-3">
                 <span class="badge bg-light text-dark border px-2 py-1">Total: {{ teachers|length|default:0 }}</span>
-                <a href="{% url 'accounts:create_teacher' %}" class="btn btn-sm btn-primary fw-semibold text-white px-3" style="border-radius: 8px; background-color: var(--blue); border-color: var(--blue);">
+                <a href="{% url 'accounts:create_teacher' %}" class="btn btn-sm btn-primary fw-semibold text-white px-3 text-nowrap" style="border-radius: 8px; background-color: var(--blue); border-color: var(--blue);">
                     <i class="bi bi-plus-lg"></i> Add New Teacher
                 </a>
             </div>
@@ -377,18 +417,18 @@ body {
                         <td><code>{{ teacher.user.username }}</code></td>
                         <td>
                             {% if teacher.assigned_classes.all %}
-                                {% for c in teacher.assigned_classes.all %}<span class="badge bg-light text-dark border me-1">{{ c.name }}</span>{% endfor %}
+                                {% for c in teacher.assigned_classes.all %}<span class="badge bg-light text-dark border me-1 mb-1">{{ c.name }}</span>{% endfor %}
                             {% elif teacher.classes.all %}
-                                {% for c in teacher.classes.all %}<span class="badge bg-light text-dark border me-1">{{ c.name }}</span>{% endfor %}
+                                {% for c in teacher.classes.all %}<span class="badge bg-light text-dark border me-1 mb-1">{{ c.name }}</span>{% endfor %}
                             {% else %}
                                 <span class="text-muted small">No classes assigned</span>
                             {% endif %}
                         </td>
                         <td>
                             {% if teacher.assigned_subjects.all %}
-                                {% for s in teacher.assigned_subjects.all %}<span class="badge bg-info-subtle text-info border me-1">{{ s.name }}</span>{% endfor %}
+                                {% for s in teacher.assigned_subjects.all %}<span class="badge bg-info-subtle text-info border me-1 mb-1">{{ s.name }}</span>{% endfor %}
                             {% elif teacher.subjects.all %}
-                                {% for s in teacher.subjects.all %}<span class="badge bg-info-subtle text-info border me-1">{{ s.name }}</span>{% endfor %}
+                                {% for s in teacher.subjects.all %}<span class="badge bg-info-subtle text-info border me-1 mb-1">{{ s.name }}</span>{% endfor %}
                             {% else %}
                                 <span class="text-muted small">No subjects assigned</span>
                             {% endif %}

@@ -67,6 +67,8 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
     align-items: center;
     border-bottom: 1px solid var(--border-light);
     padding-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 .table-custom th {
     background: #F8FAFB !important;
@@ -87,6 +89,39 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
     font-size: 13px;
     vertical-align: middle;
 }
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .student-container {
+        padding: 0 8px;
+        margin: 10px auto;
+    }
+    .header-box {
+        padding: 20px;
+        border-radius: 12px;
+    }
+    .header-box h1 {
+        font-size: 20px !important;
+    }
+    .card-box {
+        padding: 16px;
+        border-radius: 12px;
+    }
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 12px;
+    }
+    .card-header > div:last-child {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+    .table-custom td, .table-custom th {
+        padding: 10px 8px;
+        font-size: 12px;
+    }
+}
 </style>
 {% endblock %}
 
@@ -100,7 +135,7 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
             <p class="mb-0 text-white-50">Review all your completed test attempts, overall subject scores, and score breakdowns.</p>
         </div>
         <div>
-            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm text-nowrap">
                 <i class="bi bi-arrow-left"></i> Back to Dashboard
             </a>
         </div>
@@ -118,18 +153,18 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                 {% for stat in subject_stats %}
                 <div class="card mb-2 border rounded-3 overflow-hidden shadow-sm">
                     <div class="card-header bg-white p-3 d-flex justify-content-between align-items-center" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#subjectCollapse{{ forloop.counter }}">
-                        <div class="d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-3 flex-wrap">
                             <span class="fw-bold text-dark fs-6">{{ stat.subject_name }}</span>
                             <span class="badge bg-light text-dark border px-2 py-1">Tests Attempted: {{ stat.total_attempts }}</span>
                         </div>
-                        <div class="d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-3 flex-wrap">
                             <span>Avg Score: <strong>{{ stat.avg_percentage|floatformat:1 }}%</strong></span>
                             {% if stat.avg_percentage >= 70 %}
-                                <span class="badge bg-success-subtle text-success border border-success px-3 py-1 rounded-pill fw-semibold">Strong</span>
+                                <span class="badge bg-success-subtle text-success border border-success px-3 py-1 rounded-pill fw-semibold text-nowrap">Strong</span>
                             {% elif stat.avg_percentage >= 50 %}
-                                <span class="badge bg-warning-subtle text-warning border border-warning px-3 py-1 rounded-pill fw-semibold">Moderate</span>
+                                <span class="badge bg-warning-subtle text-warning border border-warning px-3 py-1 rounded-pill fw-semibold text-nowrap">Moderate</span>
                             {% else %}
-                                <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-1 rounded-pill fw-semibold">Needs Improvement</span>
+                                <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-1 rounded-pill fw-semibold text-nowrap">Needs Improvement</span>
                             {% endif %}
                             <i class="bi bi-chevron-down text-muted"></i>
                         </div>
@@ -153,12 +188,12 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                                             {% with s_name=att.exam.board_subject.name|default:"General" %}
                                                 {% if s_name == stat.subject_name %}
                                                 <tr>
-                                                    <td><strong>{{ att.exam.title }}</strong></td>
-                                                    <td>{{ att.submitted_at|date:"M d, Y H:i" }}</td>
-                                                    <td>{{ att.score }} / {{ att.total_marks }}</td>
-                                                    <td><strong>{{ att.percentage|floatformat:1 }}%</strong></td>
+                                                    <td><strong class="text-truncate d-inline-block" style="max-width: 200px;">{{ att.exam.title }}</strong></td>
+                                                    <td class="text-nowrap">{{ att.submitted_at|date:"M d, Y H:i" }}</td>
+                                                    <td class="text-nowrap">{{ att.score }} / {{ att.total_marks }}</td>
+                                                    <td class="text-nowrap"><strong>{{ att.percentage|floatformat:1 }}%</strong></td>
                                                     <td class="text-end">
-                                                        <a href="{% url 'examinations:exam_result' att.id %}" class="btn btn-sm btn-outline-primary px-3 py-1 rounded-pill fw-semibold" style="border-color: var(--navy); color: var(--navy);">View Report</a>
+                                                        <a href="{% url 'examinations:exam_result' att.id %}" class="btn btn-sm btn-outline-primary px-3 py-1 rounded-pill fw-semibold text-nowrap" style="border-color: var(--navy); color: var(--navy);">View Report</a>
                                                     </td>
                                                 </tr>
                                                 {% endif %}

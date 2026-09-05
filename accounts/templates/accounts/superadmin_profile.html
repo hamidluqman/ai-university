@@ -21,10 +21,31 @@ body {
     background: linear-gradient(180deg, #F8FAFC 0%, #F4F6F8 100%) !important;
     color: var(--text) !important;
     font-family: 'Inter', sans-serif !important;
+    position: relative;
     min-height: 100vh;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "AI UNIVERSITY";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-family: 'Manrope', sans-serif;
+    font-size: 13vw;
+    font-weight: 800;
+    color: rgba(105, 117, 134, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: 4px;
 }
 
 .profile-container {
+    position: relative;
+    z-index: 1;
     max-width: 850px;
     margin: 35px auto 45px auto;
     padding: 0 15px;
@@ -100,25 +121,40 @@ input[type="file"].form-control::file-selector-button:hover {
 .save-btn:hover {
     background: var(--navy-dark) !important;
 }
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 0 10px;
+        margin: 15px auto;
+    }
+    .profile-card {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+    .profile-title {
+        font-size: 18px !important;
+    }
+}
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="profile-container">
     <div class="profile-card">
-        <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
-            <div>
-                <h3 class="profile-title m-0">
+        <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom flex-wrap gap-3">
+            <div style="min-width: 0; flex-grow: 1;">
+                <h3 class="profile-title m-0 text-break">
                     <i class="bi bi-person-gear me-2 text-primary"></i> Superadmin Profile Settings
                 </h3>
-                <div class="text-muted small mt-1">Manage your account credentials, security options, and personal information.</div>
+                <div class="text-muted small mt-1 text-break">Manage your account credentials, security options, and personal information.</div>
             </div>
-            <span class="badge bg-primary-subtle text-primary border px-3 py-2 fw-bold" style="border-radius: 8px;">Superadmin</span>
+            <span class="badge bg-primary-subtle text-primary border px-3 py-2 fw-bold text-nowrap" style="border-radius: 8px;">Superadmin</span>
         </div>
 
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 mb-4" role="alert" style="border-radius: 10px; font-size: 14px; font-weight: 600;">
+                <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 mb-4 text-break" role="alert" style="border-radius: 10px; font-size: 14px; font-weight: 600;">
                     {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
@@ -129,44 +165,44 @@ input[type="file"].form-control::file-selector-button:hover {
             {% csrf_token %}
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label class="form-label">First Name</label>
+                    <label class="form-label text-break">First Name</label>
                     <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}">
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Last Name</label>
+                    <label class="form-label text-break">Last Name</label>
                     <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}">
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Username</label>
+                    <label class="form-label text-break">Username</label>
                     <input type="text" name="username" class="form-control" value="{{ user.username }}" required>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Email Address</label>
+                    <label class="form-label text-break">Email Address</label>
                     <input type="email" name="email" class="form-control" value="{{ user.email }}" required>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Phone Number</label>
+                    <label class="form-label text-break">Phone Number</label>
                     <input type="text" name="phone_number" class="form-control" value="{{ phone_number }}" placeholder="+92 ...">
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Profile Picture</label>
+                    <label class="form-label text-break">Profile Picture</label>
                     <input type="file" name="profile_picture" class="form-control" accept="image/*">
                 </div>
 
                 <div class="col-12 mt-4 pt-3 border-top">
-                    <h5 class="fw-bold text-dark mb-3" style="font-size: 16px;">Security & Password</h5>
+                    <h5 class="fw-bold text-dark mb-3 text-break" style="font-size: 16px;">Security & Password</h5>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">New Password</label>
+                    <label class="form-label text-break">New Password</label>
                     <input type="password" name="new_password" class="form-control" placeholder="Leave blank to keep current">
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Confirm New Password</label>
+                    <label class="form-label text-break">Confirm New Password</label>
                     <input type="password" name="confirm_password" class="form-control" placeholder="Confirm new password">
                 </div>
 
                 <div class="col-12 mt-4">
-                    <button type="submit" class="save-btn">
+                    <button type="submit" class="save-btn text-nowrap shadow-sm">
                         <i class="bi bi-check2-circle me-1"></i> Save Changes
                     </button>
                 </div>

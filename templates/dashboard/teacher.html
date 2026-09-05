@@ -95,6 +95,7 @@ body {
     display: flex;
     align-items: center;
     gap: 20px;
+    height: 100%;
 }
 
 .stat-icon {
@@ -105,6 +106,7 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 24px;
+    flex-shrink: 0;
 }
 
 .card-box {
@@ -125,6 +127,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .table-custom th {
@@ -147,6 +151,41 @@ body {
     font-size: 14px;
     vertical-align: middle;
 }
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .teacher-dashboard-container {
+        padding: 0 8px;
+        margin: 10px auto;
+    }
+    .teacher-header-bar {
+        padding: 16px;
+        border-radius: 12px;
+    }
+    .brand-title {
+        font-size: 18px;
+    }
+    .card-box {
+        padding: 16px;
+        border-radius: 12px;
+    }
+    .stat-card {
+        padding: 16px;
+        gap: 12px;
+    }
+    .stat-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
+    }
+    .table-custom td, .table-custom th {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    .card-box-header {
+        font-size: 16px;
+    }
+}
 </style>
 {% endblock %}
 
@@ -155,10 +194,10 @@ body {
     
     <!-- Header Ribbon -->
     <div class="teacher-header-bar">
-        <div class="d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center gap-3 flex-wrap">
             <img src="{% static 'images/logo.png' %}" alt="Logo" style="max-height: 44px; width: auto;">
             <div>
-                <h1 class="brand-title">Teacher Portal: {{ request.user.get_full_name|default:request.user.username }}</h1>
+                <h1 class="brand-title text-truncate" style="max-width: 500px;">Teacher Portal: {{ request.user.get_full_name|default:request.user.username }}</h1>
                 <div class="brand-subtitle">
                     Institution: <span class="fw-bold text-primary">{{ institution.name|default:"Not Assigned" }}</span>
                 </div>
@@ -167,7 +206,7 @@ body {
 
         <div class="d-flex align-items-center gap-3">
             <div class="dropdown">
-                <a href="#" class="nav-btn dropdown-toggle" data-bs-toggle="dropdown">
+                <a href="#" class="nav-btn dropdown-toggle text-nowrap" data-bs-toggle="dropdown">
                     <i class="bi bi-person-circle"></i> {{ request.user.username }}
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2 bg-white" style="border-radius: 12px; min-width: 180px;">
@@ -180,7 +219,7 @@ body {
                     <li>
                         <form method="post" action="{% url 'accounts:logout' %}" class="m-0">
                             {% csrf_token %}
-                            <button type="submit" class="dropdown-item text-danger fw-bold rounded p-2">
+                            <button type="submit" class="dropdown-item text-danger fw-bold rounded p-2 text-start w-100">
                                 <i class="bi bi-box-arrow-right"></i> Log Out
                             </button>
                         </form>
@@ -192,7 +231,7 @@ body {
 
     <!-- Quick Stat Metrics Row -->
     <div class="row g-4 mb-4">
-        <div class="col-md-3">
+        <div class="col-xl-3 col-md-6">
             <div class="stat-card">
                 <div class="stat-icon" style="background: rgba(22, 119, 184, 0.1); color: var(--blue);">
                     <i class="bi bi-journal-bookmark-fill"></i>
@@ -203,7 +242,7 @@ body {
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-xl-3 col-md-6">
             <div class="stat-card">
                 <div class="stat-icon" style="background: rgba(22, 134, 111, 0.1); color: var(--green);">
                     <i class="bi bi-people-fill"></i>
@@ -214,7 +253,7 @@ body {
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-xl-3 col-md-6">
             <div class="stat-card">
                 <div class="stat-icon" style="background: rgba(169, 78, 104, 0.1); color: var(--burgundy, #A94E68);">
                     <i class="bi bi-file-earmark-text-fill"></i>
@@ -225,7 +264,7 @@ body {
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-xl-3 col-md-6">
             <div class="stat-card">
                 <div class="stat-icon" style="background: rgba(197, 138, 25, 0.1); color: var(--gold);">
                     <i class="bi bi-building-fill"></i>
@@ -256,8 +295,8 @@ body {
                         <tbody>
                             {% for subject in assigned_subjects %}
                             <tr>
-                                <td><strong>{{ subject.name }}</strong></td>
-                                <td class="text-end"><span class="badge bg-success-subtle text-success border px-2 py-1">Active</span></td>
+                                <td><strong class="text-truncate d-inline-block" style="max-width: 250px;">{{ subject.name }}</strong></td>
+                                <td class="text-end"><span class="badge bg-success-subtle text-success border px-2 py-1 text-nowrap">Active</span></td>
                             </tr>
                             {% empty %}
                             <tr>
@@ -286,9 +325,9 @@ body {
                         <tbody>
                             {% for c in assigned_classes %}
                             <tr>
-                                <td><strong>{{ c.name }}</strong></td>
+                                <td><strong class="text-truncate d-inline-block" style="max-width: 200px;">{{ c.name }}</strong></td>
                                 <td class="text-end">
-                                    <a href="{% url 'accounts:class_roster' c.id %}" class="btn btn-sm btn-outline-primary px-3 fw-semibold" style="border-radius: 8px;">View Roster</a>
+                                    <a href="{% url 'accounts:class_roster' c.id %}" class="btn btn-sm btn-outline-primary px-3 fw-semibold text-nowrap" style="border-radius: 8px;">View Roster</a>
                                 </td>
                             </tr>
                             {% empty %}
@@ -307,9 +346,9 @@ body {
     <div class="card-box">
         <div class="card-box-header">
             <span>My Created Tests & Assessments</span>
-            <div class="d-flex align-items-center gap-3">
-                <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 13px;">Total Tests: {{ teacher_tests|length|default:0 }}</span>
-                <a href="{% url 'examinations:create_exam' %}" class="btn btn-sm btn-primary fw-semibold text-white px-3" style="border-radius: 8px; background-color: var(--blue); border-color: var(--blue);">
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+                <span class="badge bg-light text-dark border px-2 py-1 text-nowrap" style="font-size: 13px;">Total Tests: {{ teacher_tests|length|default:0 }}</span>
+                <a href="{% url 'examinations:create_exam' %}" class="btn btn-sm btn-primary fw-semibold text-white px-3 text-nowrap" style="border-radius: 8px; background-color: var(--blue); border-color: var(--blue);">
                     <i class="bi bi-plus-lg"></i> Add New Test
                 </a>
             </div>
@@ -326,14 +365,14 @@ body {
                 <tbody>
                     {% for test in teacher_tests %}
                     <tr>
-                        <td><strong>{{ test.title }}</strong></td>
-                        <td>{{ test.created_at|date:"M d, Y"|default:"N/A" }}</td>
+                        <td><strong class="text-truncate d-inline-block" style="max-width: 250px;">{{ test.title }}</strong></td>
+                        <td class="text-nowrap">{{ test.created_at|date:"M d, Y"|default:"N/A" }}</td>
                         <td class="text-end">
-                            <div class="d-flex justify-content-end gap-2">
-                                <a href="{% url 'accounts:exam_results' test.id %}" class="btn btn-sm btn-outline-primary px-3 fw-semibold" style="border-radius: 8px;">View Results</a>
+                            <div class="d-flex justify-content-end gap-2 flex-wrap">
+                                <a href="{% url 'accounts:exam_results' test.id %}" class="btn btn-sm btn-outline-primary px-3 fw-semibold text-nowrap" style="border-radius: 8px;">View Results</a>
                                 <form method="post" action="{% url 'examinations:delete_exam' test.id %}" class="m-0" onsubmit="return confirm('Are you sure you want to delete this test?');">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-sm btn-outline-danger px-3 fw-semibold" style="border-radius: 8px;">Delete</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger px-3 fw-semibold text-nowrap" style="border-radius: 8px;">Delete</button>
                                 </form>
                             </div>
                         </td>

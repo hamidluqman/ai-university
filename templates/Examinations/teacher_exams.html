@@ -74,10 +74,39 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
     border-radius: 12px;
     margin-bottom: 12px;
     transition: all 0.2s ease;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 .exam-item:hover {
     border-color: #CBD5DF;
     box-shadow: var(--shadow-sm);
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .watermark-container {
+        min-height: auto;
+    }
+    .teacher-exams-wrapper {
+        padding: 0 8px;
+    }
+    .header-box {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+    .header-box h2 {
+        font-size: 20px !important;
+    }
+    .exam-item {
+        padding: 14px 16px;
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+    .exam-item > div:last-child {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
 }
 </style>
 {% endblock %}
@@ -88,12 +117,12 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
         
         <!-- Header Banner -->
         <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <div>
-                <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold" style="font-size: 11px;">Instructor Portal</span>
-                <h2 class="fw-extrabold text-white mt-1 mb-1" style="font-family: 'Manrope', sans-serif; font-size: 24px;">Exams Created By You</h2>
+            <div style="min-width: 0; flex-grow: 1;">
+                <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold text-nowrap" style="font-size: 11px;">Instructor Portal</span>
+                <h2 class="fw-extrabold text-white mt-1 mb-1 text-break" style="font-family: 'Manrope', sans-serif; font-size: 24px;">Exams Created By You</h2>
                 <p class="text-white-50 small mb-0">Manage and track all assessments you have authored for your classes.</p>
             </div>
-            <a href="javascript:history.back()" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+            <a href="javascript:history.back()" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm text-nowrap">
                 <i class="bi bi-arrow-left"></i> Back to Dashboard
             </a>
         </div>
@@ -102,8 +131,8 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
             <div class="d-flex flex-column gap-3">
                 {% for item in exams_data %}
                 <div class="exam-item">
-                    <div>
-                        <h5 class="mb-1 fw-bold text-dark" style="font-family: 'Manrope', sans-serif; font-size: 17px;">{{ item.exam.title }}</h5>
+                    <div style="min-width: 0; flex-grow: 1;">
+                        <h5 class="mb-1 fw-bold text-dark text-truncate" style="font-family: 'Manrope', sans-serif; font-size: 17px;" title="{{ item.exam.title }}">{{ item.exam.title }}</h5>
                         <p class="mb-0 text-muted small">
                             <strong>Class / Scope:</strong> {{ item.exam.scope_level|title }} | 
                             <strong>Date:</strong> {{ item.exam.start_time|date:"M d, Y H:i"|default:"Not Specified" }} | 
@@ -113,9 +142,9 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                     </div>
                     <div>
                         {% if item.is_completed %}
-                            <a href="{% url 'examinations:results_dashboard' %}" class="btn btn-success btn-sm px-4 py-2 rounded-pill fw-bold text-white shadow-sm" style="background-color: var(--green); border-color: var(--green);">Get Results</a>
+                            <a href="{% url 'examinations:results_dashboard' %}" class="btn btn-success btn-sm px-4 py-2 rounded-pill fw-bold text-white shadow-sm text-nowrap" style="background-color: var(--green); border-color: var(--green);">Get Results</a>
                         {% else %}
-                            <span class="badge bg-warning-subtle text-warning border border-warning px-3 py-2 rounded-pill fw-bold">Scheduled</span>
+                            <span class="badge bg-warning-subtle text-warning border border-warning px-3 py-2 rounded-pill fw-bold text-nowrap">Scheduled</span>
                         {% endif %}
                     </div>
                 </div>

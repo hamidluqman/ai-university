@@ -5,10 +5,8 @@
 
 {% block extra_head %}
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Google Font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -353,6 +351,7 @@ body::before {
     justify-content: center;
     border-radius: 12px;
     font-size: 20px;
+    flex-shrink: 0;
 }
 
 .icon-blue { background: var(--blue-light); color: var(--blue); }
@@ -387,6 +386,8 @@ body::before {
     align-items: center;
     padding-top: 14px;
     border-top: 1px solid var(--border-light);
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .stat-status {
@@ -408,6 +409,7 @@ body::before {
     text-decoration: none;
     color: var(--navy);
     transition: color .2s ease;
+    white-space: nowrap;
 }
 
 .stat-action:hover {
@@ -433,6 +435,8 @@ body::before {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 6px;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
 .analytics-title {
@@ -463,6 +467,7 @@ body::before {
     border: 1px solid #DEE5EB;
     font-size: 10px;
     font-weight: 700;
+    white-space: nowrap;
 }
 
 .analytics-chart {
@@ -514,6 +519,7 @@ body::before {
     font-weight: 700;
     text-decoration: none;
     transition: all 0.2s ease;
+    white-space: nowrap;
 }
 
 .payment-open-btn:hover {
@@ -578,6 +584,7 @@ body::before {
     padding: 6px 11px;
     font-size: 10px;
     font-weight: 700;
+    white-space: nowrap;
 }
 
 .review-btn {
@@ -593,6 +600,7 @@ body::before {
     font-weight: 700;
     text-decoration: none;
     transition: background 0.2s ease;
+    white-space: nowrap;
 }
 
 .review-btn:hover {
@@ -709,6 +717,10 @@ body::before {
         border: 1px solid var(--border) !important;
         margin-top: 8px !important;
     }
+    .payment-table tbody td {
+        padding: 16px 14px;
+        font-size: 12px;
+    }
 }
 
 </style>
@@ -719,14 +731,9 @@ body::before {
 
 <div class="superadmin-dashboard">
 
-    <!-- ========================================================
-         STICKY COMMAND HEADER (RESPONSIVE NAVBAR WITH SINGLE LINE DESKTOP & MOBILE)
-         ======================================================== -->
-
     <nav class="superadmin-header navbar navbar-expand-lg p-0">
         <div class="container-fluid px-0">
 
-            <!-- Brand with Logo -->
             <div class="brand-section d-flex align-items-center gap-3">
                 <img src="{% static 'images/logo.png' %}" alt="AI University Logo" class="command-logo">
                 <div>
@@ -739,12 +746,10 @@ body::before {
                 </div>
             </div>
 
-            <!-- Hamburger Toggle Button for Mobile -->
             <button class="navbar-toggler navbar-toggler-custom d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#superadminNavbar" aria-controls="superadminNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="bi bi-list"></i>
             </button>
 
-            <!-- Collapsible Navigation & Profile Dropdown -->
             <div class="collapse navbar-collapse justify-content-end mt-3 mt-lg-0" id="superadminNavbar">
                 <div class="admin-nav d-flex align-items-center gap-2 flex-wrap">
 
@@ -778,7 +783,6 @@ body::before {
                         Add Question
                     </a>
 
-                    <!-- Admin Profile / Logout Menu Dropdown -->
                     <div class="dropdown admin-profile-dropdown">
                         <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-person-circle" style="font-size: 16px;"></i>
@@ -810,13 +814,8 @@ body::before {
         </div>
     </nav>
 
-    <!-- ========================================================
-         FOUR METRIC BLOCKS (REAL FIGURES)
-         ======================================================== -->
-
     <div class="row g-3 mb-4">
 
-        <!-- INSTITUTIONS -->
         <div class="col-xl-3 col-md-6">
             <div class="stat-card stat-institutions">
                 <div class="stat-top">
@@ -840,7 +839,6 @@ body::before {
             </div>
         </div>
 
-        <!-- STUDENTS -->
         <div class="col-xl-3 col-md-6">
             <div class="stat-card stat-students">
                 <div class="stat-top">
@@ -864,7 +862,6 @@ body::before {
             </div>
         </div>
 
-        <!-- SUBSCRIPTIONS -->
         <div class="col-xl-3 col-md-6">
             <div class="stat-card stat-subscriptions">
                 <div class="stat-top">
@@ -888,7 +885,6 @@ body::before {
             </div>
         </div>
 
-        <!-- PAYMENTS -->
         <div class="col-xl-3 col-md-6">
             <div class="stat-card stat-payments">
                 <div class="stat-top">
@@ -913,10 +909,6 @@ body::before {
         </div>
 
     </div>
-
-    <!-- ========================================================
-         ANALYTICS PIE CHART
-         ======================================================== -->
 
     <div class="row g-3 mb-4">
         <div class="col-12">
@@ -944,10 +936,6 @@ body::before {
             </div>
         </div>
     </div>
-
-    <!-- ========================================================
-         PAYMENT VERIFICATION QUEUE
-         ======================================================== -->
 
     <div class="payment-card">
         <div class="payment-header">
@@ -983,7 +971,7 @@ body::before {
                     {% for payment in pending_payments %}
                     <tr>
                         <td>
-                            <div class="payment-user">
+                            <div class="payment-user text-truncate" style="max-width: 200px;">
                                 {% if payment.user %}
                                     {{ payment.user.username }}
                                 {% elif payment.institution %}
@@ -992,7 +980,7 @@ body::before {
                                     System Record
                                 {% endif %}
                             </div>
-                            <div class="payment-email">
+                            <div class="payment-email text-truncate" style="max-width: 200px;">
                                 {% if payment.user and payment.user.email %}
                                     {{ payment.user.email }}
                                 {% else %}
@@ -1001,18 +989,18 @@ body::before {
                             </div>
                         </td>
                         <td>
-                            <span style="font-weight: 600; color: var(--navy-dark);">
+                            <span class="text-truncate d-inline-block" style="font-weight: 600; color: var(--navy-dark); max-width: 180px;">
                                 {% if payment.plan %}{{ payment.plan.name }}{% else %}Standard Subscription Plan{% endif %}
                             </span>
                         </td>
                         <td>
-                            <span class="pending-badge">
+                            <span class="pending-badge text-nowrap">
                                 <i class="bi bi-clock-history"></i>
                                 Pending Review
                             </span>
                         </td>
                         <td class="text-end">
-                            <a href="{% url 'subscriptions:approve_subscription' payment.id %}" class="review-btn">
+                            <a href="{% url 'subscriptions:approve_subscription' payment.id %}" class="review-btn text-nowrap">
                                 <i class="bi bi-check-lg"></i>
                                 Approve & Activate
                             </a>

@@ -83,6 +83,31 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
     font-size: 13px;
     vertical-align: middle;
 }
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .watermark-container {
+        min-height: auto;
+    }
+    .dashboard-content-wrapper {
+        padding: 0 8px;
+    }
+    .header-box {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+    .header-box h2 {
+        font-size: 20px !important;
+    }
+    .card-box {
+        padding: 16px;
+        border-radius: 12px;
+    }
+    .table-custom td, .table-custom th {
+        padding: 10px;
+        font-size: 12px;
+    }
+}
 </style>
 {% endblock %}
 
@@ -93,16 +118,16 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
         {% if is_teacher %}
             <!-- Teacher & Institution Dashboard View -->
             <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
-                <div>
-                    <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold" style="font-size: 11px;">Instructor Portal</span>
-                    <h2 class="fw-extrabold text-white mt-1 mb-1" style="font-family: 'Manrope', sans-serif; font-size: 24px;">Institution & Teacher Dashboard</h2>
+                <div style="min-width: 0; flex-grow: 1;">
+                    <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold text-nowrap" style="font-size: 11px;">Instructor Portal</span>
+                    <h2 class="fw-extrabold text-white mt-1 mb-1 text-break" style="font-family: 'Manrope', sans-serif; font-size: 24px;">Institution & Teacher Dashboard</h2>
                     <p class="text-white-50 small mb-0">Class-wise and test-wise student performance reports.</p>
                 </div>
                 <div class="d-flex gap-2 flex-wrap">
-                    <a href="{% url 'examinations:download_teacher_pdf' %}{% if selected_class or selected_subject %}?{% if selected_class %}class_id={{ selected_class }}{% endif %}{% if selected_class and selected_subject %}&{% endif %}{% if selected_subject %}subject_id={{ selected_subject }}{% endif %}{% endif %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+                    <a href="{% url 'examinations:download_teacher_pdf' %}{% if selected_class or selected_subject %}?{% if selected_class %}class_id={{ selected_class }}{% endif %}{% if selected_class and selected_subject %}&{% endif %}{% if selected_subject %}subject_id={{ selected_subject }}{% endif %}{% endif %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm text-nowrap">
                         <i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i> Filtered PDF
                     </a>
-                    <a href="{% url 'examinations:create_exam' %}" class="btn btn-success btn-sm rounded-pill px-3 fw-bold text-white shadow-sm" style="background-color: var(--green); border-color: var(--green);">Create New Test +</a>
+                    <a href="{% url 'examinations:create_exam' %}" class="btn btn-success btn-sm rounded-pill px-3 fw-bold text-white shadow-sm text-nowrap" style="background-color: var(--green); border-color: var(--green);">Create New Test +</a>
                 </div>
             </div>
 
@@ -128,7 +153,7 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                         </select>
                     </div>
                     <div class="col-md-4 d-flex align-items-end">
-                        <a href="{% url 'examinations:results_dashboard' %}" class="btn btn-sm btn-outline-secondary w-100 rounded-pill fw-semibold py-2">Reset Filters</a>
+                        <a href="{% url 'examinations:results_dashboard' %}" class="btn btn-sm btn-outline-secondary w-100 rounded-pill fw-semibold py-2 text-nowrap">Reset Filters</a>
                     </div>
                 </form>
             </div>
@@ -154,20 +179,20 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                             <tbody>
                                 {% for att in attempts %}
                                     <tr>
-                                        <td class="fw-bold text-dark">{{ att.student.get_full_name|default:att.student.username }}</td>
-                                        <td>{{ att.exam.title }}</td>
-                                        <td>{{ att.score }} / {{ att.total_marks }}</td>
-                                        <td><strong>{{ att.percentage|floatformat:1 }}%</strong></td>
-                                        <td>
+                                        <td class="fw-bold text-dark text-truncate" style="max-width: 150px;" title="{{ att.student.get_full_name|default:att.student.username }}">{{ att.student.get_full_name|default:att.student.username }}</td>
+                                        <td class="text-truncate" style="max-width: 180px;" title="{{ att.exam.title }}">{{ att.exam.title }}</td>
+                                        <td class="text-nowrap">{{ att.score }} / {{ att.total_marks }}</td>
+                                        <td class="text-nowrap"><strong>{{ att.percentage|floatformat:1 }}%</strong></td>
+                                        <td class="text-nowrap">
                                             {% if att.is_passed %}
                                                 <span class="badge bg-success-subtle text-success border border-success px-3 py-1 rounded-pill fw-semibold">Passed</span>
                                             {% else %}
                                                 <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-1 rounded-pill fw-semibold">Failed</span>
                                             {% endif %}
                                         </td>
-                                        <td class="text-muted small">{{ att.submitted_at|date:"M d, Y H:i" }}</td>
+                                        <td class="text-muted small text-nowrap">{{ att.submitted_at|date:"M d, Y H:i" }}</td>
                                         <td class="text-end">
-                                            <a href="{% url 'examinations:exam_result' att.id %}" class="btn btn-sm btn-outline-primary px-3 fw-semibold rounded-pill" style="border-color: var(--blue); color: var(--blue);">View Details</a>
+                                            <a href="{% url 'examinations:exam_result' att.id %}" class="btn btn-sm btn-outline-primary px-3 fw-semibold rounded-pill text-nowrap" style="border-color: var(--blue); color: var(--blue);">View Details</a>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -185,16 +210,16 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
         {% else %}
             <!-- Student Dashboard View -->
             <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
-                <div>
-                    <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold" style="font-size: 11px;">Student Portal</span>
-                    <h2 class="fw-extrabold text-white mt-1 mb-1" style="font-family: 'Manrope', sans-serif; font-size: 24px;">Your Exam History & Performance</h2>
+                <div style="min-width: 0; flex-grow: 1;">
+                    <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold text-nowrap" style="font-size: 11px;">Student Portal</span>
+                    <h2 class="fw-extrabold text-white mt-1 mb-1 text-break" style="font-family: 'Manrope', sans-serif; font-size: 24px;">Your Exam History & Performance</h2>
                     <p class="text-white-50 small mb-0">Track your past test attempts, scores, and official examinations.</p>
                 </div>
                 <div class="d-flex gap-2 flex-wrap">
-                    <a href="{% url 'examinations:download_pdf' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+                    <a href="{% url 'examinations:download_pdf' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm text-nowrap">
                         <i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i> PDF Report
                     </a>
-                    <a href="{% url 'examinations:official_exams' %}" class="btn btn-success btn-sm rounded-pill px-3 fw-bold text-white shadow-sm" style="background-color: var(--green); border-color: var(--green);">Take Official Exam</a>
+                    <a href="{% url 'examinations:official_exams' %}" class="btn btn-success btn-sm rounded-pill px-3 fw-bold text-white shadow-sm text-nowrap" style="background-color: var(--green); border-color: var(--green);">Take Official Exam</a>
                 </div>
             </div>
 
@@ -218,19 +243,19 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                             <tbody>
                                 {% for att in attempts %}
                                     <tr>
-                                        <td class="fw-bold text-dark">{{ att.exam.title }}</td>
-                                        <td>{{ att.score }} / {{ att.total_marks }}</td>
-                                        <td><strong>{{ att.percentage|floatformat:1 }}%</strong></td>
-                                        <td>
+                                        <td class="fw-bold text-dark text-truncate" style="max-width: 220px;" title="{{ att.exam.title }}">{{ att.exam.title }}</td>
+                                        <td class="text-nowrap">{{ att.score }} / {{ att.total_marks }}</td>
+                                        <td class="text-nowrap"><strong>{{ att.percentage|floatformat:1 }}%</strong></td>
+                                        <td class="text-nowrap">
                                             {% if att.is_passed %}
                                                 <span class="badge bg-success-subtle text-success border border-success px-3 py-1 rounded-pill fw-semibold">Passed</span>
                                             {% else %}
                                                 <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-1 rounded-pill fw-semibold">Failed</span>
                                             {% endif %}
                                         </td>
-                                        <td class="text-muted small">{{ att.submitted_at|date:"M d, Y H:i" }}</td>
+                                        <td class="text-muted small text-nowrap">{{ att.submitted_at|date:"M d, Y H:i" }}</td>
                                         <td class="text-end">
-                                            <a href="{% url 'examinations:exam_result' att.id %}" class="btn btn-sm btn-primary px-3 fw-semibold rounded-pill text-white" style="background-color: var(--blue); border-color: var(--blue);">View Details</a>
+                                            <a href="{% url 'examinations:exam_result' att.id %}" class="btn btn-sm btn-primary px-3 fw-semibold rounded-pill text-white text-nowrap" style="background-color: var(--blue); border-color: var(--blue);">View Details</a>
                                         </td>
                                     </tr>
                                 {% endfor %}

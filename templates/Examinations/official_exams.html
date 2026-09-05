@@ -74,10 +74,39 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
     border-radius: 12px;
     margin-bottom: 12px;
     transition: all 0.2s ease;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 .assessment-item:hover {
     border-color: #CBD5DF;
     box-shadow: var(--shadow-sm);
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .watermark-container {
+        min-height: auto;
+    }
+    .official-content-wrapper {
+        padding: 0 8px;
+    }
+    .header-box {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+    .header-box h2 {
+        font-size: 20px !important;
+    }
+    .assessment-item {
+        padding: 14px 16px;
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+    .assessment-item > div:last-child {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
 }
 </style>
 {% endblock %}
@@ -90,10 +119,10 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
         <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
                 <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold" style="font-size: 11px;">Student Portal</span>
-                <h2 class="fw-extrabold text-white mt-1 mb-1" style="font-family: 'Manrope', sans-serif; font-size: 24px;">Official Institution Assessments</h2>
+                <h2 class="fw-extrabold text-white mt-1 mb-1 text-break" style="font-family: 'Manrope', sans-serif; font-size: 24px;">Official Institution Assessments</h2>
                 <p class="text-white-50 small mb-0">View and take assessments assigned by your institution's instructors.</p>
             </div>
-            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm text-nowrap">
                 <i class="bi bi-arrow-left"></i> Dashboard
             </a>
         </div>
@@ -102,16 +131,16 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
             <div class="d-flex flex-column gap-3">
                 {% for item in exams_data %}
                 <div class="assessment-item">
-                    <div>
-                        <h5 class="mb-1 fw-bold text-dark" style="font-family: 'Manrope', sans-serif; font-size: 17px;">{{ item.exam.title }}</h5>
+                    <div style="min-width: 0; flex-grow: 1;">
+                        <h5 class="mb-1 fw-bold text-dark text-truncate" style="font-family: 'Manrope', sans-serif; font-size: 17px;" title="{{ item.exam.title }}">{{ item.exam.title }}</h5>
                         <p class="mb-0 text-muted small">Passing Percentage: <strong>{{ item.exam.passing_percentage }}%</strong> | Total Questions: <strong>{{ item.exam.total_questions }}</strong></p>
                     </div>
-                    <div class="d-flex gap-2 align-items-center">
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
                         {% if item.has_attempted %}
-                            <span class="badge bg-secondary-subtle text-secondary border px-3 py-2 rounded-pill fw-bold">Submitted</span>
-                            <a href="{% url 'examinations:exam_result' item.latest_attempt_id %}" class="btn btn-outline-primary btn-sm px-3 rounded-pill fw-semibold" style="border-color: var(--blue); color: var(--blue);">View Result</a>
+                            <span class="badge bg-secondary-subtle text-secondary border px-3 py-2 rounded-pill fw-bold text-nowrap">Submitted</span>
+                            <a href="{% url 'examinations:exam_result' item.latest_attempt_id %}" class="btn btn-outline-primary btn-sm px-3 rounded-pill fw-semibold text-nowrap" style="border-color: var(--blue); color: var(--blue);">View Result</a>
                         {% else %}
-                            <a href="{% url 'examinations:take_exam' item.exam.id %}" class="btn btn-success btn-sm px-4 py-2 rounded-pill fw-bold text-white shadow-sm" style="background-color: var(--green); border-color: var(--green);">Take Exam</a>
+                            <a href="{% url 'examinations:take_exam' item.exam.id %}" class="btn btn-success btn-sm px-4 py-2 rounded-pill fw-bold text-white shadow-sm text-nowrap" style="background-color: var(--green); border-color: var(--green);">Take Exam</a>
                         {% endif %}
                     </div>
                 </div>

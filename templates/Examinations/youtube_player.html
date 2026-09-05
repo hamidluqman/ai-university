@@ -82,6 +82,27 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
 .playlist-item.active span {
     color: #FFFFFF !important;
 }
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .watermark-container {
+        min-height: auto;
+    }
+    .remedial-content-wrapper {
+        padding: 0 8px;
+    }
+    .header-box {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+    .header-box h2 {
+        font-size: 20px !important;
+    }
+    .card-box {
+        padding: 16px;
+        border-radius: 12px;
+    }
+}
 </style>
 {% endblock %}
 
@@ -91,12 +112,12 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
         
         <!-- Header Banner -->
         <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <div>
-                <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold" style="font-size: 11px;">Remedial Portal</span>
-                <h2 class="fw-extrabold text-white mt-1 mb-1" style="font-family: 'Manrope', sans-serif; font-size: 22px;">Remedial Video Player: {{ attempt.exam.title }}</h2>
+            <div style="min-width: 0; flex-grow: 1;">
+                <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold text-nowrap" style="font-size: 11px;">Remedial Portal</span>
+                <h2 class="fw-extrabold text-white mt-1 mb-1 text-break" style="font-family: 'Manrope', sans-serif; font-size: 22px;">Remedial Video Player: {{ attempt.exam.title }}</h2>
                 <p class="text-white-50 small mb-0">Reviewing video explanations for your incorrect answers.</p>
             </div>
-            <a href="{% url 'examinations:exam_result' attempt.id %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+            <a href="{% url 'examinations:exam_result' attempt.id %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm text-nowrap">
                 <i class="bi bi-arrow-left"></i> Back to Results
             </a>
         </div>
@@ -109,10 +130,10 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                         <div class="ratio ratio-16x9 rounded overflow-hidden bg-black mb-4 shadow-sm border">
                             <iframe id="mainPlayer" src="{{ wrong_answers.0.question.youtube_embed_url }}" title="Remedial Video" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                         </div>
-                        <h4 id="activeQuestionText" class="fw-bold text-dark mb-3" style="font-family: 'Manrope', sans-serif; font-size: 18px;">{{ wrong_answers.0.question.question_text }}</h4>
+                        <h4 id="activeQuestionText" class="fw-bold text-dark mb-3 text-break" style="font-family: 'Manrope', sans-serif; font-size: 18px;">{{ wrong_answers.0.question.question_text }}</h4>
                         <div class="p-3 rounded-3 bg-light border">
                             <span class="d-block fw-bold text-muted small text-uppercase mb-1">Explanation</span>
-                            <p id="activeExplanation" class="text-dark small mb-0">{{ wrong_answers.0.question.explanation|default:"No written explanation provided." }}</p>
+                            <p id="activeExplanation" class="text-dark small mb-0 text-break">{{ wrong_answers.0.question.explanation|default:"No written explanation provided." }}</p>
                         </div>
                     </div>
                 </div>
@@ -120,7 +141,7 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                 <!-- Playlist Sidebar -->
                 <div class="col-lg-4">
                     <div class="card-box bg-white">
-                        <h5 class="fw-bold mb-3 text-dark" style="font-family: 'Manrope', sans-serif; font-size: 17px;">
+                        <h5 class="fw-bold mb-3 text-dark text-truncate" style="font-family: 'Manrope', sans-serif; font-size: 17px;">
                             <i class="bi bi-play-btn-fill text-danger me-2"></i> Incorrect Answers ({{ wrong_answers|length }})
                         </h5>
                         <div class="d-flex flex-column gap-2 overflow-auto" style="max-height: 480px;">
@@ -131,11 +152,11 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                                     data-explanation="{{ ans.question.explanation|default:'No written explanation provided.' }}">
                                 <div class="d-flex align-items-center gap-2">
                                     {% if ans.question.youtube_thumbnail_url %}
-                                        <img src="{{ ans.question.youtube_thumbnail_url }}" class="rounded border" style="width: 75px; height: 42px; object-fit: cover;">
+                                        <img src="{{ ans.question.youtube_thumbnail_url }}" class="rounded border flex-shrink-0" style="width: 75px; height: 42px; object-fit: cover;">
                                     {% endif %}
-                                    <div class="text-start overflow-hidden" style="font-size: 0.85rem;">
-                                        <span class="fw-bold d-block text-primary mb-1">Question {{ forloop.counter }} Review</span>
-                                        <span class="text-truncate d-block text-dark fw-medium" style="max-width: 190px;">{{ ans.question.question_text }}</span>
+                                    <div class="text-start overflow-hidden w-100" style="font-size: 0.85rem;">
+                                        <span class="fw-bold d-block text-primary mb-1 text-nowrap">Question {{ forloop.counter }} Review</span>
+                                        <span class="text-truncate d-block text-dark fw-medium">{{ ans.question.question_text }}</span>
                                     </div>
                                 </div>
                             </button>
@@ -147,9 +168,9 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
         {% else %}
             <div class="card-box text-center py-5 bg-white">
                 <i class="bi bi-check-circle-fill display-5 text-success d-block mb-3"></i>
-                <h4 class="fw-bold text-dark mb-2" style="font-family: 'Manrope', sans-serif;">Amazing job!</h4>
+                <h4 class="fw-bold text-dark mb-2 text-break" style="font-family: 'Manrope', sans-serif;">Amazing job!</h4>
                 <p class="text-muted mb-4">You had no incorrect answers with video links to review.</p>
-                <a href="{% url 'examinations:results_dashboard' %}" class="btn btn-primary px-5 py-2 rounded-pill fw-bold shadow-sm" style="background-color: var(--blue); border-color: var(--blue);">Return to Dashboard</a>
+                <a href="{% url 'examinations:results_dashboard' %}" class="btn btn-primary px-5 py-2 rounded-pill fw-bold shadow-sm text-nowrap" style="background-color: var(--blue); border-color: var(--blue);">Return to Dashboard</a>
             </div>
         {% endif %}
 

@@ -22,30 +22,41 @@
     --red-text: #9B2C2C;
     --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
 }
-body { background: var(--page-bg) !important; color: var(--text) !important; font-family: 'Inter', sans-serif !important; }
+body { 
+    background: linear-gradient(180deg, #F8FAFC 0%, #F4F6F8 100%) !important; 
+    color: var(--text) !important; 
+    font-family: 'Inter', sans-serif !important; 
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "AI UNIVERSITY";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-family: 'Manrope', sans-serif;
+    font-size: 13vw;
+    font-weight: 800;
+    color: rgba(105, 117, 134, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: 4px;
+}
 
 .watermark-container {
     position: relative;
+    z-index: 1;
     min-height: 85vh;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-.watermark-container::before {
-    content: "AI UNIVERSITY";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-25deg);
-    font-size: 8vw;
-    font-weight: 900;
-    font-family: 'Manrope', sans-serif;
-    color: rgba(23, 50, 77, 0.04);
-    white-space: nowrap;
-    z-index: 0;
-    pointer-events: none;
-    user-select: none;
-}
+
 .restricted-content-wrapper {
     position: relative;
     z-index: 1;
@@ -74,6 +85,13 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
     font-size: 28px;
     margin: 0 auto 20px auto;
 }
+
+@media (max-width: 768px) {
+    .restricted-card {
+        padding: 24px 20px;
+        border-radius: 12px;
+    }
+}
 </style>
 {% endblock %}
 
@@ -84,9 +102,9 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
             <div class="restricted-icon">
                 <i class="bi bi-shield-lock-fill"></i>
             </div>
-            <h3 class="fw-extrabold mb-3" style="font-family: 'Manrope', sans-serif; color: var(--navy-dark); font-size: 22px;">Access Restricted</h3>
-            <p class="text-muted mb-4 small" style="line-height: 1.6;">This assessment belongs to a different institution or is restricted based on your account profile settings.</p>
-            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-primary px-5 py-2 rounded-pill fw-bold shadow-sm" style="background-color: var(--blue); border-color: var(--blue);">Return to Dashboard</a>
+            <h3 class="fw-extrabold mb-3 text-break" style="font-family: 'Manrope', sans-serif; color: var(--navy-dark); font-size: 22px;">Access Restricted</h3>
+            <p class="text-muted mb-4 small text-break" style="line-height: 1.6;">This assessment belongs to a different institution or is restricted based on your account profile settings.</p>
+            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-primary px-5 py-2 rounded-pill fw-bold shadow-sm text-nowrap" style="background-color: var(--blue); border-color: var(--blue);">Return to Dashboard</a>
         </div>
     </div>
 </div>

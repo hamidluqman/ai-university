@@ -79,6 +79,8 @@ body::before {
     margin-bottom: 28px;
     padding-bottom: 18px;
     border-bottom: 1px solid var(--border-light);
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 .builder-title {
@@ -144,6 +146,7 @@ body::before {
     font-size: 15px !important;
     color: var(--text) !important;
     background-color: #FFFFFF !important;
+    width: 100%;
 }
 
 .form-select:focus, .form-control:focus {
@@ -224,6 +227,32 @@ input[type="file"]::file-selector-button:hover {
 .modal-import-btn:hover {
     background: #116D5B !important;
 }
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .builder-container {
+        padding: 0 10px;
+        margin: 15px auto;
+    }
+    .builder-card {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+    .builder-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+    }
+    .builder-title {
+        font-size: 18px;
+    }
+    .step-card {
+        padding: 16px;
+        border-radius: 12px;
+    }
+}
 </style>
 {% endblock %}
 
@@ -234,7 +263,7 @@ input[type="file"]::file-selector-button:hover {
         <!-- Header -->
         <div class="builder-header">
             <div>
-                <h3 class="builder-title">
+                <h3 class="builder-title text-break">
                     <i class="bi bi-plus-circle me-2" style="color: var(--navy);"></i>
                     Unified Question Creator
                 </h3>
@@ -242,11 +271,11 @@ input[type="file"]::file-selector-button:hover {
                     Create single assessment items or bulk-import via verified data sheets.
                 </div>
             </div>
-            <div>
-                <button type="button" class="btn btn-success btn-sm me-2 fw-bold px-3 py-2" style="border-radius: 9px;" data-bs-toggle="modal" data-bs-target="#excelModal">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <button type="button" class="btn btn-success btn-sm fw-bold px-3 py-2 text-nowrap" style="border-radius: 9px;" data-bs-toggle="modal" data-bs-target="#excelModal">
                     <i class="bi bi-file-earmark-excel me-1"></i> Import from Excel
                 </button>
-                <a href="javascript:history.back()" class="switch-btn">Return to Dashboard</a>
+                <a href="javascript:history.back()" class="switch-btn text-nowrap">Return to Dashboard</a>
             </div>
         </div>
 
@@ -360,7 +389,7 @@ input[type="file"]::file-selector-button:hover {
                 </div>
             </div>
 
-            <button type="submit" class="save-btn mt-3">
+            <button type="submit" class="save-btn mt-3 text-nowrap">
                 <i class="bi bi-check2-circle me-1"></i> Save Question
             </button>
         </form>
@@ -373,7 +402,7 @@ input[type="file"]::file-selector-button:hover {
     <div class="modal-content">
       <form action="{% url 'question_bank:import_questions_excel' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="modal-header border-bottom-0 pb-0">
+        <div class="modal-header border-bottom-0 pb-0 flex-wrap gap-2">
           <h5 class="builder-title fs-5" id="excelModalLabel">Bulk Import via Excel</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -416,9 +445,9 @@ input[type="file"]::file-selector-button:hover {
             <input type="file" name="excel_file" class="form-control" accept=".xlsx, .xls" required>
           </div>
         </div>
-        <div class="modal-footer border-top-0">
-          <button type="button" class="btn btn-outline-secondary px-4 py-2" style="border-radius: 9px;" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="modal-import-btn">
+        <div class="modal-footer border-top-0 flex-wrap gap-2">
+          <button type="button" class="btn btn-outline-secondary px-4 py-2 text-nowrap" style="border-radius: 9px;" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="modal-import-btn text-nowrap">
               <i class="bi bi-cloud-arrow-up-fill me-1"></i> Upload & Import
           </button>
         </div>

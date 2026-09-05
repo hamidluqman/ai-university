@@ -3,7 +3,6 @@
 {% block title %}{{ title }} - AI University LMS{% endblock %}
 
 {% block extra_head %}
-<!-- Google Font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -77,6 +76,8 @@ body::before {
     margin-bottom: 28px;
     padding-bottom: 18px;
     border-bottom: 1px solid var(--border-light);
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 .builder-title {
@@ -102,6 +103,7 @@ body::before {
     font-size: 15px !important;
     color: var(--text) !important;
     background-color: #FFFFFF !important;
+    width: 100%;
 }
 
 .form-select:focus, .form-control:focus {
@@ -146,6 +148,28 @@ body::before {
     color: var(--navy-dark);
     border-color: #CBD5DF !important;
 }
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .builder-container {
+        padding: 0 10px;
+        margin: 15px auto;
+    }
+    .builder-card {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+    .builder-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+    }
+    .builder-title {
+        font-size: 18px;
+    }
+}
 </style>
 {% endblock %}
 
@@ -153,7 +177,6 @@ body::before {
 <div class="builder-container">
     <div class="builder-card">
         
-        <!-- Header -->
         <div class="builder-header">
             <div>
                 <h3 class="builder-title">
@@ -166,14 +189,13 @@ body::before {
                     {% else %}Provide credentials and details to register a new team member.{% endif %}
                 </div>
             </div>
-            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2" style="font-weight: 700; border-radius: 8px;">
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 text-nowrap" style="font-weight: 700; border-radius: 8px;">
                 {% if 'Institution' in title %}Institution
                 {% elif 'Teacher' in title %}Teacher
                 {% else %}Team Member{% endif %}
             </span>
         </div>
 
-        <!-- Global/Non-field Errors -->
         {% if form.non_field_errors %}
             <div class="alert alert-danger alert-dismissible fade show mb-4 shadow-sm border-0" role="alert" style="border-radius: 10px; font-size: 14px;">
                 {% for error in form.non_field_errors %}
@@ -183,7 +205,6 @@ body::before {
             </div>
         {% endif %}
 
-        <!-- Dynamic Form -->
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
 
@@ -208,7 +229,6 @@ body::before {
                 {% endfor %}
             </div>
 
-            <!-- Subscription Plan Selection Section (Only for Institution view) -->
             {% if subscription_plans %}
             <div class="mt-4 pt-3 border-top">
                 <div class="mb-3">
@@ -224,15 +244,14 @@ body::before {
             </div>
             {% endif %}
 
-            <!-- Action Buttons -->
             <div class="d-grid gap-2 mt-4 pt-2">
-                <button type="submit" class="save-btn">
+                <button type="submit" class="save-btn text-nowrap">
                     <i class="bi bi-check2-circle me-1"></i> 
                     {% if 'Institution' in title %}Save & Create Institution
                     {% elif 'Teacher' in title %}Save & Register Teacher
                     {% else %}Save & Create Team Member{% endif %}
                 </button>
-                <a href="{% url 'accounts:user_management_hub' %}" class="cancel-btn">
+                <a href="{% url 'accounts:user_management_hub' %}" class="cancel-btn text-nowrap">
                     <i class="bi bi-arrow-left me-1"></i> Cancel & Return to Hub
                 </a>
             </div>

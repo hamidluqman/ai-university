@@ -30,9 +30,30 @@ body {
     color: var(--text) !important;
     font-family: 'Inter', sans-serif !important;
     min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "AI UNIVERSITY";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-family: 'Manrope', sans-serif;
+    font-size: 13vw;
+    font-weight: 800;
+    color: rgba(105, 117, 134, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: 4px;
 }
 
 .assessment-container {
+    position: relative;
+    z-index: 1;
     max-width: 1000px;
     margin: 35px auto;
     padding: 0 15px;
@@ -144,13 +165,27 @@ body {
     color: #FFFFFF;
     box-shadow: 0 4px 12px rgba(22, 119, 184, 0.2);
 }
+
+@media (max-width: 768px) {
+    .assessment-container {
+        padding: 0 10px;
+        margin: 15px auto;
+    }
+    .form-card {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+    .form-title {
+        font-size: 20px;
+    }
+}
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="assessment-container">
     <div class="form-card">
-        <h2 class="form-title">
+        <h2 class="form-title text-break">
             <i class="bi bi-file-earmark-plus text-primary"></i> Create Institution Assessment
         </h2>
         
@@ -181,7 +216,7 @@ body {
 
             <!-- Board System Hierarchy Section -->
             <div id="board-section" class="section-box">
-                <h5><i class="bi bi-journal-bookmark text-primary"></i> Board System Hierarchy</h5>
+                <h5 class="text-break"><i class="bi bi-journal-bookmark text-primary"></i> Board System Hierarchy</h5>
                 <div class="mb-3">
                     {{ form.board_subject.label_tag }}
                     {{ form.board_subject }}
@@ -198,7 +233,7 @@ body {
 
             <!-- Competitive System Hierarchy Section -->
             <div id="competitive-section" class="section-box" style="display: none;">
-                <h5><i class="bi bi-award text-primary"></i> Competitive System Hierarchy</h5>
+                <h5 class="text-break"><i class="bi bi-award text-primary"></i> Competitive System Hierarchy</h5>
                 <div class="mb-3">
                     {{ form.competitive_module.label_tag }}
                     {{ form.competitive_module }}
@@ -240,11 +275,11 @@ body {
                 {{ form.is_class_wide.label_tag }}
             </div>
 
-            <div class="d-flex justify-content-between align-items-center pt-3 border-top">
-                <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-outline-secondary px-4 fw-semibold" style="border-radius: 10px;">
+            <div class="d-flex justify-content-between align-items-center pt-3 border-top flex-wrap gap-2">
+                <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-outline-secondary px-4 fw-semibold text-nowrap" style="border-radius: 10px;">
                     <i class="bi bi-arrow-left"></i> Cancel
                 </a>
-                <button type="submit" class="btn btn-primary-custom">
+                <button type="submit" class="btn btn-primary-custom text-nowrap">
                     <i class="bi bi-check-lg"></i> Save and Pool Questions
                 </button>
             </div>

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ course_title }} - AI University LMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -24,11 +25,34 @@
             --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
         }
         body { 
-            background: var(--page-bg) !important; 
+            background: linear-gradient(180deg, #F8FAFC 0%, #F4F6F8 100%) !important; 
             color: var(--text) !important; 
             font-family: 'Inter', sans-serif !important; 
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
+
+        body::before {
+            content: "AI UNIVERSITY";
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-25deg);
+            font-family: 'Manrope', sans-serif;
+            font-size: 13vw;
+            font-weight: 800;
+            color: rgba(105, 117, 134, 0.04);
+            white-space: nowrap;
+            z-index: 0;
+            pointer-events: none;
+            user-select: none;
+            letter-spacing: 4px;
+        }
+
         .player-container { 
+            position: relative;
+            z-index: 1;
             max-width: 1400px; 
             margin: 25px auto; 
             padding: 0 15px; 
@@ -46,11 +70,14 @@
             align-items: center;
             margin-bottom: 25px;
             width: 100%;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         .brand-logo-area {
             display: flex;
             align-items: center;
             gap: 12px;
+            min-width: 0;
         }
         .brand-logo-area h4 {
             font-family: 'Manrope', sans-serif;
@@ -80,6 +107,8 @@
             align-items: center;
             border-bottom: 1px solid var(--border-light);
             padding-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         #playerWrapper {
@@ -99,6 +128,8 @@
             z-index: 10;
             color: white;
             border-radius: 12px;
+            padding: 20px;
+            text-align: center;
         }
 
         /* Sidebar Playlist Styling */
@@ -121,6 +152,25 @@
         .lesson-btn.active h6, .lesson-btn.active small {
             color: #FFFFFF !important;
         }
+
+        /* Mobile Responsive Adjustments */
+        @media (max-width: 768px) {
+            .player-container {
+                margin: 15px auto;
+                padding: 0 10px;
+            }
+            .top-banner-nav {
+                padding: 16px 20px;
+                border-radius: 12px;
+            }
+            .card-box {
+                padding: 16px;
+                border-radius: 12px;
+            }
+            .brand-logo-area h4 {
+                font-size: 18px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -130,10 +180,10 @@
         <div class="top-banner-nav">
             <div class="brand-logo-area">
                 <i class="bi bi-mortarboard-fill text-primary fs-3"></i>
-                <h4>AI University LMS</h4>
+                <h4 class="text-break">AI University LMS</h4>
             </div>
             <div>
-                <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-outline-secondary fw-bold px-3 py-2" style="border-radius: 10px; font-size: 14px;">
+                <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-outline-secondary fw-bold px-3 py-2 text-nowrap" style="border-radius: 10px; font-size: 14px;">
                     <i class="bi bi-arrow-left"></i> Back to Dashboard
                 </a>
             </div>
@@ -147,12 +197,12 @@
                         <div id="youtubePlayer"></div>
                         <!-- Custom Overlay to block YouTube end screen recommendations -->
                         <div id="customEndOverlay">
-                            <h5 class="mb-3 fw-bold">Lecture Completed</h5>
-                            <button id="replayBtn" class="btn btn-light btn-sm fw-bold px-3 py-2" style="border-radius: 8px;">Watch Again</button>
+                            <h5 class="mb-3 fw-bold text-break">Lecture Completed</h5>
+                            <button id="replayBtn" class="btn btn-light btn-sm fw-bold px-3 py-2 text-nowrap shadow-sm" style="border-radius: 8px;">Watch Again</button>
                         </div>
                     </div>
-                    <h3 id="videoTitle" class="fw-bold mb-2" style="color: var(--navy-dark); font-family: 'Manrope', sans-serif;">Select a lecture from the sidebar</h3>
-                    <p id="videoExplanation" class="text-muted small mt-2 mb-0"></p>
+                    <h3 id="videoTitle" class="fw-bold mb-2 text-break" style="color: var(--navy-dark); font-family: 'Manrope', sans-serif; font-size: 20px;">Select a lecture from the sidebar</h3>
+                    <p id="videoExplanation" class="text-muted small mt-2 mb-0 text-break" style="line-height: 1.6;"></p>
                 </div>
             </div>
 
@@ -160,8 +210,8 @@
             <div class="col-lg-4">
                 <div class="card-box h-100 mb-0 d-flex flex-column">
                     <div class="card-box-header">
-                        <span><i class="bi bi-play-circle-fill text-primary me-2"></i> Subtopic Lectures</span>
-                        <span class="badge bg-light text-dark border px-2 py-1">Total: {{ lessons|length }}</span>
+                        <span class="text-break"><i class="bi bi-play-circle-fill text-primary me-2"></i> Subtopic Lectures</span>
+                        <span class="badge bg-light text-dark border px-2 py-1 text-nowrap">Total: {{ lessons|length }}</span>
                     </div>
                     <div class="list-group list-group-flush flex-grow-1" style="max-height: 480px; overflow-y: auto;">
                         {% for lesson in lessons %}
@@ -171,12 +221,12 @@
                                     data-lesson-title="{{ lesson.question_text }}"
                                     data-lesson-explanation="{{ lesson.explanation|default:'No additional notes provided for this lecture.' }}">
                                 <div class="d-flex w-100 justify-content-between align-items-center">
-                                    <h6 class="mb-1 fw-bold text-dark">#{{ forloop.counter }} - {{ lesson.question_text|truncatechars:45 }}</h6>
+                                    <h6 class="mb-1 fw-bold text-dark text-break" style="font-size: 14px;">#{{ forloop.counter }} - {{ lesson.question_text|truncatechars:45 }}</h6>
                                 </div>
-                                <small class="text-muted"><i class="bi bi-play-fill"></i> Click to play video</small>
+                                <small class="text-muted text-nowrap"><i class="bi bi-play-fill"></i> Click to play video</small>
                             </button>
                         {% empty %}
-                            <div class="text-center text-muted py-4">No video lectures found for this selection.</div>
+                            <div class="text-center text-muted py-4 text-break">No video lectures found for this selection.</div>
                         {% endfor %}
                     </div>
                 </div>

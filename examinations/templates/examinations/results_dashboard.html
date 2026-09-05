@@ -21,26 +21,35 @@
     --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
     --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
 }
-body { background: var(--page-bg) !important; color: var(--text) !important; font-family: 'Inter', sans-serif !important; }
-
-.watermark-container {
+body { 
+    background: linear-gradient(180deg, #F8FAFC 0%, #F4F6F8 100%) !important; 
+    color: var(--text) !important; 
+    font-family: 'Inter', sans-serif !important; 
     position: relative;
-    min-height: 90vh;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
-.watermark-container::before {
+
+body::before {
     content: "AI UNIVERSITY";
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) rotate(-25deg);
-    font-size: 8vw;
-    font-weight: 900;
     font-family: 'Manrope', sans-serif;
-    color: rgba(23, 50, 77, 0.04);
+    font-size: 13vw;
+    font-weight: 800;
+    color: rgba(105, 117, 134, 0.04);
     white-space: nowrap;
     z-index: 0;
     pointer-events: none;
     user-select: none;
+    letter-spacing: 4px;
+}
+
+.watermark-container {
+    position: relative;
+    min-height: 90vh;
 }
 .panel-content-wrapper {
     position: relative;
@@ -82,6 +91,27 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
     font-size: 13px;
     vertical-align: middle;
 }
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .watermark-container {
+        min-height: auto;
+    }
+    .panel-content-wrapper {
+        padding: 0 8px;
+    }
+    .header-box {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+    .header-box h2 {
+        font-size: 20px !important;
+    }
+    .card-box {
+        padding: 16px;
+        border-radius: 12px;
+    }
+}
 </style>
 {% endblock %}
 
@@ -91,20 +121,20 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
         
         <!-- Header Card -->
         <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <div>
-                <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold" style="font-size: 11px;">Examinations Portal</span>
-                <h2 class="fw-extrabold text-white mt-1 mb-1" style="font-family: 'Manrope', sans-serif; font-size: 24px;">Examinations Control Panel</h2>
+            <div style="min-width: 0; flex-grow: 1;">
+                <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold text-nowrap" style="font-size: 11px;">Examinations Portal</span>
+                <h2 class="fw-extrabold text-white mt-1 mb-1 text-break" style="font-family: 'Manrope', sans-serif; font-size: 24px;">Examinations Control Panel</h2>
                 <p class="text-white-50 small mb-0">Manage institutional assessments, practice tests, and review past records.</p>
             </div>
             
             <div class="d-flex gap-2 flex-wrap">
                 {% if user.profile.is_institution_student or not user.profile.is_independent %}
-                    <a href="{% url 'examinations:create_exam' %}" class="btn btn-success btn-sm rounded-pill px-3 fw-bold text-white shadow-sm" style="background-color: var(--green); border-color: var(--green);">Create Test</a>
+                    <a href="{% url 'examinations:create_exam' %}" class="btn btn-success btn-sm rounded-pill px-3 fw-bold text-white shadow-sm text-nowrap" style="background-color: var(--green); border-color: var(--green);">Create Test</a>
                 {% endif %}
                 {% if user.profile.is_institution_student %}
-                    <a href="{% url 'examinations:practice_setup' %}" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold text-white shadow-sm" style="background-color: var(--blue); border-color: var(--blue);">Practice Quiz</a>
+                    <a href="{% url 'examinations:practice_setup' %}" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold text-white shadow-sm text-nowrap" style="background-color: var(--blue); border-color: var(--blue);">Practice Quiz</a>
                 {% endif %}
-                <a href="{% url 'examinations:download_pdf' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+                <a href="{% url 'examinations:download_pdf' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm text-nowrap">
                     <i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i> PDF Report
                 </a>
             </div>
@@ -112,7 +142,7 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
 
         <!-- Available Institution Assessments Card -->
         <div class="card-box bg-white">
-            <h4 class="fw-bold mb-4" style="font-family: 'Manrope', sans-serif; color: var(--navy-dark); font-size: 18px;">
+            <h4 class="fw-bold mb-4 text-break" style="font-family: 'Manrope', sans-serif; color: var(--navy-dark); font-size: 18px;">
                 <i class="bi bi-journal-text text-success me-2"></i> Available Institution Assessments
             </h4>
             
@@ -130,22 +160,22 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                     <tbody>
                         {% for exam in created_exams %}
                         <tr>
-                            <td><strong>{{ exam.title }}</strong></td>
-                            <td><span class="badge bg-light text-dark border px-2 py-1">{{ exam.get_exam_type_display }}</span></td>
-                            <td>{{ exam.duration_minutes }} mins</td>
-                            <td>{{ exam.passing_percentage }}%</td>
+                            <td><strong class="text-break" style="display: inline-block; max-width: 250px;" title="{{ exam.title }}">{{ exam.title }}</strong></td>
+                            <td><span class="badge bg-light text-dark border px-2 py-1 text-nowrap">{{ exam.get_exam_type_display }}</span></td>
+                            <td class="text-nowrap">{{ exam.duration_minutes }} mins</td>
+                            <td class="text-nowrap">{{ exam.passing_percentage }}%</td>
                             <td class="text-end">
-                                <div class="d-flex justify-content-end gap-2">
-                                    <a href="{% url 'examinations:take_exam' exam.id %}" class="btn btn-sm text-white px-3 fw-semibold shadow-sm" style="border-radius: 8px; background-color: var(--green); border-color: var(--green);">Take Test</a>
+                                <div class="d-flex justify-content-end gap-2 flex-wrap">
+                                    <a href="{% url 'examinations:take_exam' exam.id %}" class="btn btn-sm text-white px-3 fw-semibold shadow-sm text-nowrap" style="border-radius: 8px; background-color: var(--green); border-color: var(--green);">Take Test</a>
                                     {% if user == exam.creator %}
-                                        <a href="{% url 'examinations:grant_retest' exam.id %}" class="btn btn-sm btn-warning px-3 fw-semibold text-dark shadow-sm" style="border-radius: 8px; background-color: #F59E0B; border-color: #F59E0B;">Grant Retest</a>
+                                        <a href="{% url 'examinations:grant_retest' exam.id %}" class="btn btn-sm btn-warning px-3 fw-semibold text-dark shadow-sm text-nowrap" style="border-radius: 8px; background-color: #F59E0B; border-color: #F59E0B;">Grant Retest</a>
                                     {% endif %}
                                 </div>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" class="text-center text-muted py-4">No active assessments available for your profile.</td>
+                            <td colspan="5" class="text-center text-muted py-4 text-break">No active assessments available for your profile.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -155,7 +185,7 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
 
         <!-- Past Attempts & Records Card -->
         <div class="card-box bg-white">
-            <h4 class="fw-bold mb-4" style="font-family: 'Manrope', sans-serif; color: var(--navy-dark); font-size: 18px;">
+            <h4 class="fw-bold mb-4 text-break" style="font-family: 'Manrope', sans-serif; color: var(--navy-dark); font-size: 18px;">
                 <i class="bi bi-clock-history text-primary me-2"></i> Your Past Attempts & Records
             </h4>
             
@@ -173,19 +203,19 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                     <tbody>
                         {% for att in attempts %}
                         <tr>
-                            <td><strong>{{ att.exam.title }}</strong></td>
-                            <td>{{ att.score }}/{{ att.total_marks }}</td>
-                            <td><strong>{{ att.percentage|floatformat:1 }}%</strong></td>
+                            <td><strong class="text-break" style="display: inline-block; max-width: 250px;" title="{{ att.exam.title }}">{{ att.exam.title }}</strong></td>
+                            <td class="text-nowrap">{{ att.score }}/{{ att.total_marks }}</td>
+                            <td class="text-nowrap"><strong>{{ att.percentage|floatformat:1 }}%</strong></td>
                             <td>
-                                <span class="badge {% if att.is_passed %}bg-success-subtle text-success border border-success{% else %}bg-danger-subtle text-danger border border-danger{% endif %} px-3 py-1 rounded-pill fw-semibold" style="font-size: 11px;">
+                                <span class="badge {% if att.is_passed %}bg-success-subtle text-success border border-success{% else %}bg-danger-subtle text-danger border border-danger{% endif %} px-3 py-1 rounded-pill fw-semibold text-nowrap" style="font-size: 11px;">
                                     {% if att.is_passed %}Passed{% else %}Failed{% endif %}
                                 </span>
                             </td>
-                            <td class="text-muted small">{{ att.submitted_at|date:"M d, Y H:i" }}</td>
+                            <td class="text-muted small text-nowrap">{{ att.submitted_at|date:"M d, Y H:i" }}</td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" class="text-center text-muted py-4">No previous exam attempts found.</td>
+                            <td colspan="5" class="text-center text-muted py-4 text-break">No previous exam attempts found.</td>
                         </tr>
                         {% endfor %}
                     </tbody>

@@ -1,31 +1,241 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Student Practice Setup - AI University LMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --navy: #17324D;
+    --navy-dark: #10283F;
+    --page-bg: #F4F6F8;
+    --card: #FFFFFF;
+    --border: #E3E8EE;
+    --border-light: #EDF0F3;
+    --text: #182433;
+    --text-muted: #697586;
+    --blue: #1677B8;
+    --blue-hover: #125e93;
+    --green: #16866F;
+    --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
+    --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
+}
+
+body {
+    background: linear-gradient(180deg, #F8FAFC 0%, #F4F6F8 100%) !important;
+    color: var(--text) !important;
+    font-family: 'Inter', sans-serif !important;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "AI UNIVERSITY";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-family: 'Manrope', sans-serif;
+    font-size: 13vw;
+    font-weight: 800;
+    color: rgba(105, 117, 134, 0.04);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: 4px;
+}
+
+.assessment-container {
+    position: relative;
+    z-index: 1;
+    max-width: 1000px;
+    margin: 35px auto;
+    padding: 0 15px;
+}
+
+.form-card {
+    background: #FFFFFF !important;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    padding: 35px;
+}
+
+.form-title {
+    font-family: 'Manrope', sans-serif;
+    color: var(--navy-dark);
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.form-card label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.form-card input[type="text"],
+.form-card input[type="number"],
+.form-card input[type="datetime-local"],
+.form-card select,
+.form-card textarea {
+    width: 100%;
+    padding: 11px 15px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s ease;
+}
+
+.form-card input:focus,
+.form-card select:focus,
+.form-card textarea:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(22, 119, 184, 0.12);
+    outline: none;
+}
+
+.section-box {
+    background: #F8FAFB !important;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.section-box h5 {
+    font-family: 'Manrope', sans-serif;
+    color: var(--navy-dark);
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.btn-success-custom {
+    background-color: var(--green);
+    border-color: var(--green);
+    color: #FFFFFF;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: all 0.2s ease;
+}
+
+.btn-success-custom:hover {
+    background-color: #116D5B;
+    border-color: #116D5B;
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(22, 134, 111, 0.2);
+}
+
+@media (max-width: 768px) {
+    .assessment-container {
+        padding: 0 10px;
+        margin: 15px auto;
+    }
+    .form-card {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+    .form-title {
+        font-size: 20px;
+    }
+}
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <h2>Student Practice Setup</h2>
-    <form method="post" class="needs-validation" novalidate>
-        {% csrf_token %}
-        <div class="row">
-            <div class="col-md-6 mb-3">{{ form.assessment_flow.label_tag }}{{ form.assessment_flow }}</div>
-            <div class="col-md-6 mb-3">{{ form.scope_level.label_tag }}{{ form.scope_level }}</div>
-        </div>
-        <div id="board-section" class="border p-3 mb-3 bg-light rounded">
-            <h5>Board System Hierarchy</h5>
-            <div class="mb-3">{{ form.board_subject.label_tag }}{{ form.board_subject }}</div>
-            <div class="mb-3">{{ form.board_topic.label_tag }}{{ form.board_topic }}</div>
-            <div class="mb-3">{{ form.board_subtopic.label_tag }}{{ form.board_subtopic }}</div>
-        </div>
-        <div id="competitive-section" class="border p-3 mb-3 bg-light rounded" style="display: none;">
-            <h5>Competitive System Hierarchy</h5>
-            <div class="mb-3">{{ form.competitive_module.label_tag }}{{ form.competitive_module }}</div>
-            <div class="mb-3">{{ form.competitive_submodule.label_tag }}{{ form.competitive_submodule }}</div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">{{ form.total_questions.label_tag }}{{ form.total_questions }}</div>
-            <div class="col-md-6 mb-3">{{ form.duration_minutes.label_tag }}{{ form.duration_minutes }}</div>
-        </div>
-        <button type="submit" class="btn btn-success">Start Practice Assessment</button>
-    </form>
+<div class="assessment-container">
+    <div class="form-card">
+        <h2 class="form-title text-break">
+            <i class="bi bi-laptop text-success"></i> Student Practice Setup
+        </h2>
+        
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form.assessment_flow.label_tag }}
+                    {{ form.assessment_flow }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form.scope_level.label_tag }}
+                    {{ form.scope_level }}
+                </div>
+            </div>
+
+            <!-- Board System Hierarchy Section -->
+            <div id="board-section" class="section-box">
+                <h5 class="text-break"><i class="bi bi-journal-bookmark text-primary"></i> Board System Hierarchy</h5>
+                <div class="mb-3">
+                    {{ form.board_subject.label_tag }}
+                    {{ form.board_subject }}
+                </div>
+                <div class="mb-3">
+                    {{ form.board_topic.label_tag }}
+                    {{ form.board_topic }}
+                </div>
+                <div class="mb-3">
+                    {{ form.board_subtopic.label_tag }}
+                    {{ form.board_subtopic }}
+                </div>
+            </div>
+
+            <!-- Competitive System Hierarchy Section -->
+            <div id="competitive-section" class="section-box" style="display: none;">
+                <h5 class="text-break"><i class="bi bi-award text-primary"></i> Competitive System Hierarchy</h5>
+                <div class="mb-3">
+                    {{ form.competitive_module.label_tag }}
+                    {{ form.competitive_module }}
+                </div>
+                <div class="mb-3">
+                    {{ form.competitive_submodule.label_tag }}
+                    {{ form.competitive_submodule }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form.total_questions.label_tag }}
+                    {{ form.total_questions }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form.duration_minutes.label_tag }}
+                    {{ form.duration_minutes }}
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center pt-3 border-top flex-wrap gap-2">
+                <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-outline-secondary px-4 fw-semibold text-nowrap" style="border-radius: 10px;">
+                    <i class="bi bi-arrow-left"></i> Dashboard
+                </a>
+                <button type="submit" class="btn btn-success-custom text-nowrap">
+                    <i class="bi bi-play-circle-fill me-1"></i> Start Practice Assessment
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const flowSelect = document.getElementById("id_assessment_flow");

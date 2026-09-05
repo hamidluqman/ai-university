@@ -97,6 +97,7 @@ body::before {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .excel-btn {
@@ -147,6 +148,7 @@ body::before {
     font-size: 15px !important;
     color: var(--text) !important;
     background-color: var(--card) !important;
+    width: 100%;
 }
 
 .form-select:focus, .form-control:focus {
@@ -293,6 +295,46 @@ body::before {
     background: var(--navy-dark);
     color: #FFFFFF;
 }
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .builder-container {
+        padding: 0 10px;
+        margin: 15px auto;
+    }
+    .builder-card {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+    .builder-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+    }
+    .builder-title {
+        font-size: 18px;
+    }
+    .step-card {
+        padding: 16px;
+        border-radius: 12px;
+    }
+    .hierarchy-list-card {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+    .action-btn-group {
+        width: 100%;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .action-btn-group > * {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+}
 </style>
 {% endblock %}
 
@@ -301,7 +343,7 @@ body::before {
     <div class="builder-card">
         <div class="builder-header">
             <div>
-                <h3 class="builder-title">
+                <h3 class="builder-title text-break">
                     <i class="bi bi-trophy me-2" style="color: var(--navy);"></i>
                     Competitive Hierarchy Builder
                 </h3>
@@ -311,11 +353,11 @@ body::before {
             </div>
             <div class="action-btn-group">
                 {% if request.user.is_superuser %}
-                <button type="button" class="excel-btn" data-bs-toggle="modal" data-bs-target="#excelImportModal">
+                <button type="button" class="excel-btn text-nowrap" data-bs-toggle="modal" data-bs-target="#excelImportModal">
                     <i class="bi bi-file-earmark-excel-fill me-1"></i> Bulk Excel Import
                 </button>
                 {% endif %}
-                <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-outline-secondary btn-sm fw-bold px-3 py-2" style="border-radius: 10px; font-size: 13px;">
+                <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-outline-secondary btn-sm fw-bold px-3 py-2 text-nowrap" style="border-radius: 10px; font-size: 13px;">
                     <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
                 </a>
             </div>
@@ -356,14 +398,14 @@ body::before {
                 <input type="text" name="new_submodule_name" placeholder="Enter SubModule Name (e.g. Hydrocarbons)" class="form-control">
             </div>
 
-            <button type="submit" class="save-btn mt-3">
+            <button type="submit" class="save-btn mt-3 text-nowrap">
                 <i class="bi bi-check2-circle me-1"></i> Save Hierarchy Entry
             </button>
         </form>
     </div>
 
     <div class="hierarchy-list-card">
-        <h5 class="fw-bold mb-3" style="color: var(--navy-dark); font-family: 'Manrope', sans-serif;">
+        <h5 class="fw-bold mb-3 text-break" style="color: var(--navy-dark); font-family: 'Manrope', sans-serif;">
             <i class="bi bi-list-nested me-2 text-primary"></i>Existing Competitive Exams & Modules
         </h5>
         <div class="table-responsive">
@@ -378,29 +420,31 @@ body::before {
                 <tbody>
                     {% for e in exams %}
                     <tr>
-                        <td class="fw-bold text-dark">{{ e.title }}</td>
+                        <td><strong class="text-dark text-truncate d-inline-block" style="max-width: 150px;" title="{{ e.title }}">{{ e.title }}</strong></td>
                         <td>
                             {% if e.modules.all %}
-                                {% for m in e.modules.all %}
-                                    <span class="badge bg-light text-dark border me-1 mb-1 px-2 py-1">{{ m.title }}</span>
-                                {% endfor %}
+                                <div class="d-flex flex-wrap gap-1">
+                                    {% for m in e.modules.all %}
+                                        <span class="badge bg-light text-dark border px-2 py-1 text-truncate" style="max-width: 120px;" title="{{ m.title }}">{{ m.title }}</span>
+                                    {% endfor %}
+                                </div>
                             {% else %}
                                 <span class="text-muted small italic">No modules added yet</span>
                             {% endif %}
                         </td>
                         <td class="text-end">
-                            <div class="d-flex align-items-center justify-content-end gap-2">
-                                <button type="button" class="btn btn-link text-primary fw-bold text-decoration-none small p-0 me-1" 
+                            <div class="d-flex align-items-center justify-content-end gap-2 flex-wrap">
+                                <button type="button" class="btn btn-link text-primary fw-bold text-decoration-none small p-0 me-1 text-nowrap" 
                                         data-bs-toggle="modal" 
                                         data-bs-target="#detailsModal" 
                                         data-examname="{{ e.title }}"
                                         data-examid="{{ e.id }}">
                                     View
                                 </button>
-                                <button type="button" class="btn-action-edit" onclick="alert('Edit feature for exam {{ e.title }}')">
+                                <button type="button" class="btn-action-edit text-nowrap" onclick="alert('Edit feature for exam {{ e.title }}')">
                                     <i class="bi bi-pencil-square"></i> Edit
                                 </button>
-                                <button type="button" class="btn-action-delete" onclick="if(confirm('Are you sure you want to delete {{ e.title }}?')) alert('Delete action triggered');">
+                                <button type="button" class="btn-action-delete text-nowrap" onclick="if(confirm('Are you sure you want to delete {{ e.title }}?')) alert('Delete action triggered');">
                                     <i class="bi bi-trash"></i> Delete
                                 </button>
                             </div>
@@ -424,8 +468,8 @@ body::before {
 <div class="modal fade" id="excelImportModal" tabindex="-1" aria-labelledby="excelImportModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content custom-modal-content">
-            <div class="custom-modal-header d-flex align-items-center justify-content-between">
-                <h5 class="custom-modal-title" id="excelImportModalLabel">
+            <div class="custom-modal-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h5 class="custom-modal-title text-break" id="excelImportModalLabel">
                     <i class="bi bi-file-earmark-excel-fill text-success me-2"></i>Bulk Import Competitive Hierarchies
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -440,9 +484,9 @@ body::before {
                         <input type="file" name="excel_file" class="form-control" accept=".xlsx, .xls" required>
                     </div>
                 </div>
-                <div class="custom-modal-footer d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-3 fw-semibold" data-bs-dismiss="modal" style="border-radius: 10px;">Cancel</button>
-                    <button type="submit" class="btn-modal-primary">Upload & Process</button>
+                <div class="custom-modal-footer d-flex justify-content-end gap-2 flex-wrap">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-3 fw-semibold text-nowrap" data-bs-dismiss="modal" style="border-radius: 10px;">Cancel</button>
+                    <button type="submit" class="btn-modal-primary text-nowrap">Upload & Process</button>
                 </div>
             </form>
         </div>
@@ -453,8 +497,8 @@ body::before {
 <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content custom-modal-content">
-            <div class="custom-modal-header d-flex align-items-center justify-content-between">
-                <h5 class="custom-modal-title" id="detailsModalLabel">
+            <div class="custom-modal-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h5 class="custom-modal-title text-break" id="detailsModalLabel">
                     <i class="bi bi-trophy text-primary me-2"></i>Competitive Exam Details: <span id="modalExamName" class="text-dark"></span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -468,7 +512,7 @@ body::before {
                     </div>
             </div>
             <div class="custom-modal-footer d-flex justify-content-end">
-                <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-3 fw-semibold" data-bs-dismiss="modal" style="border-radius: 10px;">Close</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-3 fw-semibold text-nowrap" data-bs-dismiss="modal" style="border-radius: 10px;">Close</button>
             </div>
         </div>
     </div>
@@ -532,7 +576,7 @@ body::before {
                     for (let mod of modules) {
                         html += `
                             <div class="p-3 border rounded-3 bg-light">
-                                <div class="fw-bold text-dark small">
+                                <div class="fw-bold text-dark small text-break">
                                     <i class="bi bi-journal-text text-primary me-2"></i>${mod.title}
                                 </div>
                             </div>`;

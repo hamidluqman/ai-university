@@ -236,20 +236,20 @@ body::after {
         <!-- Left Side: Illustration / Branding Panel (Superadmin reference removed) -->
         <div class="col-lg-6 login-illustration-side">
             <div>
-                <div class="brand-badge">
+                <div class="brand-badge text-nowrap">
                     <i class="bi bi-cpu-fill text-primary"></i> AI University LMS
                 </div>
-                <h1 class="illustration-heading">Next-Generation Multi-Tenant University Management</h1>
-                <p class="illustration-text">Secure access for institutions, faculty, and learners in a unified collaborative workspace.</p>
+                <h1 class="illustration-heading text-break">Next-Generation Multi-Tenant University Management</h1>
+                <p class="illustration-text text-break">Secure access for institutions, faculty, and learners in a unified collaborative workspace.</p>
                 
                 <ul class="feature-list">
-                    <li><i class="bi bi-check-circle-fill"></i> Advanced Board & Competitive Question Builders</li>
-                    <li><i class="bi bi-shield-check"></i> Enterprise Subscription & Tenant Scoping</li>
-                    <li><i class="bi bi-activity"></i> Real-Time Telemetry & Audit Workflows</li>
+                    <li class="text-break"><i class="bi bi-check-circle-fill flex-shrink-0"></i> Advanced Board & Competitive Question Builders</li>
+                    <li class="text-break"><i class="bi bi-shield-check flex-shrink-0"></i> Enterprise Subscription & Tenant Scoping</li>
+                    <li class="text-break"><i class="bi bi-activity flex-shrink-0"></i> Real-Time Telemetry & Audit Workflows</li>
                 </ul>
             </div>
 
-            <div class="text-white-50 small mt-5 pt-4 border-top border-secondary opacity-75">
+            <div class="text-white-50 small mt-5 pt-4 border-top border-secondary opacity-75 text-break">
                 &copy; 2026 AI University LMS. All rights reserved.
             </div>
         </div>
@@ -261,13 +261,13 @@ body::after {
             </div>
 
             <div class="mb-3">
-                <h2 class="login-title">Sign In</h2>
-                <p class="login-subtitle">Enter your credentials to access your dashboard.</p>
+                <h2 class="login-title text-break">Sign In</h2>
+                <p class="login-subtitle text-break">Enter your credentials to access your dashboard.</p>
             </div>
 
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mb-4" role="alert" style="border-radius: 10px; font-size: 13.5px; font-weight: 600;">
+                    <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mb-4 text-break" role="alert" style="border-radius: 10px; font-size: 13.5px; font-weight: 600;">
                         {{ message }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
@@ -277,16 +277,16 @@ body::after {
             <form method="POST">
                 {% csrf_token %}
                 <div class="mb-3">
-                    <label class="form-label">Username or Email</label>
+                    <label class="form-label text-break">Username or Email</label>
                     <input type="text" name="username" class="form-control" placeholder="Enter your username" required autofocus>
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label">Password</label>
+                    <label class="form-label text-break">Password</label>
                     <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
                 </div>
 
-                <button type="submit" class="login-btn">
+                <button type="submit" class="login-btn text-nowrap shadow-sm">
                     <i class="bi bi-box-arrow-in-right me-1"></i> Sign In to Dashboard
                 </button>
             </form>

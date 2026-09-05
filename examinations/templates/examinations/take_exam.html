@@ -22,26 +22,35 @@
     --shadow-sm: 0 5px 16px rgba(23, 50, 77, 0.06);
     --shadow-md: 0 10px 30px rgba(23, 50, 77, 0.08);
 }
-body { background: var(--page-bg) !important; color: var(--text) !important; font-family: 'Inter', sans-serif !important; }
-
-.watermark-container {
+body { 
+    background: linear-gradient(180deg, #F8FAFC 0%, #F4F6F8 100%) !important; 
+    color: var(--text) !important; 
+    font-family: 'Inter', sans-serif !important; 
     position: relative;
-    min-height: 90vh;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
-.watermark-container::before {
+
+body::before {
     content: "AI UNIVERSITY";
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) rotate(-25deg);
-    font-size: 7.5vw;
-    font-weight: 900;
     font-family: 'Manrope', sans-serif;
-    color: rgba(23, 50, 77, 0.07);
+    font-size: 13vw;
+    font-weight: 800;
+    color: rgba(105, 117, 134, 0.04);
     white-space: nowrap;
     z-index: 0;
     pointer-events: none;
     user-select: none;
+    letter-spacing: 4px;
+}
+
+.watermark-container {
+    position: relative;
+    min-height: 90vh;
 }
 .quiz-content-wrapper {
     position: relative;
@@ -76,6 +85,27 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
     align-items: center;
     gap: 6px;
 }
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .watermark-container {
+        min-height: auto;
+    }
+    .quiz-content-wrapper {
+        padding: 0 8px;
+    }
+    .header-box {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+    .header-box h2 {
+        font-size: 20px !important;
+    }
+    .card-box {
+        padding: 16px;
+        border-radius: 12px;
+    }
+}
 </style>
 {% endblock %}
 
@@ -85,21 +115,23 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
         
         <!-- Header Card -->
         <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <div>
-                <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold" style="font-size: 11px;">Official Institution Assessment</span>
-                <h2 class="fw-extrabold text-white mt-1 mb-1" style="font-family: 'Manrope', sans-serif; font-size: 22px;">{{ exam.title }}</h2>
+            <div style="min-width: 0; flex-grow: 1;">
+                <span class="badge bg-success text-white px-3 py-1 mb-2 rounded-pill fw-bold text-nowrap" style="font-size: 11px;">Official Institution Assessment</span>
+                <h2 class="fw-extrabold text-white mt-1 mb-1 text-break" style="font-family: 'Manrope', sans-serif; font-size: 22px;">{{ exam.title }}</h2>
                 <p class="text-white-50 small mb-0">Complete all questions before time runs out. Submits automatically after duration.</p>
             </div>
             
-            {% if questions %}
-            <div id="timer-box" class="timer-badge">
-                <i class="bi bi-clock-fill text-warning"></i> Time Left: <span id="time-left">{{ total_duration_seconds }}</span>s
-            </div>
-            {% endif %}
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                {% if questions %}
+                <div id="timer-box" class="timer-badge text-nowrap">
+                    <i class="bi bi-clock-fill text-warning"></i> Time Left: <span id="time-left">{{ total_duration_seconds }}</span>s
+                </div>
+                {% endif %}
 
-            <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
-                <i class="bi bi-arrow-left"></i> Dashboard
-            </a>
+                <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm text-nowrap">
+                    <i class="bi bi-arrow-left"></i> Dashboard
+                </a>
+            </div>
         </div>
 
         <!-- Exam Form -->
@@ -110,9 +142,9 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                 {% for q in questions %}
                 <div class="card-box bg-white">
                     <div class="d-flex align-items-start gap-3 mb-3">
-                        <span class="badge bg-light text-dark border rounded-circle p-2 d-flex align-items-center justify-content-center fw-bold" style="width: 32px; height: 32px; font-size: 13px;">{{ forloop.counter }}</span>
-                        <div class="w-100">
-                            <h5 class="fw-bold text-dark mb-3" style="font-family: 'Manrope', sans-serif; font-size: 16px;">{{ q.question_text|safe }}</h5>
+                        <span class="badge bg-light text-dark border rounded-circle p-2 d-flex align-items-center justify-content-center fw-bold flex-shrink-0" style="width: 32px; height: 32px; font-size: 13px;">{{ forloop.counter }}</span>
+                        <div class="w-100 overflow-hidden">
+                            <h5 class="fw-bold text-dark mb-3 text-break" style="font-family: 'Manrope', sans-serif; font-size: 16px;">{{ q.question_text|safe }}</h5>
                             
                             {% if q.question_image %}
                             <div class="mb-3">
@@ -123,8 +155,8 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                             <div class="d-flex flex-column gap-2">
                                 {% for option_key, option_value in q.get_options.items %}
                                 <label class="p-3 border rounded-3 d-flex align-items-center gap-3 transition" style="cursor: pointer; background: #F9FBFC;">
-                                    <input type="radio" name="question_{{ q.id }}" value="{{ option_key }}" class="form-check-input mt-0">
-                                    <span class="fw-medium text-dark"><strong>{{ option_key }}.</strong> {{ option_value }}</span>
+                                    <input type="radio" name="question_{{ q.id }}" value="{{ option_key }}" class="form-check-input mt-0 flex-shrink-0">
+                                    <span class="fw-medium text-dark text-break"><strong>{{ option_key }}.</strong> {{ option_value }}</span>
                                 </label>
                                 {% endfor %}
                             </div>
@@ -134,13 +166,13 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                 {% endfor %}
 
                 <div class="text-end mb-5">
-                    <button type="submit" class="btn btn-success btn-lg px-5 rounded-pill fw-bold shadow-sm" style="background-color: var(--green); border-color: var(--green);">Submit Assessment</button>
+                    <button type="submit" class="btn btn-success btn-lg px-5 rounded-pill fw-bold shadow-sm text-nowrap" style="background-color: var(--green); border-color: var(--green);">Submit Assessment</button>
                 </div>
 
             {% else %}
                 <div class="card-box text-center py-5 bg-white">
-                    <p class="text-muted mb-3">No questions are currently attached to this test pool.</p>
-                    <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-primary rounded-pill px-4 fw-semibold" style="background-color: var(--blue); border-color: var(--blue);">Back to Dashboard</a>
+                    <p class="text-muted mb-3 text-break">No questions are currently attached to this test pool.</p>
+                    <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-primary rounded-pill px-4 fw-semibold text-nowrap" style="background-color: var(--blue); border-color: var(--blue);">Back to Dashboard</a>
                 </div>
             {% endif %}
         </form>

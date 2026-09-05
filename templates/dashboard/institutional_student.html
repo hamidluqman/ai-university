@@ -132,6 +132,8 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
     align-items: center;
     border-bottom: 1px solid var(--border-light);
     padding-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .table-custom th {
@@ -184,6 +186,47 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
     border-color: var(--blue) !important;
     box-shadow: 0 0 0 3px rgba(22, 119, 184, 0.15) !important;
 }
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .student-container {
+        padding: 0 8px;
+        margin: 10px auto;
+    }
+    .top-banner-nav {
+        padding: 14px 16px;
+        border-radius: 12px;
+        position: relative;
+        top: 0;
+    }
+    .header-box {
+        padding: 20px;
+        border-radius: 12px;
+    }
+    .header-box h1 {
+        font-size: 20px !important;
+    }
+    .card-box {
+        padding: 16px;
+        border-radius: 12px;
+    }
+    .top-banner-nav .d-none.d-lg-flex {
+        display: flex !important;
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 8px;
+    }
+    .top-banner-nav .nav-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+        flex: 1;
+        justify-content: center;
+    }
+    .table-custom td, .table-custom th {
+        padding: 10px 8px;
+        font-size: 12px;
+    }
+}
 </style>
 {% endblock %}
 
@@ -219,7 +262,7 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                 <li>
                     <form method="post" action="{% url 'accounts:logout' %}" class="m-0">
                         {% csrf_token %}
-                        <button type="submit" class="dropdown-item text-danger fw-bold rounded p-2">
+                        <button type="submit" class="dropdown-item text-danger fw-bold rounded p-2 w-100 text-start bg-transparent border-0">
                             <i class="bi bi-box-arrow-right"></i> Log Out
                         </button>
                     </form>
@@ -262,21 +305,21 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                             <tr>
                                 <td>
                                     <!-- Clickable Title to Trigger Flash Card Modal -->
-                                    <a href="#" class="fw-bold text-dark text-decoration-none" data-bs-toggle="modal" data-bs-target="#examDetailModal{{ item.exam.id }}">
+                                    <a href="#" class="fw-bold text-dark text-decoration-none text-truncate d-inline-block" style="max-width: 250px;" data-bs-toggle="modal" data-bs-target="#examDetailModal{{ item.exam.id }}">
                                         {{ item.exam.title }} <i class="bi bi-info-circle text-primary ms-1 small"></i>
                                     </a>
                                 </td>
                                 <td>
                                     {% if item.exam.board_subject %}
-                                        <span class="badge bg-info-subtle text-info border">{{ item.exam.board_subject.name }}</span>
+                                        <span class="badge bg-info-subtle text-info border text-truncate d-inline-block" style="max-width: 150px;">{{ item.exam.board_subject.name }}</span>
                                     {% elif item.exam.competitive_module %}
-                                        <span class="badge bg-warning-subtle text-warning border">{{ item.exam.competitive_module.title }}</span>
+                                        <span class="badge bg-warning-subtle text-warning border text-truncate d-inline-block" style="max-width: 150px;">{{ item.exam.competitive_module.title }}</span>
                                     {% else %}
                                         <span class="text-muted small">General</span>
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <span class="small text-muted">
+                                    <span class="small text-muted text-nowrap">
                                         {% if item.exam.start_time %}
                                             {{ item.exam.start_time|date:"M d, Y H:i" }}
                                         {% else %}
@@ -286,16 +329,16 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                                 </td>
                                 <td class="text-end">
                                     {% if item.has_attempted %}
-                                        <div class="d-flex justify-content-end align-items-center gap-2">
+                                        <div class="d-flex justify-content-end align-items-center gap-2 flex-wrap">
                                             <span class="badge bg-secondary-subtle text-secondary border px-3 py-2 rounded-pill fw-bold">Submitted</span>
-                                            <a href="{% url 'examinations:exam_result' item.latest_attempt_id %}" class="btn btn-sm px-3 py-1 rounded-pill fw-bold text-white shadow-sm" style="background-color: var(--navy); border-color: var(--navy); min-width: 110px; font-size: 13px;">View Result</a>
+                                            <a href="{% url 'examinations:exam_result' item.latest_attempt_id %}" class="btn btn-sm px-3 py-1 rounded-pill fw-bold text-white shadow-sm text-nowrap" style="background-color: var(--navy); border-color: var(--navy); min-width: 110px; font-size: 13px;">View Result</a>
                                         </div>
                                     {% elif item.is_scheduled %}
-                                        <button type="button" class="btn btn-sm btn-warning-subtle text-dark border border-warning px-3 py-1 rounded-pill fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#examDetailModal{{ item.exam.id }}" style="min-width: 110px; font-size: 13px;">
+                                        <button type="button" class="btn btn-sm btn-warning-subtle text-dark border border-warning px-3 py-1 rounded-pill fw-bold shadow-sm text-nowrap" data-bs-toggle="modal" data-bs-target="#examDetailModal{{ item.exam.id }}" style="min-width: 110px; font-size: 13px;">
                                             <i class="bi bi-clock me-1"></i> Scheduled
                                         </button>
                                     {% else %}
-                                        <a href="{% url 'examinations:start_exam' item.exam.id %}" class="btn btn-sm px-3 py-1 rounded-pill fw-bold text-white shadow-sm" style="background-color: var(--green); border-color: var(--green); min-width: 110px; font-size: 13px;">Start Test</a>
+                                        <a href="{% url 'examinations:start_exam' item.exam.id %}" class="btn btn-sm px-3 py-1 rounded-pill fw-bold text-white shadow-sm text-nowrap" style="background-color: var(--green); border-color: var(--green); min-width: 110px; font-size: 13px;">Start Test</a>
                                     {% endif %}
                                 </td>
                             </tr>
