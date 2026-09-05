@@ -158,9 +158,14 @@ body { background: var(--page-bg) !important; color: var(--text) !important; fon
                                             {% for subtopic in topic.subtopics.all %}
                                             <div class="subtopic-row">
                                                 <span class="small fw-medium text-dark"><i class="bi bi-dot text-primary"></i> {{ subtopic.title }}</span>
-                                                <div class="d-flex gap-1">
+                                                <div class="d-flex gap-1 align-items-center">
                                                     <a href="{% url 'courses:course_player' 'board' subtopic.id %}" class="btn btn-sm btn-outline-danger py-0 px-2 fw-semibold" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-play-fill"></i> Video</a>
-                                                    <a href="{% url 'examinations:start_practice' subtopic.id %}" class="btn btn-sm btn-outline-success py-0 px-2 fw-semibold" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-check2-square"></i> Practice</a>
+                                                    
+                                                    {% if subtopic.id in user_attempts %}
+                                                        <a href="{% url 'examinations:start_board_exam' subtopic.id %}?retest=true" class="btn btn-sm btn-outline-warning text-dark border-warning py-0 px-2 fw-semibold" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-arrow-repeat"></i> Retest</a>
+                                                    {% else %}
+                                                        <a href="{% url 'examinations:start_board_exam' subtopic.id %}" class="btn btn-sm btn-primary py-0 px-2 fw-semibold" style="font-size: 11px; border-radius: 6px;"><i class="bi bi-play-circle-fill me-1"></i> Start Test</a>
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                             {% endfor %}

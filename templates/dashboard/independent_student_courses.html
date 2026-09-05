@@ -31,7 +31,7 @@
                     {% for course in courses %}
                     <div class="card mb-3 border rounded-3 overflow-hidden shadow-sm">
                         <div class="card-header bg-light py-3 px-3 d-flex justify-content-between align-items-center" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#courseCollapse{{ course.id }}">
-                            <span class="fw-bold text-dark"><i class="bi bi-journal-text text-primary me-2"></i> {{ course.title }}</span>
+                            <span class="fw-bold text-dark"><i class="bi bi-journal-text text-primary me-2"></i> {{ course.name }}</span>
                             <i class="bi bi-chevron-down text-muted"></i>
                         </div>
                         <div id="courseCollapse{{ course.id }}" class="collapse" data-bs-parent="#boardCoursesAccordion">
