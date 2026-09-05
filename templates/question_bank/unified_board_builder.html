@@ -355,7 +355,7 @@ body::before {
                         <td>
                             {% if c.subjects.all %}
                                 {% for s in c.subjects.all %}
-                                    <span class="badge bg-light text-dark border me-1 mb-1 px-2 py-1">{{ s.name|default:s.title }}</span>
+                                    <span class="badge bg-light text-dark border me-1 mb-1 px-2 py-1">{{ s.name }}</span>
                                 {% endfor %}
                             {% else %}
                                 <span class="text-muted small italic">No subjects added yet</span>
