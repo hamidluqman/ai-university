@@ -23,7 +23,7 @@ def get_board_subjects(request, class_id):
 
 @login_required
 def get_board_chapters(request, subject_id):
-    chapters = BoardChapter.objects.filter(subject_id=subject_id).values('id', 'title')
+    chapters = BoardChapter.objects.filter(subject_id=subject_id).order_by('chapter_number').values('id', 'title')
     return JsonResponse(list(chapters), safe=False)
 
 
@@ -332,7 +332,7 @@ def bulk_import_hierarchies(request):
 
                 elif hierarchy_type == 'competitive':
                     for _, row in df.iterrows():
-                        exam_name = str(row.get('Exam', '')).strip()
+                        exam_name = str(row.get('Exam', '')).substrip() if hasattr(str(row.get('Exam', '')), 'substrip') else str(row.get('Exam', '')).strip()
                         module_name = str(row.get('Module', '')).strip()
                         submodule_name = str(row.get('Submodule', '')).strip()
                         
@@ -357,3 +357,17 @@ def bulk_import_hierarchies(request):
                 messages.error(request, f"Error processing Excel file: {e}")
                 
     return redirect(request.META.get('HTTP_REFERER', 'accounts:dashboard_redirect'))
+
+
+@login_required
+def student_courses_view(request):
+    """Student view for displaying assigned board courses and chapters in strict numerical order."""
+    courses = BoardSubject.objects.prefetch_related(
+        'chapters__topics__subtopics'
+    ).all()
+    
+    for course in courses:
+        # Pre-sort chapters numerically by chapter_number integer value to prevent string sorting issues
+        course.ordered_chapters = course.chapters.all().order_by('chapter_number')
+        
+    return render(request, 'student/courses.html', {'courses': courses})
