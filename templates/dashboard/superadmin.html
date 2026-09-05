@@ -612,7 +612,7 @@ body::before {
     margin-top: 4px;
 }
 
-/* Mobile adjustments for single-line header and collapse menu */
+/* Mobile adjustments for single-line header and solid dropdown panel */
 @media (max-width: 991.98px) {
     .superadmin-header .container-fluid {
         display: flex;
@@ -643,12 +643,21 @@ body::before {
         font-size: 16px !important;
         flex-shrink: 0;
     }
+    
+    /* Solid Dropdown Container for Mobile */
+    .navbar-collapse {
+        background: #FFFFFF !important;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 12px;
+        box-shadow: var(--shadow-lg);
+    }
     .admin-nav {
         width: 100%;
         flex-direction: column !important;
         align-items: stretch !important;
         gap: 8px !important;
-        padding-top: 12px;
     }
     .admin-nav-btn {
         width: 100%;
@@ -659,6 +668,9 @@ body::before {
     }
     .admin-profile-dropdown .dropdown-menu {
         width: 100% !important;
+        position: static !important;
+        box-shadow: none !important;
+        border: 1px solid var(--border) !important;
     }
 }
 
