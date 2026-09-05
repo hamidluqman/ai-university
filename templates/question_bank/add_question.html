@@ -267,12 +267,12 @@ input[type="file"]::file-selector-button:hover {
                     <i class="bi bi-plus-circle me-2" style="color: var(--navy);"></i>
                     Unified Question Creator
                 </h3>
-                <div class="text-muted" style="font-size: 13px; margin-top: 4px;">
+                <div class="text-muted text-break" style="font-size: 13px; margin-top: 4px;">
                     Create single assessment items or bulk-import via verified data sheets.
                 </div>
             </div>
             <div class="d-flex align-items-center gap-2 flex-wrap">
-                <button type="button" class="btn btn-success btn-sm fw-bold px-3 py-2 text-nowrap" style="border-radius: 9px;" data-bs-toggle="modal" data-bs-target="#excelModal">
+                <button type="button" class="btn btn-success btn-sm fw-bold px-3 py-2 text-nowrap shadow-sm" style="border-radius: 9px;" data-bs-toggle="modal" data-bs-target="#excelModal">
                     <i class="bi bi-file-earmark-excel me-1"></i> Import from Excel
                 </button>
                 <a href="javascript:history.back()" class="switch-btn text-nowrap">Return to Dashboard</a>
@@ -282,7 +282,7 @@ input[type="file"]::file-selector-button:hover {
         <!-- Prominent Save/Error Status Alerts -->
         {% if messages %}
             {% for m in messages %}
-                <div class="alert alert-{% if m.tags == 'error' %}danger{% else %}{{ m.tags }}{% endif %} alert-dismissible fade show fw-bold mb-4 shadow-sm" role="alert" style="border-radius: 10px; font-size: 14px;">
+                <div class="alert alert-{% if m.tags == 'error' %}danger{% else %}{{ m.tags }}{% endif %} alert-dismissible fade show fw-bold mb-4 shadow-sm text-break" role="alert" style="border-radius: 10px; font-size: 14px;">
                     {{ m }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -290,7 +290,7 @@ input[type="file"]::file-selector-button:hover {
         {% endif %}
 
         {% if form.errors %}
-            <div class="alert alert-danger mb-4 shadow-sm" style="border-radius: 10px;">
+            <div class="alert alert-danger mb-4 shadow-sm text-break" style="border-radius: 10px;">
                 <h6 class="fw-bold m-0 mb-1">⚠️ Form Save Errors:</h6>
                 <ul class="mb-0 ps-3 small">
                     {% for field, errors in form.errors.items %}
@@ -308,88 +308,88 @@ input[type="file"]::file-selector-button:hover {
 
             <!-- Flow & Hierarchy Scoping -->
             <div class="step-card">
-                <div class="step-section-title">1. Academic Classification</div>
+                <div class="step-section-title text-break">1. Academic Classification</div>
                 <div class="mb-3">
-                    <label class="form-label">Assessment Flow</label>
+                    <label class="form-label text-break">Assessment Flow</label>
                     {{ form.assessment_flow }}
                 </div>
 
                 <!-- Board Hierarchy -->
                 <div id="board_hierarchy_box" class="mt-3 pt-3 border-top">
                     <div class="row g-3">
-                        <div class="col-md-4"><label class="form-label small">Board Class</label>{{ form.board_class }}</div>
-                        <div class="col-md-4"><label class="form-label small">Subject</label>{{ form.board_subject }}</div>
-                        <div class="col-md-4"><label class="form-label small">Chapter</label>{{ form.board_chapter }}</div>
-                        <div class="col-md-6 mt-3"><label class="form-label small">Topic</label>{{ form.board_topic }}</div>
-                        <div class="col-md-6 mt-3"><label class="form-label small">SubTopic</label>{{ form.board_subtopic }}</div>
+                        <div class="col-md-4"><label class="form-label small text-break">Board Class</label>{{ form.board_class }}</div>
+                        <div class="col-md-4"><label class="form-label small text-break">Subject</label>{{ form.board_subject }}</div>
+                        <div class="col-md-4"><label class="form-label small text-break">Chapter</label>{{ form.board_chapter }}</div>
+                        <div class="col-md-6 mt-3"><label class="form-label small text-break">Topic</label>{{ form.board_topic }}</div>
+                        <div class="col-md-6 mt-3"><label class="form-label small text-break">SubTopic</label>{{ form.board_subtopic }}</div>
                     </div>
                 </div>
 
                 <!-- Competitive Hierarchy -->
                 <div id="competitive_hierarchy_box" class="mt-3 pt-3 border-top" style="display:none;">
                     <div class="row g-3">
-                        <div class="col-md-4"><label class="form-label small">Competitive Exam</label>{{ form.competitive_exam }}</div>
-                        <div class="col-md-4"><label class="form-label small">Module</label>{{ form.competitive_module }}</div>
-                        <div class="col-md-4"><label class="form-label small">SubModule</label>{{ form.competitive_submodule }}</div>
+                        <div class="col-md-4"><label class="form-label small text-break">Competitive Exam</label>{{ form.competitive_exam }}</div>
+                        <div class="col-md-4"><label class="form-label small text-break">Module</label>{{ form.competitive_module }}</div>
+                        <div class="col-md-4"><label class="form-label small text-break">SubModule</label>{{ form.competitive_submodule }}</div>
                     </div>
                 </div>
             </div>
 
             <!-- Question Statement & Media -->
             <div class="step-card">
-                <div class="step-section-title">2. Question Statement & Media</div>
+                <div class="step-section-title text-break">2. Question Statement & Media</div>
                 
                 <div class="mb-3">
-                    <label class="form-label">Question Text <span class="text-muted small fw-normal">(Optional if image is provided)</span></label>
+                    <label class="form-label text-break">Question Text <span class="text-muted small fw-normal">(Optional if image is provided)</span></label>
                     {{ form.question_text }}
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label text-dark">Question Image / Diagram <span class="text-muted small fw-normal">(Optional)</span></label>
+                    <label class="form-label text-dark text-break">Question Image / Diagram <span class="text-muted small fw-normal">(Optional)</span></label>
                     {{ form.question_image }}
                 </div>
 
                 <!-- Options -->
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
-                        <label class="form-label">Option A</label>
+                        <label class="form-label text-break">Option A</label>
                         {{ form.option_a }}
-                        <div class="mt-2"><label class="small text-muted">Image A (Optional)</label>{{ form.option_a_image }}</div>
+                        <div class="mt-2"><label class="small text-muted text-break">Image A (Optional)</label>{{ form.option_a_image }}</div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Option B</label>
+                        <label class="form-label text-break">Option B</label>
                         {{ form.option_b }}
-                        <div class="mt-2"><label class="small text-muted">Image B (Optional)</label>{{ form.option_b_image }}</div>
+                        <div class="mt-2"><label class="small text-muted text-break">Image B (Optional)</label>{{ form.option_b_image }}</div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Option C</label>
+                        <label class="form-label text-break">Option C</label>
                         {{ form.option_c }}
-                        <div class="mt-2"><label class="small text-muted">Image C (Optional)</label>{{ form.option_c_image }}</div>
+                        <div class="mt-2"><label class="small text-muted text-break">Image C (Optional)</label>{{ form.option_c_image }}</div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Option D</label>
+                        <label class="form-label text-break">Option D</label>
                         {{ form.option_d }}
-                        <div class="mt-2"><label class="small text-muted">Image D (Optional)</label>{{ form.option_d_image }}</div>
+                        <div class="mt-2"><label class="small text-muted text-break">Image D (Optional)</label>{{ form.option_d_image }}</div>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label text-success">Correct Option</label>
+                    <label class="form-label text-success text-break">Correct Option</label>
                     {{ form.correct_option }}
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Explanation / Hint</label>
+                    <label class="form-label text-break">Explanation / Hint</label>
                     {{ form.explanation }}
                 </div>
 
                 <div class="mb-2">
-                    <label class="form-label text-danger">YouTube Solution Video URL (Optional)</label>
+                    <label class="form-label text-danger text-break">YouTube Solution Video URL (Optional)</label>
                     {{ form.youtube_url }}
                 </div>
             </div>
 
-            <button type="submit" class="save-btn mt-3 text-nowrap">
+            <button type="submit" class="save-btn mt-3 text-nowrap shadow-sm">
                 <i class="bi bi-check2-circle me-1"></i> Save Question
             </button>
         </form>
@@ -403,12 +403,12 @@ input[type="file"]::file-selector-button:hover {
       <form action="{% url 'question_bank:import_questions_excel' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="modal-header border-bottom-0 pb-0 flex-wrap gap-2">
-          <h5 class="builder-title fs-5" id="excelModalLabel">Bulk Import via Excel</h5>
+          <h5 class="builder-title fs-5 text-break" id="excelModalLabel">Bulk Import via Excel</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body pt-3">
           <div class="mb-3">
-            <label class="form-label">Assessment Flow</label>
+            <label class="form-label text-break">Assessment Flow</label>
             <select name="assessment_flow" id="excel_assessment_flow" class="form-select fw-bold">
               <option value="board">Board Type</option>
               <option value="competitive">Competitive Type</option>
@@ -417,37 +417,53 @@ input[type="file"]::file-selector-button:hover {
 
           <!-- Board Hierarchy Mapping -->
           <div id="excel_board_box" class="step-card bg-white border">
-            <h6 class="step-section-title fs-6">Board Classification Scope</h6>
+            <h6 class="step-section-title fs-6 text-break">Board Classification Scope</h6>
             <div class="row g-2">
-              <div class="col-md-4"><label class="form-label small">Class</label>{{ form.board_class }}</div>
-              <div class="col-md-4"><label class="form-label small">Subject</label><select name="excel_board_subject" id="excel_board_subject" class="form-select"><option value="">-- Select Subject --</option></select></div>
-              <div class="col-md-4"><label class="form-label small">Chapter</label><select name="excel_board_chapter" id="excel_board_chapter" class="form-select"><option value="">-- Select Chapter --</option></select></div>
-              <div class="col-md-6 mt-2"><label class="form-label small">Topic</label><select name="excel_board_topic" id="excel_board_topic" class="form-select"><option value="">-- Select Topic --</option></select></div>
-              <div class="col-md-6 mt-2"><label class="form-label small">SubTopic</label><select name="excel_board_subtopic" id="excel_board_subtopic" class="form-select"><option value="">-- Select SubTopic --</option></select></div>
+              <div class="col-md-4">
+                  <label class="form-label small text-break">Class</label>
+                  <select name="board_class" id="excel_board_class" class="form-select">
+                      <option value="">-- Select Class --</option>
+                      {% for x, y in form.fields.board_class.choices %}
+                          {% if x %}<option value="{{ x }}">{{ y }}</option>{% endif %}
+                      {% endfor %}
+                  </select>
+              </div>
+              <div class="col-md-4"><label class="form-label small text-break">Subject</label><select name="board_subject" id="excel_board_subject" class="form-select"><option value="">-- Select Subject --</option></select></div>
+              <div class="col-md-4"><label class="form-label small text-break">Chapter</label><select name="board_chapter" id="excel_board_chapter" class="form-select"><option value="">-- Select Chapter --</option></select></div>
+              <div class="col-md-6 mt-2"><label class="form-label small text-break">Topic</label><select name="board_topic" id="excel_board_topic" class="form-select"><option value="">-- Select Topic --</option></select></div>
+              <div class="col-md-6 mt-2"><label class="form-label small text-break">SubTopic</label><select name="board_subtopic" id="excel_board_subtopic" class="form-select"><option value="">-- Select SubTopic --</option></select></div>
             </div>
           </div>
 
           <!-- Competitive Hierarchy Mapping -->
           <div id="excel_competitive_box" class="step-card bg-white border" style="display:none;">
-            <h6 class="step-section-title fs-6">Competitive Classification Scope</h6>
+            <h6 class="step-section-title fs-6 text-break">Competitive Classification Scope</h6>
             <div class="row g-2">
-              <div class="col-md-4"><label class="form-label small">Exam</label>{{ form.competitive_exam }}</div>
-              <div class="col-md-4"><label class="form-label small">Module</label><select name="excel_competitive_module" id="excel_competitive_module" class="form-select"><option value="">-- Select Module --</option></select></div>
-              <div class="col-md-4"><label class="form-label small">SubModule</label><select name="excel_competitive_submodule" id="excel_competitive_submodule" class="form-select"><option value="">-- Select SubModule --</option></select></div>
+              <div class="col-md-4">
+                  <label class="form-label small text-break">Exam</label>
+                  <select name="competitive_exam" id="excel_competitive_exam" class="form-select">
+                      <option value="">-- Select Exam --</option>
+                      {% for x, y in form.fields.competitive_exam.choices %}
+                          {% if x %}<option value="{{ x }}">{{ y }}</option>{% endif %}
+                      {% endfor %}
+                  </select>
+              </div>
+              <div class="col-md-4"><label class="form-label small text-break">Module</label><select name="competitive_module" id="excel_competitive_module" class="form-select"><option value="">-- Select Module --</option></select></div>
+              <div class="col-md-4"><label class="form-label small text-break">SubModule</label><select name="competitive_submodule" id="excel_competitive_submodule" class="form-select"><option value="">-- Select SubModule --</option></select></div>
             </div>
           </div>
 
-          <p class="small text-muted mb-2">
+          <p class="small text-muted mb-2 text-break">
             Upload an Excel sheet (<code>.xlsx</code>) with columns: <strong>question_text, option_a, option_b, option_c, option_d, correct_option, explanation, youtube_url</strong>.
           </p>
           <div class="mb-3">
-            <label class="form-label">Select Excel File</label>
+            <label class="form-label text-break">Select Excel File</label>
             <input type="file" name="excel_file" class="form-control" accept=".xlsx, .xls" required>
           </div>
         </div>
         <div class="modal-footer border-top-0 flex-wrap gap-2">
-          <button type="button" class="btn btn-outline-secondary px-4 py-2 text-nowrap" style="border-radius: 9px;" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="modal-import-btn text-nowrap">
+          <button type="button" class="btn btn-outline-secondary px-4 py-2 text-nowrap shadow-sm" style="border-radius: 9px;" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="modal-import-btn text-nowrap shadow-sm">
               <i class="bi bi-cloud-arrow-up-fill me-1"></i> Upload & Import
           </button>
         </div>
@@ -547,24 +563,33 @@ input[type="file"]::file-selector-button:hover {
     }
 
     // Excel Modal Cascades
+    const excelBoardClass = document.getElementById('excel_board_class');
     const excelBoardSubj = document.getElementById('excel_board_subject');
     const excelBoardChap = document.getElementById('excel_board_chapter');
     const excelBoardTop = document.getElementById('excel_board_topic');
+
+    const excelCompExam = document.getElementById('excel_competitive_exam');
     const excelCompMod = document.getElementById('excel_competitive_module');
 
-    document.querySelectorAll('#excelModal select[name="board_class"]').forEach(el => {
-        el.addEventListener('change', function() {
+    if (excelBoardClass) {
+        excelBoardClass.addEventListener('change', function() {
             populateSelect(this.value ? `/question-bank/api/subjects/${this.value}/` : '', excelBoardSubj, '-- Select Subject --');
+            excelBoardChap.innerHTML = '<option value="">-- Select Chapter --</option>';
+            excelBoardTop.innerHTML = '<option value="">-- Select Topic --</option>';
+            document.getElementById('excel_board_subtopic').innerHTML = '<option value="">-- Select SubTopic --</option>';
         });
-    });
+    }
     if (excelBoardSubj) {
         excelBoardSubj.addEventListener('change', function() {
             populateSelect(this.value ? `/question-bank/api/chapters/${this.value}/` : '', excelBoardChap, '-- Select Chapter --');
+            excelBoardTop.innerHTML = '<option value="">-- Select Topic --</option>';
+            document.getElementById('excel_board_subtopic').innerHTML = '<option value="">-- Select SubTopic --</option>';
         });
     }
     if (excelBoardChap) {
         excelBoardChap.addEventListener('change', function() {
             populateSelect(this.value ? `/question-bank/api/topics/${this.value}/` : '', excelBoardTop, '-- Select Topic --');
+            document.getElementById('excel_board_subtopic').innerHTML = '<option value="">-- Select SubTopic --</option>';
         });
     }
     if (excelBoardTop) {
@@ -573,11 +598,12 @@ input[type="file"]::file-selector-button:hover {
         });
     }
 
-    document.querySelectorAll('#excelModal select[name="competitive_exam"]').forEach(el => {
-        el.addEventListener('change', function() {
+    if (excelCompExam) {
+        excelCompExam.addEventListener('change', function() {
             populateSelect(this.value ? `/question-bank/api/modules/${this.value}/` : '', excelCompMod, '-- Select Module --');
+            document.getElementById('excel_competitive_submodule').innerHTML = '<option value="">-- Select SubModule --</option>';
         });
-    });
+    }
     if (excelCompMod) {
         excelCompMod.addEventListener('change', function() {
             populateSelect(this.value ? `/question-bank/api/submodules/${this.value}/` : '', document.getElementById('excel_competitive_submodule'), '-- Select SubModule --');
