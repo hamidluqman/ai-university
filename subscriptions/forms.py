@@ -1,6 +1,20 @@
 from django import forms
 from .models import Subscription
+from .models import SubscriptionPlan
 
+class SubscriptionPlanForm(forms.ModelForm):
+    class Meta:
+        model = SubscriptionPlan
+        fields = ['name', 'price', 'duration_days', 'description', 'is_active']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Pro Plan'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '0.00'}),
+            'duration_days': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'e.g. 30'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Plan features...'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'})
+        }
+
+        
 class PaymentSubmissionForm(forms.ModelForm):
     class Meta:
         model = Subscription

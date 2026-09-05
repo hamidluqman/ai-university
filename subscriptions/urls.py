@@ -13,4 +13,6 @@ urlpatterns = [
     path('submit-payment/', views.submit_payment_view, name='submit_payment'),
     path('submit-payment/<int:subscription_id>/', views.submit_payment_view, name='submit_payment_with_id'),
     path('add-subscription/', views.add_subscription_view, name='add_subscription'),
+    path('admin-panel/', views.admin_subscription_panel, name='admin_subscription_panel'),
+    path('plan/add/', views.add_subscription_plan, name='add_subscription_plan'),
 ]

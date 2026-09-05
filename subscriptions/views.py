@@ -4,10 +4,11 @@ from django.contrib import messages
 from django.utils import timezone
 from datetime import timedelta
 from .models import SubscriptionPlan, Subscription
-from .forms import PaymentSubmissionForm
+from .forms import PaymentSubmissionForm, SubscriptionPlanForm
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.admin.views.decorators import staff_member_required
 
 User = get_user_model()
 
@@ -229,3 +230,16 @@ def reject_subscription(request, subscription_id):
 
     messages.warning(request, f"Subscription #{subscription.id} marked as rejected.")
     return redirect('subscriptions:admin_subscription_panel')
+
+@staff_member_required
+def add_subscription_plan(request):
+    if request.method == 'POST':
+        form = SubscriptionPlanForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Subscription plan created successfully!")
+            return redirect('subscriptions:admin_subscription_panel')
+    else:
+        form = SubscriptionPlanForm()
+    
+    return render(request, 'subscriptions/add_plan.html', {'form': form})
