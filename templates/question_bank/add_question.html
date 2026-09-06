@@ -419,9 +419,6 @@ input[type="file"]::file-selector-button:hover {
                   <label class="form-label small text-break">Class</label>
                   <select name="board_class" id="excel_board_class" class="form-select">
                       <option value="">-- Select Class --</option>
-                      {% for x, y in form.fields.board_class.choices %}
-                          {% if x %}<option value="{{ x }}">{{ y }}</option>{% endif %}
-                      {% endfor %}
                   </select>
               </div>
               <div class="col-md-4"><label class="form-label small text-break">Subject</label><select name="board_subject" id="excel_board_subject" class="form-select"><option value="">-- Select Subject --</option></select></div>
@@ -439,9 +436,6 @@ input[type="file"]::file-selector-button:hover {
                   <label class="form-label small text-break">Exam</label>
                   <select name="competitive_exam" id="excel_competitive_exam" class="form-select">
                       <option value="">-- Select Exam --</option>
-                      {% for x, y in form.fields.competitive_exam.choices %}
-                          {% if x %}<option value="{{ x }}">{{ y }}</option>{% endif %}
-                      {% endfor %}
                   </select>
               </div>
               <div class="col-md-4"><label class="form-label small text-break">Module</label><select name="competitive_module" id="excel_competitive_module" class="form-select"><option value="">-- Select Module --</option></select></div>
@@ -507,6 +501,21 @@ input[type="file"]::file-selector-button:hover {
             }
         });
     }
+
+    // Populate modal dropdowns from main form elements automatically on load
+    window.addEventListener('DOMContentLoaded', function() {
+        const mainClassEl = document.getElementById('id_board_class');
+        const excelClassEl = document.getElementById('excel_board_class');
+        if (mainClassEl && excelClassEl) {
+            excelClassEl.innerHTML = mainClassEl.innerHTML;
+        }
+
+        const mainExamEl = document.getElementById('id_competitive_exam');
+        const excelExamEl = document.getElementById('excel_competitive_exam');
+        if (mainExamEl && excelExamEl) {
+            excelExamEl.innerHTML = mainExamEl.innerHTML;
+        }
+    });
 
     async function populateSelect(url, selectEl, defaultText) {
         selectEl.innerHTML = `<option value="">${defaultText}</option>`;
