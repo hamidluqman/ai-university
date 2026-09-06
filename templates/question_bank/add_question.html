@@ -188,12 +188,23 @@ input[type="file"]::file-selector-button:hover {
     background: var(--navy-dark) !important;
 }
 
-/* Ensure modal displays above backdrop cleanly */
-.modal {
-    z-index: 1055 !important;
+/* Custom Interactive Overlay Modal */
+#excelModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(16, 40, 63, 0.5);
+    z-index: 99999;
+    overflow-y: auto;
+    padding: 20px;
 }
-.modal-backdrop {
-    z-index: 1050 !important;
+
+.custom-modal-dialog {
+    max-width: 800px;
+    margin: 40px auto;
 }
 
 .modal-content {
@@ -202,7 +213,7 @@ input[type="file"]::file-selector-button:hover {
     border-radius: 16px;
     border: 1px solid var(--border);
     box-shadow: var(--shadow-md);
-    padding: 10px;
+    padding: 20px;
 }
 
 .modal-content .form-label,
@@ -276,7 +287,7 @@ input[type="file"]::file-selector-button:hover {
                 </div>
             </div>
             <div class="d-flex align-items-center gap-2 flex-wrap">
-                <button type="button" class="btn btn-success btn-sm fw-bold px-3 py-2 text-nowrap shadow-sm" style="border-radius: 9px;" data-bs-toggle="modal" data-bs-target="#excelModal">
+                <button type="button" id="openExcelModalBtn" class="btn btn-success btn-sm fw-bold px-3 py-2 text-nowrap shadow-sm" style="border-radius: 9px;">
                     <i class="bi bi-file-earmark-excel me-1"></i> Import from Excel
                 </button>
                 <a href="javascript:history.back()" class="switch-btn text-nowrap">Return to Dashboard</a>
@@ -400,15 +411,15 @@ input[type="file"]::file-selector-button:hover {
     </div>
 </div>
 
-<!-- Modal for Excel Import placed cleanly outside container block -->
-<div class="modal fade" id="excelModal" tabindex="-1" aria-labelledby="excelModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+<!-- Custom Overlay Modal for Excel Import -->
+<div id="excelModal">
+  <div class="custom-modal-dialog">
     <div class="modal-content">
       <form action="{% url 'question_bank:import_questions_excel' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="modal-header border-bottom-0 pb-0 flex-wrap gap-2">
+        <div class="modal-header border-bottom-0 pb-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
           <h5 class="builder-title fs-5 text-break" id="excelModalLabel">Bulk Import via Excel</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" id="closeExcelModalBtn" class="btn-close" aria-label="Close"></button>
         </div>
         <div class="modal-body pt-3">
           <div class="mb-3">
@@ -459,8 +470,8 @@ input[type="file"]::file-selector-button:hover {
             <input type="file" name="excel_file" class="form-control" accept=".xlsx, .xls" required>
           </div>
         </div>
-        <div class="modal-footer border-top-0 flex-wrap gap-2">
-          <button type="button" class="btn btn-outline-secondary px-4 py-2 text-nowrap shadow-sm" style="border-radius: 9px;" data-bs-dismiss="modal">Cancel</button>
+        <div class="modal-footer border-top-0 d-flex justify-content-end flex-wrap gap-2 pt-2">
+          <button type="button" id="cancelExcelModalBtn" class="btn btn-outline-secondary px-4 py-2 text-nowrap shadow-sm" style="border-radius: 9px;">Cancel</button>
           <button type="submit" class="modal-import-btn text-nowrap shadow-sm">
               <i class="bi bi-cloud-arrow-up-fill me-1"></i> Upload & Import
           </button>
@@ -474,6 +485,25 @@ input[type="file"]::file-selector-button:hover {
 
 {% block extra_js %}
 <script>
+    // Custom Modal Toggle Controls
+    const modalEl = document.getElementById('excelModal');
+    const openBtn = document.getElementById('openExcelModalBtn');
+    const closeBtn = document.getElementById('closeExcelModalBtn');
+    const cancelBtn = document.getElementById('cancelExcelModalBtn');
+
+    if (openBtn) {
+        openBtn.addEventListener('click', () => { modalEl.style.display = 'block'; });
+    }
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => { modalEl.style.display = 'none'; });
+    }
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => { modalEl.style.display = 'none'; });
+    }
+    window.addEventListener('click', (e) => {
+        if (e.target === modalEl) { modalEl.style.display = 'none'; }
+    });
+
     const flowSelect = document.getElementById('id_assessment_flow');
     const boardBox = document.getElementById('board_hierarchy_box');
     const compBox = document.getElementById('competitive_hierarchy_box');
