@@ -188,6 +188,14 @@ input[type="file"]::file-selector-button:hover {
     background: var(--navy-dark) !important;
 }
 
+/* Ensure modal displays above backdrop cleanly */
+.modal {
+    z-index: 1055 !important;
+}
+.modal-backdrop {
+    z-index: 1050 !important;
+}
+
 .modal-content {
     background-color: #FFFFFF !important;
     color: var(--text) !important;
@@ -392,7 +400,7 @@ input[type="file"]::file-selector-button:hover {
     </div>
 </div>
 
-<!-- Modal for Excel Import with Full Hierarchy Mapping -->
+<!-- Modal for Excel Import placed cleanly outside container block -->
 <div class="modal fade" id="excelModal" tabindex="-1" aria-labelledby="excelModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
