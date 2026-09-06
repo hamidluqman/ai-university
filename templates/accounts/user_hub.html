@@ -270,7 +270,7 @@ body::before {
             {% endif %}
             <a href="{% url 'accounts:create_teacher' %}" class="btn-custom-success text-nowrap">+ Add Teacher</a>
             <a href="{% url 'accounts:create_student' %}" class="btn-custom-primary text-nowrap">+ Add Student</a>
-            <a href="{% if is_institution_admin %}{% url 'dashboard:institution' %}{% else %}{% url 'dashboard:superadmin' %}{% endif %}" class="btn-custom-outline text-nowrap">
+            <a href="{% if is_institution_admin %}{% url 'accounts:institution_dashboard' %}{% else %}{% url 'accounts:dashboard_redirect' %}{% endif %}" class="btn-custom-outline text-nowrap">
                 <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
             </a>
         </div>

@@ -189,7 +189,7 @@ body::before {
             </div>
             <div class="d-flex align-items-center gap-2 flex-wrap">
                 <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 text-nowrap" style="font-weight: 700; border-radius: 8px;">Student</span>
-                <a href="{% if is_institution_admin %}{% url 'dashboard:institution' %}{% else %}{% url 'dashboard:superadmin' %}{% endif %}" class="btn btn-sm btn-outline-secondary fw-bold px-3 py-2 text-nowrap shadow-sm" style="border-radius: 8px;">
+                <a href="{% if is_institution_admin %}{% url 'accounts:institution_dashboard' %}{% else %}{% url 'accounts:dashboard_redirect' %}{% endif %}" class="btn btn-sm btn-outline-secondary fw-bold px-3 py-2 text-nowrap shadow-sm" style="border-radius: 8px;">
                     <i class="bi bi-speedometer2 me-1"></i> Dashboard
                 </a>
             </div>
