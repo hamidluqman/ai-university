@@ -17,7 +17,6 @@ urlpatterns = [
     path('examinations/', include(('examinations.urls', 'examinations'), namespace='examinations')),
     path('subscriptions/', include(('subscriptions.urls', 'subscriptions'), namespace='subscriptions')),
     path('courses/', include(('courses.urls', 'courses'), namespace='courses')),
-    path('dashboard/', include(('dashboard.urls', 'dashboard'), namespace='dashboard')),
 ]
 
 if settings.DEBUG:
